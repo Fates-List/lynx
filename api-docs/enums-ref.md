@@ -102,7 +102,7 @@ All available user experiments
 | Name | Value |
 | :--- | :--- |
 | **Unknown** | 0 |
-| **TestExperiment** | 1 |
+| **GetRoleSelector** | 1 |
 | **LynxExperimentRolloutView** | 2 |
 | **BotReport** | 3 |
 
@@ -296,6 +296,7 @@ The type of appeal being sent
 | :--- | :--- |
 | **Appeal** | 0 |
 | **Certification** | 1 |
+| **Report** | 2 |
 
 
     
