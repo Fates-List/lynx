@@ -58,13 +58,15 @@ The two below dependencies can also be replaced by having a PostgreSQL 14+ serve
 
 2. Download the Fates List infra repo on the VPS using `git clone https://github.com/Fates-List/infra FatesList`. Make sure the location it is downloaded to is publicly accessible AKA not in a /root folder or anything like that.
 
-3. Enter the ``modules/infra/flamepaw`` folder and run `make && make install`. This will build and install flamepaw on your system.
+3. Download the lynx repo on the VPS using `git clone https://github.com/Fates-List/lynx`. Make sure the location is in the same folder as where you downloaded ``infra`` above
 
-4. Enter the ``FatesList/config/data`` folder and fill in the required information in the JSON files there. This should be self-explanatory but feel free to ask for help on our support server.
+4. Enter the ``modules/infra/flamepaw`` folder and run `make && make install`. This will build and install flamepaw on your system.
 
-5. (optional) If you have a database backup, copy it to ``/backups/latest.bak`` where ``/`` is the root of your hard disk
+5. Enter the ``FatesList/config/data`` folder and fill in the required information in the JSON files there. This should be self-explanatory but feel free to ask for help on our support server.
 
-6. Run ``flamepaw --cmd db.setup`` to setup your database. This may fail, if so, report it on our support server and/or try manually creating the schema (if postgres docker setup succeeds) using the below commands:
+6. (optional) If you have a database backup, copy it to ``/backups/latest.bak`` where ``/`` is the root of your hard disk
+
+7. Run ``flamepaw --cmd db.setup`` to setup your database. This may fail, if so, report it on our support server and/or try manually creating the schema (if postgres docker setup succeeds) using the below commands:
 
 ```bash
 
@@ -75,13 +77,13 @@ psql # If this fails then postgres docker setup failed and you should report thi
 \i schema.sql
 ```
 
-7. Install the lynx python dependencies with ``pip install -r modules/infra/admin_piccolo/deps.txt``
+8. Install the lynx python dependencies with ``pip install -r ../lynx/deps.txt`` (or wherever ``lynx`` is now)
 
-8. Install ``git+https://github.com/Rapptz/discord.py`` manually (due to python 3.11 and aiohttp issues)
+9. Install ``git+https://github.com/Rapptz/discord.py`` manually (due to python 3.11 and aiohttp issues)
 
-9. Copy the nginx conf in data/nginx to /etc/nginx
+10. Copy the nginx conf in data/nginx to /etc/nginx
 
-10. Restart nginx using ``systemctl restart nginx``
+11. Restart nginx using ``systemctl restart nginx``
 
 ### Compiling actual site 
 
@@ -98,3 +100,15 @@ psql # If this fails then postgres docker setup failed and you should report thi
 ### Running the site
 
 Run ``FatesList/data/start_tmux.sh`` to start Fates List
+
+### Running Lynx
+
+Just run ``./runprod`` in the ``lynx`` directory
+
+## Project Structure Notes
+
+baypaw => common user fetcher internal api (so common cache and everything)
+
+flamepaw => misc long running scripts and _getperm api
+
+squirrelflight => well, the squirrelflight bot used for vote reminders, server listing etc.
