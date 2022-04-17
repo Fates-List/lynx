@@ -104,6 +104,7 @@ All available user experiments
 | **Unknown** | 0 |
 | **GetRolesSelector** | 1 |
 | **LynxExperimentRolloutView** | 2 |
+| **BotReport** | 3 |
 
 
     

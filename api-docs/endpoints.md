@@ -395,6 +395,58 @@ Internal route to return enum docs template
 **Authorization Needed** | 
 
 
+### Experiment List
+#### GET /experiments
+
+Returns all currently available experiments
+
+**Path parameters**
+
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **user_experiments** => (Array) Struct UserExperimentListItem 
+	- **name** => string [default/example = "Unknown"]
+	- **value** => i32 [default/example = 0]
+
+
+
+
+
+
+**Response Body Example**
+
+```json
+{
+    "user_experiments": [
+        {
+            "name": "Unknown",
+            "value": 0
+        }
+    ]
+}
+```
+**Authorization Needed** | 
+
+
 ### Resolve Vanity
 #### GET /code/{code}
 
@@ -3934,7 +3986,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "3b3752ee-f91e-4193-b1ee-edbc677cc9f5"]
+- **parent_id** => (Optional) string [default/example = "355c8398-ec1c-48a2-9f66-d0a73bf8bafb"]
 
 
 
@@ -3960,7 +4012,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "3b3752ee-f91e-4193-b1ee-edbc677cc9f5"
+    "parent_id": "355c8398-ec1c-48a2-9f66-d0a73bf8bafb"
 }
 ```
 
@@ -4025,7 +4077,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "299cbdcc-16ac-481f-b93c-a659579c4a0b"]
+- **id** => (Optional) string [default/example = "bb05760e-9a8f-4964-8b55-4b5a82fbb48c"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4055,7 +4107,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "299cbdcc-16ac-481f-b93c-a659579c4a0b",
+    "id": "bb05760e-9a8f-4964-8b55-4b5a82fbb48c",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4119,7 +4171,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "89d20615-04d3-46e1-b8fe-e6a566be072f"]
+- **rid** => string [default/example = "a991a3c1-3af7-4142-ad41-6d7a17ad5aa6"]
 
 
 
@@ -4185,7 +4237,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "ad7227f1-9fd0-487a-a08b-f91ee4709954"]
+- **rid** => string [default/example = "25243dcd-8e44-4fd7-b396-835f5dd930d4"]
 
 
 
@@ -4436,7 +4488,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "10aa772f-cdcc-4a95-b2bf-10ba2f5238a6"]
+- **id** => string [default/example = "4c1af57b-36b8-4a5c-b770-6999db9e5733"]
 - **target_type** => i32 [default/example = 0]
 
 

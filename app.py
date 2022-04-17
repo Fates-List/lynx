@@ -93,6 +93,29 @@ with open("api-docs/enums-ref.md", "w") as f:
     f.write(enums_docs_template)
 
 
+# Experiment sanity check
+exps_in_api = requests.get("https://api.fateslist.xyz/experiments").json()
+
+exps_found = []
+
+for user_exp in exps_in_api["user_experiments"]:
+    try:
+        e = Experiments(user_exp["value"])
+    except:
+        print(f"[Lynx] User experiment sanity check failure (not found in Lynx): {user_exp['name']} ({user_exp['value']})")
+        sys.exit(0)
+    exps_found.append(e)
+
+for exp in list(Experiments):
+    if exp not in exps_found:
+        print(f"[Lynx] User experiment sanity check failure (not found in API): {exp.name} ({exp.value})")
+        sys.exit(0)
+    elif not exp_props.get(exp.name):
+        print(f"[Lynx] User experiment sanity check failure (not found in exp_props): {exp.name} ({exp.value})")
+        sys.exit(0)
+# End of experiment sanity check
+
+
 def get_token(length: int) -> str:
     secure_str = ""
     for _ in range(0, length):
@@ -942,7 +965,8 @@ async def exp_rollout_menu(ws: WebSocket, _: dict):
 #### {exp.name}
 - Description: **{exp_prop.description}**
 - Status: **{exp_prop.status.name} ({exp_prop.status.value})**
-            """
+- Minimum Perm Filter (does not apply to full/controlled rollouts): **{exp_prop.min_perm}**
+"""
 
         users = await app.state.db.fetch("SELECT user_id FROM users WHERE experiments && $1", [exp.value])
 
@@ -1029,6 +1053,17 @@ async def exp_rollout_add(ws: WebSocket, data: dict):
         return {"resp": "spld", "e": SPLDEvent.verify_needed}
     
     try:
+        exp = Experiments(int(data["exp"]))
+        exp_prop = exp_props[exp.name]
+
+        if exp_prop.min_perm > 0:
+            # Check permission of new user
+            _, _, sm = await is_staff(int(data["id"]), 1)
+            if sm.perm < exp_prop.min_perm:
+                return  {"detail": "Invalid user perm of new user"}
+
+        # remove old and add
+        await app.state.db.execute("UPDATE users SET experiments = array_remove(experiments, $1) WHERE user_id = $2", int(data["exp"]), int(data["id"]))
         await app.state.db.execute("UPDATE users SET experiments = array_append(experiments, $1) WHERE user_id = $2", int(data["exp"]), int(data["id"]))
     except:
         return {"detail": "Invalid experiment data"}
