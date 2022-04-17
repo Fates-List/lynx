@@ -102,7 +102,7 @@ All available user experiments
 | Name | Value |
 | :--- | :--- |
 | **Unknown** | 0 |
-| **GetRolesSelector** | 1 |
+| **TestExperiment** | 1 |
 | **LynxExperimentRolloutView** | 2 |
 | **BotReport** | 3 |
 

@@ -2280,6 +2280,7 @@ Creates a oauth2 login given a code
 
 - **site_lang** => string [default/example = ""]
 - **css** => None (unknown value type)
+- **user_experiments** => (Array) 
 
 
 
@@ -2298,7 +2299,8 @@ Creates a oauth2 login given a code
         "status": "Unknown"
     },
     "site_lang": "",
-    "css": null
+    "css": null,
+    "user_experiments": []
 }
 ```
 **Authorization Needed** | 
@@ -3748,6 +3750,48 @@ Gives user roles on the Fates List support server
 **Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
 
 
+### Test Experiments
+#### GET /profiles/{id}/test-experiments
+
+
+Internal route to showcase experiments
+
+
+**Path parameters**
+
+- **id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+
+
+
+**Response Body Example**
+
+```json
+{}
+```
+**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
+
+
 ## Reviews
 
 ### Get Reviews
@@ -3986,7 +4030,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "355c8398-ec1c-48a2-9f66-d0a73bf8bafb"]
+- **parent_id** => (Optional) string [default/example = "f56e1de0-c6d3-494c-adcb-d9e350f4d816"]
 
 
 
@@ -4012,7 +4056,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "355c8398-ec1c-48a2-9f66-d0a73bf8bafb"
+    "parent_id": "f56e1de0-c6d3-494c-adcb-d9e350f4d816"
 }
 ```
 
@@ -4077,7 +4121,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "bb05760e-9a8f-4964-8b55-4b5a82fbb48c"]
+- **id** => (Optional) string [default/example = "af412a76-5279-46f4-b958-da365ee83fc1"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4107,7 +4151,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "bb05760e-9a8f-4964-8b55-4b5a82fbb48c",
+    "id": "af412a76-5279-46f4-b958-da365ee83fc1",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4171,7 +4215,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "a991a3c1-3af7-4142-ad41-6d7a17ad5aa6"]
+- **rid** => string [default/example = "971740d7-5f86-4b4d-a1d8-5277d9805ea4"]
 
 
 
@@ -4237,7 +4281,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "25243dcd-8e44-4fd7-b396-835f5dd930d4"]
+- **rid** => string [default/example = "1143f1cb-00cb-48f3-a8bb-2a8e7362f73d"]
 
 
 
@@ -4488,7 +4532,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "4c1af57b-36b8-4a5c-b770-6999db9e5733"]
+- **id** => string [default/example = "a11cb986-208b-47fb-8737-1c44b802d31a"]
 - **target_type** => i32 [default/example = 0]
 
 
