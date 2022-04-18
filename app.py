@@ -972,7 +972,7 @@ async def exp_rollout_menu(ws: WebSocket, _: dict):
 
         user_txt = "User count too low/high to display or rollout already complete"
 
-        if len(users) < 5 and len(users) > 0:
+        if len(users) < 7 and len(users) > 0:
             user_txt = []
             for user in users:
                 user_txt.append(str(user["user_id"]))
@@ -1205,65 +1205,7 @@ async def apply_staff(ws: WebSocket, data: dict):
 @ws_action("get_sa_questions")
 async def get_sa_questions(ws: WebSocket, _):
     """Get staff app questions"""
-    questions = '<form class="needs-validation" novalidate><div class="form-group">'
-
-    for pane in staffapps.questions:
-        questions += f"""
-
-### {pane.title}
-
-{pane.description}
-        """
-        for question in pane.questions:
-            questions += f"""
-#### {question.title}
-
-<div class="form-group">
-
-<label for="{question.id}">{question.question} ({question.min_length} - {question.max_length} characters)</label>
-
-{question.description}. 
-
-"""
-            if question.paragraph:
-                questions += f"""
-<textarea class="form-control question" id="{question.id}" name="{question.id}" placeholder="{question.description}" minlength="{question.min_length}" maxlength="{question.max_length}" required aria-required="true"></textarea>
-"""
-            else:
-                questions += f"""
-<input type="{question.type}" class="form-control question" id="{question.id}" name="{question.id}" placeholder="{question.description}" minlength="{question.min_length}" maxlength="{question.max_length}" required aria-required="true"/>
-"""
-            questions += f"""
-<div class="valid-feedback">
-    Looks good!
-</div>
-<div class="invalid-feedback">
-    {question.title} is either missing, too long or too short!
-</div>
-
-**Write a minimum of {question.min_length} characters and a maximum of {question.max_length} characters.**
-
-<br/>
-</div>
-            """
-
-        questions += "</div>"
-
-    questions += """
-</div>
-<button type="submit" id="apply-btn">Apply</button>
-</form>
-    """
-
-    return {
-        "title": "Apply For Staff",
-        "data": f"""
-We're always open, don't worry!
-
-{questions}
-        """,
-        "ext_script": "apply",
-    }
+    return {"questions": jsonable_encoder(staffapps.questions)}
 
 
 @ws_action("loa")
@@ -2366,7 +2308,7 @@ async def ws(ws: WebSocket, cli: str, plat: str):
         return await out_of_date(ws)
 
     # Check nonce to ensure client is up to date
-    if (ws.state.plat == "WEB" and cli != "Comfrey0s4"  # TODO, obfuscate/hide nonce in core.js and app.py
+    if (ws.state.plat == "WEB" and cli != "Comfrey0s6"  # TODO, obfuscate/hide nonce in core.js and app.py
         or (ws.state.plat == "SQUIRREL" and cli != "BurdockRoot")
         or (ws.state.plat == "DOCREADER" and cli != "Quailfeather")
     ):
@@ -2442,17 +2384,17 @@ async def ws(ws: WebSocket, cli: str, plat: str):
         await manager.send_personal_message({
             "resp": "cfg", 
             "assets": {
-                "bot-actions": "/_static/bot-actions.js?v=75",
-                "user-actions": "/_static/user-actions.js?v=74",
-                "surveys": "/_static/surveys.js?v=73",
-                "apply": "/_static/apply.js?v=81",
-                "admin-nav": "/_static/admin-nav.js?v=m8",
-                "admin-iframe": "/_static/admin-iframe.js?v=m3823",
-                "admin-console": "/_static/admin-console.js?v=m37",
-                "exp-rollout": "/_static/exp-rollout.js?v=m3298",
+                "bot-actions": "75",
+                "user-actions": "74",
+                "surveys": "73",
+                "apply": "81",
+                "admin-nav": "m8",
+                "admin-iframe": "m3823",
+                "admin-console": "m37",
+                "exp-rollout": "m3298",
             },
             "sidebar": [["login", "fa-arrow-right-to-bracket", "loginUser()"], ["status", "fa-gear"], ["privacy", "fa-shield"], ["surveys", "fa-shield"], ["staff-guide", "fa-rectangle-list"], ["apply-for-staff", "fa-rectangle-list"], ["links", "fa-link"]],
-            "responses": ['docs', 'links', 'staff_guide', 'index', "request_logs", "reset_page", "staff_apps", "loa", "user_actions", "bot_actions", "staff_verify", "survey_list", "get_sa_questions", "admin"],
+            "responses": ['docs', 'links', 'staff_guide', 'index', "request_logs", "reset_page", "staff_apps", "loa", "user_actions", "bot_actions", "staff_verify", "survey_list", "admin"],
             "actions": ['user_action', 'bot_action', 'eternatus', 'survey', 'data_deletion', 'apply_staff', 'send_loa', 'exp_rollout_add', 'exp_rollout_del', 'exp_rollout_all', 'exp_rollout_undo', 'exp_rollout_controlled'],
             "tree": docs,
             "experiments": ws.state.experiments

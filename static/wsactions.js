@@ -4,7 +4,11 @@ actions = {
     },
     "cfg": (data) => {
         info("Silverpelt", "Got server config. Applying...")
-        assetList = data.assets
+
+        for (let [assetName, version] of Object.entries(data.assets)) {
+            assetList[assetName] = `/_static/${assetName}.js?v=${version}`
+        }
+
         wsContentResp = new Set(data.responses)
         wsContentSpecial = new Set(data.actions)
         experiments = UserExperiments.from(data.experiments)
@@ -134,6 +138,64 @@ actions = {
     "experiments": (data) => {
         console.log("Got experiments")
         experiments = UserExperiments.from(data.experiments)
+    },
+    "get_sa_questions": (data) => {
+        questions = `We're always open, don't worry!\n\n<form class="needs-validation" novalidate><div class="form-group">`
+
+        data.questions.forEach(pane => {
+            questions += `
+
+### ${pane.title}
+
+${pane.description}
+`                        
+            pane.questions.forEach(question => {
+                questions += `
+
+#### ${question.title}
+
+<div class="form-group">
+
+<label for="${question.id}">${question.question} (${question.min_length} - ${question.max_length} characters)</label>
+
+{question.description}.   
+
+`
+
+                if(question.paragraph) {
+                    questions += `\n<textarea class="form-control question" id="${question.id}" name="${question.id}" placeholder="${question.description}" minlength="${question.min_length}" maxlength="${question.max_length}" required aria-required="true"></textarea>\n`
+                } else {
+                    questions += `\n<input type="${question.type}" class="form-control question" id="${question.id}" name="${question.id}" placeholder="${question.description}" minlength="${question.min_length}" maxlength="${question.max_length}" required aria-required="true"/>\n`
+                }
+
+                questions += `
+<div class="valid-feedback">
+Looks good!
+</div>
+<div class="invalid-feedback">
+${question.title} is either missing, too long or too short!
+</div>
+
+**Write a minimum of ${question.min_length} characters and a maximum of ${question.max_length} characters.**
+
+<br/>
+</div>            
+`})
+
+            questions += "</div>"
+        })
+
+        questions += `
+</div>
+<button type="submit" id="apply-btn">Apply</button>
+</form>
+`
+
+        setData({
+            "title": "Apply For Staff",
+            "data": questions,
+            "ext_script": "apply"
+        })
     }
 }
 
