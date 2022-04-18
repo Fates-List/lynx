@@ -105,6 +105,7 @@ All available user experiments
 | **GetRoleSelector** | 1 |
 | **LynxExperimentRolloutView** | 2 |
 | **BotReport** | 3 |
+| **ServerAppealCertification** | 4 |
 
 
     
@@ -281,7 +282,7 @@ The name of the event being sent and its corresponding number
 
 
     
-### BotRequestType
+### AppealType
 
 The type of appeal being sent
 

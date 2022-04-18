@@ -3325,7 +3325,7 @@ Imports a bot from a source listed in ``Get Import Sources``.
 
 Creates a appeal/request for a bot.
 
-``request_type`` is a [BotRequestType](https://lynx.fateslist.xyz/docs/enums-ref#botrequesttype)
+``request_type`` is a [AppealType](https://lynx.fateslist.xyz/docs/enums-ref#appealtype)
 
 **Ideally only useful for custom clients**
 
@@ -4030,7 +4030,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "a899cecc-312a-41a0-93fa-399fab94109c"]
+- **parent_id** => (Optional) string [default/example = "a8f26688-49c7-42e7-9ef2-d3e2b6dc10c1"]
 
 
 
@@ -4056,7 +4056,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "a899cecc-312a-41a0-93fa-399fab94109c"
+    "parent_id": "a8f26688-49c7-42e7-9ef2-d3e2b6dc10c1"
 }
 ```
 
@@ -4121,7 +4121,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "a0e07842-59e2-4f70-a2f3-bcdd1e9ebac1"]
+- **id** => (Optional) string [default/example = "b4bd4366-6241-445d-a115-f2ad5732fd2d"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4151,7 +4151,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "a0e07842-59e2-4f70-a2f3-bcdd1e9ebac1",
+    "id": "b4bd4366-6241-445d-a115-f2ad5732fd2d",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4215,7 +4215,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "33965f69-c5a6-4e3f-b332-fe2bc91e23e6"]
+- **rid** => string [default/example = "6d6e7b72-f1f2-4338-8f38-458ebe50c052"]
 
 
 
@@ -4281,7 +4281,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "5fef087d-041d-4d3a-b3ea-b7b9ed33c407"]
+- **rid** => string [default/example = "615bfc94-a0a4-4993-a2ad-16b76cb72546"]
 
 
 
@@ -4532,7 +4532,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "46ec4336-4fa6-401e-b6ca-15d23b85d7ba"]
+- **id** => string [default/example = "81d12adb-e83e-408d-8af8-b425f84dcc16"]
 - **target_type** => i32 [default/example = 0]
 
 
