@@ -45,7 +45,7 @@ async function loaSend() {
             event.preventDefault()
             event.stopPropagation()
           } else {
-              if(window.location.pathname.startsWith("/apply")) {
+              if(window.location.pathname.startsWith("/apply-for-staff")) {
                 applyForStaff()
               } else if (window.location.pathname.startsWith("/loa")) {
                 loaSend()

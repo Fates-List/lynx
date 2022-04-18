@@ -10,6 +10,7 @@ var forcedStaffVerify = false
 
 var inDocs = false
 var addedDocTree = false
+var addedSidebar = false
 var havePerm = false
 var staffPerm = 1
 var alreadyUp = false

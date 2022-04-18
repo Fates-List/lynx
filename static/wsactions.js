@@ -9,6 +9,7 @@ actions = {
         wsContentSpecial = new Set(data.actions)
         experiments = UserExperiments.from(data.experiments)
         shadowsightTreeParse(data.tree)
+        shadowsightSidebar(data.sidebar)
     },
     "spld": (data) => {
         debug("Silverpelt", `Got a spld (server pipeline) message: ${data.e}`)

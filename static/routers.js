@@ -154,7 +154,7 @@ async function loadContent(loc) {
             wsSend({request: "admin"})
         })
         return
-    } else if(loc.startsWith("/apply")) { 
+    } else if(loc.startsWith("/apply-for-staff")) { 
         waitForWsAndLoad({loc: loc}, (data) => {
             info("Lionblaze", "Requested for apply")
             wsSend({request: "get_sa_questions"})

@@ -1879,35 +1879,6 @@ async def docs(ws: WebSocket, data: dict):
     except FileNotFoundError as exc:
         return {"detail": f"api-docs/{page}.md not found -> {exc}"}
 
-    # Inject rating code if plat != DOCREADER
-    if ws.state.plat != "DOCREADER":
-        md_data = f"""
-
-<div id='feedback-div'>
-
-### Feedback
-
-Just want to provide feedback? [Rate this page](#rate-this-page)
-
-</div>
-
-{md_data}
-
-### Rate this page!
-
-- Your feedback allows Fates List to improve our docs. 
-- We would also *love* it you could make a Pull Request at [https://github.com/Fates-List/infra](https://github.com/Fates-List/infra)
-- Starring the repo is also a great way to show your support!
-
-<label for='doc-feedback'>Your Feedback</label>
-<textarea id="doc-feedback" name="doc-feedback" class="form-control" placeholder="I feel like X, Y and Z could change because..."></textarea>
-
-<button onclick='rateDoc()'>Rate</button>
-
-### [View Source](https://lynx.fateslist.xyz/docs-src/{page})
-        """
-
-    # If looking for source
     if source:
         print("Sending source")
         print(time.time() - time_s)
@@ -1924,7 +1895,8 @@ Just want to provide feedback? [Rate this page](#rate-this-page)
     return {
         "title": page.split('/')[-1].replace('-', ' ').title(),
         "data": md_data,
-        "source": False
+        "source": False,
+        "page": page
     }
 
 @ws_action("eternatus")
@@ -2473,12 +2445,13 @@ async def ws(ws: WebSocket, cli: str, plat: str):
                 "bot-actions": "/_static/bot-actions.js?v=75",
                 "user-actions": "/_static/user-actions.js?v=74",
                 "surveys": "/_static/surveys.js?v=73",
-                "apply": "/_static/apply.js?v=80",
+                "apply": "/_static/apply.js?v=81",
                 "admin-nav": "/_static/admin-nav.js?v=m8",
                 "admin-iframe": "/_static/admin-iframe.js?v=m3823",
                 "admin-console": "/_static/admin-console.js?v=m37",
                 "exp-rollout": "/_static/exp-rollout.js?v=m3298",
             },
+            "sidebar": [["login", "fa-arrow-right-to-bracket", "loginUser()"], ["status", "fa-gear"], ["privacy", "fa-shield"], ["surveys", "fa-shield"], ["staff-guide", "fa-rectangle-list"], ["apply-for-staff", "fa-rectangle-list"], ["links", "fa-link"]],
             "responses": ['docs', 'links', 'staff_guide', 'index', "request_logs", "reset_page", "staff_apps", "loa", "user_actions", "bot_actions", "staff_verify", "survey_list", "get_sa_questions", "admin"],
             "actions": ['user_action', 'bot_action', 'eternatus', 'survey', 'data_deletion', 'apply_staff', 'send_loa', 'exp_rollout_add', 'exp_rollout_del', 'exp_rollout_all', 'exp_rollout_undo', 'exp_rollout_controlled'],
             "tree": docs,

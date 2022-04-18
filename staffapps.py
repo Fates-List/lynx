@@ -36,7 +36,7 @@ questions = [
                 question="Please enter your age (14+ only!)",
                 description="What is your age? Will be investigated so don't lie!",
                 min_length=2,
-                max_length=2,
+                max_length=3,
                 paragraph=False,
                 type = "number"
             ),

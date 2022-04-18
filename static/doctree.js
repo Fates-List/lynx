@@ -77,4 +77,42 @@ function shadowsightTreeParse(tree) {
     $(doctreeHtml).insertBefore("#doctree")
 }
 
+function shadowsightSidebar(sidebar) {
+    if(addedSidebar) {
+        info("Shadowsight", "Refusing to add sidebar")
+        return
+    }
+
+    addedSidebar = true
+
+    info("Shadowsight", "Adding v2 sidebar")
+
+    sidebarHtml = ""
+
+    sidebar.forEach(el => {
+        debug("Shadowsight", "Sidebar element:", el)
+
+        let href = `href="https://lynx.fateslist.xyz/${el[0]}"`
+
+        if(el.length == 3) {
+            // We have js instead of a href
+            href = `href="#" onclick=${el[2]}`
+        }
+
+        sidebarHtml += `
+        <li class="nav-item" id="${el[0]}-nav-li" role="menuitem">
+        <a id="${el[0]}-nav" ${href} class="nav-link" aria-label="${title(el[0])}">
+            <i class="nav-icon fa-solid ${el[1]}"></i>
+                <p>${title(el[0])}</p>
+            </a>
+        </li>
+        `
+    })
+
+
+    info("Shadowsight", "Sidebar HTML: ", { sidebarHtml })
+
+    $(sidebarHtml).insertBefore("#sidebar")
+}
+
 readyModule("doctree")

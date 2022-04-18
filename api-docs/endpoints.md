@@ -4030,7 +4030,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "8e0e9733-de84-47ff-ba03-ec41a3132106"]
+- **parent_id** => (Optional) string [default/example = "a899cecc-312a-41a0-93fa-399fab94109c"]
 
 
 
@@ -4056,7 +4056,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "8e0e9733-de84-47ff-ba03-ec41a3132106"
+    "parent_id": "a899cecc-312a-41a0-93fa-399fab94109c"
 }
 ```
 
@@ -4121,7 +4121,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "73632a00-8e44-4728-a38e-01cb051150bd"]
+- **id** => (Optional) string [default/example = "a0e07842-59e2-4f70-a2f3-bcdd1e9ebac1"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4151,7 +4151,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "73632a00-8e44-4728-a38e-01cb051150bd",
+    "id": "a0e07842-59e2-4f70-a2f3-bcdd1e9ebac1",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4215,7 +4215,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "cb08f66f-8edd-4433-9697-2e65e44948f7"]
+- **rid** => string [default/example = "33965f69-c5a6-4e3f-b332-fe2bc91e23e6"]
 
 
 
@@ -4281,7 +4281,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "13563d61-7c7e-45f8-b0d6-64b819774526"]
+- **rid** => string [default/example = "5fef087d-041d-4d3a-b3ea-b7b9ed33c407"]
 
 
 
@@ -4532,7 +4532,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "bf1c62c1-4187-459b-810b-e008a480f2ef"]
+- **id** => string [default/example = "46ec4336-4fa6-401e-b6ca-15d23b85d7ba"]
 - **target_type** => i32 [default/example = 0]
 
 

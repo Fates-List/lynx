@@ -2,30 +2,62 @@
 
 function setData(data, noExtraCode=false) {
     info("Larksong", "Got docs data, parsing")
-    var md = markdownit({
-        html: true,
-        linkify: true,
-    })
-    md.use(markdownItAnchor, {
-        permalink: markdownItAnchor.permalink.linkInsideHeader({
-            symbol: "\u00B6",
-        }),
-        slugify: s => {
-            return s.toLowerCase().replaceAll(")", "").replaceAll("!", "").replaceAll(".", "").replace(/[^a-zA-Z0-9]/g, '-').replaceAll("--", "-");
-        },
-        level: [1, 2, 3, 4, 5]
-    });
-    md.use(markdownitContainer, 'info')
-    md.use(markdownitContainer, 'warning')
-    md.use(markdownitContainer, 'aonly')        
-    md.use(markdownitContainer, 'guidelines')
-    md.use(markdownitContainer, 'generic', {
-        validate: function (...args) {
-            return true;
-        }
-    })
 
-    data.data = md.render(data.data).replaceAll("<table", "<table class='table'");        
+    if(data.resp == "docs" && !data.source) {
+        // Add feedback code
+        data.data = `
+<div id='feedback-div'>
+
+### Feedback
+
+Just want to provide feedback? [Rate this page](#rate-this-page)
+
+</div>
+
+${data.data}
+
+### Rate this page!
+
+- Your feedback allows Fates List to improve our docs. 
+- We would also *love* it you could make a Pull Request at [https://github.com/Fates-List/infra](https://github.com/Fates-List/infra)
+- Starring the repo is also a great way to show your support!
+
+<label for='doc-feedback'>Your Feedback</label>
+<textarea id="doc-feedback" name="doc-feedback" class="form-control" placeholder="I feel like X, Y and Z could change because..."></textarea>
+
+<button onclick='rateDoc()'>Rate</button>
+
+### [View Source](https://lynx.fateslist.xyz/docs-src/${data.page})
+        `
+    }
+
+    if(!data.source) {
+        var md = markdownit({
+            html: true,
+            linkify: true,
+        })
+
+        md.use(markdownItAnchor, {
+            permalink: markdownItAnchor.permalink.linkInsideHeader({
+                symbol: "\u00B6",
+            }),
+            slugify: s => {
+                return s.toLowerCase().replaceAll(")", "").replaceAll("!", "").replaceAll(".", "").replace(/[^a-zA-Z0-9]/g, '-').replaceAll("--", "-");
+            },
+            level: [1, 2, 3, 4, 5]
+        });
+        md.use(markdownitContainer, 'info')
+        md.use(markdownitContainer, 'warning')
+        md.use(markdownitContainer, 'aonly')        
+        md.use(markdownitContainer, 'guidelines')
+        md.use(markdownitContainer, 'generic', {
+            validate: function (...args) {
+                return true;
+            }
+        })
+
+        data.data = md.render(data.data).replaceAll("<table", "<table class='table'");        
+    }
 
     refresh = false
     if(data.detail) {
@@ -74,8 +106,6 @@ function setData(data, noExtraCode=false) {
             info("Larksong", "loadAdminConsole not yet ready, ignoring", { err })
         }
     }
-
-    $('#sidebar-search').SidebarSearch('init')
 
     clearRefresh()
 }
