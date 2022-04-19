@@ -2,27 +2,17 @@
 
 // Not a module, should never be loaded as one
 
-// Custom logger
 const log = (...args) => {
     console[args[0]](`%c[${Date.now()}]%c[${args[1]}]%c`, "color:red;font-weight:bold;", "color:purple;font-weight:bold;", "", ...args.slice(2))
 }
 
-const debug = (...args) => {
-    args.unshift("debug")
-    return log(...args)
-}
-const info = (...args) => {
-    args.unshift("info")
-    return log(...args)
-}
-const warn = (...args) => {
-    args.unshift("warn")
-    return log(...args)
-}
-const error = (...args) => {
-    args.unshift("error")
-    return log(...args)
-}
+// Custom logger
+["log", "debug", "info", "warn", "error"].forEach((method) => {
+    window[method] = function(...args) {
+        args.unshift(method)
+        log(...args)
+    }
+})
 
 // Module loader
 modulesLoaded = []
