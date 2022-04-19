@@ -1100,6 +1100,10 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
     elif not ws.state.verified:
         return {"resp": "spld", "e": SPLDEvent.verify_needed}
 
+    await app.state.db.execute("UPDATE lynx_data SET default_user_experiments = array_remove(default_user_experiments, $1)", int(data["exp"]))
+    await app.state.db.execute("UPDATE lynx_data SET default_user_experiments = array_append(default_user_experiments, $1)", int(data["exp"]))
+
+    await app.state.db.execute("UPDATE users SET experiments = array_remove(experiments, $1)", int(data["exp"]))
     await app.state.db.execute("UPDATE users SET experiments = array_append(experiments, $1)", int(data["exp"]))
 
     await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/exp-rollout"})
@@ -1116,6 +1120,8 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
         return {"resp": "spld", "e": SPLDEvent.verify_needed}
 
     await app.state.db.execute("UPDATE users SET experiments = array_remove(experiments, $1)", int(data["exp"]))
+
+    await app.state.db.execute("UPDATE lynx_data SET default_user_experiments = array_remove(default_user_experiments, $1)", int(data["exp"]))
 
     await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/exp-rollout"})
     return {"detail": "Rolled out undone"}

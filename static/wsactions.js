@@ -158,7 +158,7 @@ ${pane.description}
 
 <label for="${question.id}">${question.question} (${question.min_length} - ${question.max_length} characters)</label>
 
-{question.description}.   
+${question.description}.   
 
 `
 

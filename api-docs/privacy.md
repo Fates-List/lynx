@@ -134,13 +134,15 @@ These are our guidelines you must follow and adhere to when using Fates List!
 4. You must be at least 13 years old in order to use this service
 5. You may not DDOS, attempt to exploit or otherwise harm the service without permission from the owner(s) of Fates List
 6. You may not leak private information on another user's bots, such as API tokens, without permission from the bot owner or from a Head Admin or higher. This is legally binding and will be enforced to the fullest degree permitted by law
-7. May log you IP address which may be used by Fates List to protect against abuse of our service or by approved third parties, such as Digital Ocean and local law enforcement. Most sites log IP addresses and they are usually changed periodically by your Internet Service Provider
+7. May log you IP address which may be used by Fates List to protect against abuse of our service or by approved third parties, such as Digital Ocean and local law enforcement. Most sites log IP addresses and they are usually changed periodically by your Internet Service Provider.
 8. You agree that we are not responsible for any possible accidents that may happen such as leaked IP addresses or leaked API tokens. We aim to never have this happen but accidents can and do happen at times
 9. Many bot logs are public to your users for auditing purposes
 10. You must follow Discord's Terms Of Service
-11. All user information on the site is cached for 8 hours. Data is kept only for the amount of time required
+11. All user information on the site is usually cached for 8 hours (unless there are extraordinary circumstances in which this is not possible). Data is kept only for the amount of time required as per law.
 12. All complaints and legal issues regarding the site should be made to Rootspring#6701
 13. Fates List probihits the monetization or resale of coins or any part of Fates List for real money.
+14. Please report bots breaking these terms (including those infringing on copyright) to Fates List using the ``Report`` button when you see them.
+15. Fates List does not knowingly infringe on copyright and we are willing to immediately remove such content given sufficient information.
 
 </blockquote>
 
