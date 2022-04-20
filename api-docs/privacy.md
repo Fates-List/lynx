@@ -159,6 +159,8 @@ These are our guidelines you must follow and adhere to when using Fates List!
 6. All vanities set must be safe-for-work. There are checks to try and ensure this but the list of words is indefinite. All vanities must be set with benevolent intent (as in, it must not be set to harm other users or to grief servers)
 7. To protect your privacy, all servers have 'Requires Login To Join' enabled by default. This can be changed using ``/set``.
 8. You may not use Fates List Server Listing to aid in any critical activity where failure may lead to personal injury. You may also not use Fates List Server Listing as a payment provider or middleman in any shape or form.
+9. **Fates List Server Listing is not a gambling system neither are votes**. By using this service you agree to not use Fates List Server Listing for such purposes. This list is non-exhaustive and may lead to a ban with no chance of appeal or even bans on specific owners as it is unacceptable to do so and is illegal in many places.
+
 
 </blockquote>
 
