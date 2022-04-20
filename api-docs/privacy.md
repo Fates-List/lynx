@@ -134,7 +134,7 @@ These are our guidelines you must follow and adhere to when using Fates List!
 4. You must be at least 13 years old in order to use this service
 5. You may not DDOS, attempt to exploit or otherwise harm the service without permission from the owner(s) of Fates List
 6. You may not leak private information on another user's bots, such as API tokens, without permission from the bot owner or from a Head Admin or higher. This is legally binding and will be enforced to the fullest degree permitted by law
-7. May log you IP address which may be used by Fates List to protect against abuse of our service or by approved third parties, such as Digital Ocean and local law enforcement. Most sites log IP addresses and they are usually changed periodically by your Internet Service Provider.
+7. May log your IP address which may be used by Fates List to protect against abuse of our service or by approved third parties, such as Digital Ocean and local law enforcement. Most sites log IP addresses and they are usually changed periodically by your Internet Service Provider.
 8. You agree that we are not responsible for any possible accidents that may happen such as leaked IP addresses or leaked API tokens. We aim to never have this happen but accidents can and do happen at times
 9. Many bot logs are public to your users for auditing purposes
 10. You must follow Discord's Terms Of Service
@@ -143,6 +143,21 @@ These are our guidelines you must follow and adhere to when using Fates List!
 13. Fates List probihits the monetization or resale of coins or any part of Fates List for real money.
 14. Please report bots breaking these terms (including those infringing on copyright) to Fates List using the ``Report`` button when you see them.
 15. Fates List does not knowingly infringe on copyright and we are willing to immediately remove such content given sufficient information.
+16. You may not scrape our site for the purpose of collecting personal information from other users, bots or servers!
+
+</blockquote>
+
+<blockquote>
+
+### Server Listing
+
+1. Fates List is not responsible for activities ongoing on listed servers. We do not verify these servers as we do with bots. That being said, any server that violates our rules should be reported. They will be banned as soon as we verify they violate our rules. We will randomly check servers to ensure they follow our rules and users are recommended to report all servers breaking the below rules immediately! 
+2. Servers may not promote illegal activity such as gambling or violation of human rights (such as servers attempting to dox other members), intellectual property laws and copyright laws. *This may lead to a ban with no chance of appeal depending on severity!*
+3. **All servers must follow [Discord Community Guidelines](https://discord.com/guidelines). They must also be a community server in order to be listed and must have a explicit content filter set to scan messages from all members. This may lead to a ban with no chance of appeal as well!**
+4. All servers must adhere to human rights laws. This includes doxxing, hate speech, sexual harassment and self-harm which are *not* allowed on Fates List Server Listing. They may not promote the spread of misinformation nor may they violate export laws and other regulation.
+5. Servers may not 'scalp' tags or in any way attempt to harm other servers through Fates List Server Listing *or* other means.
+6. All vanities set must be safe-for-work. There are checks to try and ensure this but the list of words is indefinite. All vanities must be set with benevolent intent (as in, it must not be set to harm other users or to grief servers)
+7. To protect your privacy, all servers have 'Requires Login To Join' enabled by default. This can be changed using ``/set``.
 
 </blockquote>
 
@@ -178,9 +193,9 @@ Fates List needs to access your username, avatar, status and user id in order to
 
 <blockquote class="quote">
 
-### Server Listing
+### Fates List Helper
 
-We log all interactions to console. Note that these logs are *private*, not permanently stored and are only used for debugging purposes.
+We log all interactions with Fates List Heloer *temporarily* to console. Note that these logs are *private*, not permanently stored and are only used for debugging purposes.
 
 </blockquote>
 
