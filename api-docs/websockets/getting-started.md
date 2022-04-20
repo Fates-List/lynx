@@ -71,13 +71,9 @@ After a "Gateway Task" acks, the task itself will have stopped however **the gat
 
 ### Authentication
 
-Websockets right now do *not* need authentication to get real-time stats as such information is public through other means anyways and is not considered sensitive
+Currently in development.
 
-If sensitive information is added to websockets, an additional ``UPGRADE`` command will be created for these commands, it is not documented here as it does not exist yet.
-
-Authorization may also be readded in the future if needed.
-
-Removal of authorization for now however allows simplification of the protocol.
+The ``AUTH`` command has been added and is required to call ``SUB`` and ``ARCHIVE``. This was readded for privacy and security reasons.
 
 ### Pings
 
@@ -233,10 +229,11 @@ class FatesWsConn:
         return _Sub(self)
 
 @asynccontextmanager
-async def fates_ws(id: int, mode: WsMode):
+async def fates_ws(id: int, mode: WsMode, token: str):
     async with websockets.connect(f"wss://api.fateslist.xyz/ws/{id}?mode={mode.value}") as websocket:
-        conn = FatesWsConn(websocket)
-        yield conn
+        await websocket.send(f"AUTH {token}") # Send auth immediately after
+	conn = FatesWsConn(websocket)
+	yield conn
         conn.up = False
 ```
 
@@ -249,7 +246,7 @@ import test
 import asyncio
 
 async def main():
-    async with test.fates_ws(519850436899897346, test.WsMode.bot) as bot:
+    async with test.fates_ws(519850436899897346, test.WsMode.bot, TOKEN) as bot:
         sub = await bot.sub()
         async for v in sub:
             print(v)
@@ -263,7 +260,7 @@ import test
 import asyncio
 
 async def main():
-    async with test.fates_ws(519850436899897346, test.WsMode.bot) as bot:
+    async with test.fates_ws(519850436899897346, test.WsMode.bot, TOKEN) as bot:
         archive = await bot.archive()
         async for v in archive:
             print(v)
@@ -277,7 +274,7 @@ import test
 import asyncio
 
 async def main():
-    async with test.fates_ws(519850436899897346, test.WsMode.bot) as bot:
+    async with test.fates_ws(519850436899897346, test.WsMode.bot, TOKEN) as bot:
         archive = await bot.archive()
         async for v in archive:
             print(v)

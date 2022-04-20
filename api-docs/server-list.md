@@ -2,13 +2,15 @@
 
 If you're reading this, you probably already know what server listing (and slash commands) are. This guide will not go over that
 
+Please see https://lynx.fateslist.xyz/privacy#server-listing first and ensure you are compliant with our rules, otherwise you will be banned.
+
 ### Slash command syntax
 
 This guide will use the following syntax for slash commands: ``/command option:foo anotheroption:bar``. To specify a list of values (where supported), use ``|``. Currently only Autovote Roles supports this
 
 ### How do I add my server?
 
-Good question. Your server should usually be automatically added for you once you add the bot to your server. Just set a description using ``/set field:Description value:My lovely description``. If you do not do so, the description will be randomly set for you and it will likely not be what you want. You should set a long description using ``/set field:Long Description`` value:My really really long description. For really long descriptions, you can also create a paste on **pastebin** and provide the pastebin link as the value
+Good question. Your server is not automatically added for you. Instead, ask a server admin to set a description using ``/set field:Description value:My lovely description``. If you do not do so, the description will be randomly set for you and it will likely not be what you want. You should set a long description using ``/set field:Long Description`` value:My really really long description. For really long descriptions, you can also create a attachment and upload that using ``long_value``
 
 ### What is the 'State' option?
 
@@ -16,7 +18,11 @@ Another good question. Long story short, state allows you to configure the priva
 
 ### Vote Rewards
 
-You can reward users for voting for your server using vote rewards. This can be things like custom roles or extra perks! In order to use vote rewards, you will need to use our websocket API to listen for events. Once you have gotten a server vote event, you can then give rewards for voting. The event number for server votes is 71 (may change).
+**Before using vote rewards, ensure that all perks given are purely optional. Your server may not require or in any other way force users to vote for it. This may be removed in the future and is very very likely to happen**
+
+You can reward users for voting for your server using vote rewards such as a custom role! 
+
+In order to use more customized vote rewards, you are required to either use webhooks or you will need to use our websocket API using a API token to listen for events. Once you have gotten a server vote event, you can then give rewards for voting. The event number for server votes is 71 (may change).
 
 *All users using server listing vote webhooks should note that these are being removed for now. Use websockets instead until a new webhook system is made (if ever).*
 
