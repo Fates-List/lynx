@@ -144,6 +144,7 @@ These are our guidelines you must follow and adhere to when using Fates List!
 14. Please report bots breaking these terms (including those infringing on copyright) to Fates List using the ``Report`` button when you see them.
 15. Fates List does not knowingly infringe on copyright and we are willing to immediately remove such content given sufficient information.
 16. You may not scrape our site for the purpose of collecting personal information from other users, bots or servers!
+17. Under California Civil Code Section 1789.3, Users located in California are entitled to the following consumer rights notice: If a User has a question or complaint regarding the Website or Service, please DM any Fates List Staff. California residents may reach the Complaint Assistance Unit of the Division of Consumer Services of the California Department of Consumer Affairs by mail at 1625 North Market Blvd., Suite N 112, Sacramento, CA 95834, or by telephone at (916) 445-1254 or (800) 952-5210. 
 
 </blockquote>
 
@@ -160,7 +161,6 @@ These are our guidelines you must follow and adhere to when using Fates List!
 7. To protect your privacy, all servers have 'Requires Login To Join' enabled by default. This can be changed using ``/set``.
 8. You may not use Fates List Server Listing to aid in any critical activity where failure may lead to personal injury. You may also not use Fates List Server Listing as a payment provider or middleman in any shape or form.
 9. **Fates List Server Listing is not a gambling system neither are votes**. By using this service you agree to not use Fates List Server Listing for such purposes. This list is non-exhaustive and may lead to a ban with no chance of appeal or even bans on specific owners as it is unacceptable to do so and is illegal in many places.
-
 
 </blockquote>
 
