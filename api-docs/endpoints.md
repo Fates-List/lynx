@@ -1503,7 +1503,7 @@ Differences from API v2:
 - All responses are cached for a short period of time. There is *no* way to opt out unlike API v2
 - Some fields have been renamed or removed
 - ``invite_link`` is returned, however is always None unless ``Frostpaw-Invite`` header is set which then pushes you into 
-server privacy restrictions
+server privacy restrictions. **Note that when fetching invite links, requires login to join is now enabled by default for all new servers**
 
 **Set the Frostpaw header if you are a custom client**
 
@@ -3283,6 +3283,7 @@ Imports a bot from a source listed in ``Get Import Sources``.
 **Query parameters**
 
 - **src** => string [default/example = "Rdl"]
+- **custom_source** => (Optional) string [default/example = ""]
 
 
 
@@ -4030,7 +4031,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "ea0002fd-46a4-4d56-8938-d50d0d838576"]
+- **parent_id** => (Optional) string [default/example = "a839a8d3-7f68-4f83-9e30-02ca4909d175"]
 
 
 
@@ -4056,7 +4057,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "ea0002fd-46a4-4d56-8938-d50d0d838576"
+    "parent_id": "a839a8d3-7f68-4f83-9e30-02ca4909d175"
 }
 ```
 
@@ -4121,7 +4122,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "d5516362-e49c-4477-a7b3-c123c787dc50"]
+- **id** => (Optional) string [default/example = "8dad13f8-db30-4c3a-81eb-a5026423695b"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4151,7 +4152,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "d5516362-e49c-4477-a7b3-c123c787dc50",
+    "id": "8dad13f8-db30-4c3a-81eb-a5026423695b",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4215,7 +4216,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "e70b4a7c-a9b0-47a4-a3b0-666dde061a40"]
+- **rid** => string [default/example = "b7f18472-e174-413c-bed4-6fa462aab1d7"]
 
 
 
@@ -4281,7 +4282,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "ca551eee-0ddc-48f8-9388-d0f30d2dad81"]
+- **rid** => string [default/example = "c2011bd6-8faa-41ee-a517-ab1a5703d741"]
 
 
 
@@ -4532,7 +4533,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "c237acf1-cfd9-4b6b-abc2-73c7ddeec27e"]
+- **id** => string [default/example = "1370e75a-d43d-4442-a99c-56a321c96b41"]
 - **target_type** => i32 [default/example = 0]
 
 

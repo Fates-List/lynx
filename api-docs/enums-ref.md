@@ -163,8 +163,8 @@ The source to import bots from
 | Name | Value |
 | :--- | :--- |
 | **Rdl** | "Rdl" |
-| **Topgg** | "Topgg" |
 | **Ibl** | "Ibl" |
+| **Custom** | "Custom" |
 | **Other** | "Other" |
 
 
