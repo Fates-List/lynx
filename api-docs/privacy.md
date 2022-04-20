@@ -152,12 +152,13 @@ These are our guidelines you must follow and adhere to when using Fates List!
 ### Server Listing
 
 1. Fates List is not responsible for activities ongoing on listed servers. We do not verify these servers as we do with bots. That being said, any server that violates our rules should be reported. They will be banned as soon as we verify they violate our rules. We will randomly check servers to ensure they follow our rules and users are recommended to report all servers breaking the below rules immediately! 
-2. Servers may not promote illegal activity such as gambling or violation of human rights (such as servers attempting to dox other members), intellectual property laws and copyright laws. *This may lead to a ban with no chance of appeal depending on severity!*
+2. Servers may not promote illegal activity such as gambling (of any form), violation of basic human rights (such as servers attempting to dox, harm or harass other members), intellectual property laws (piracy servers as a example) and copyright laws. *This may lead to a ban with no chance of appeal depending on severity!*
 3. **All servers must follow [Discord Community Guidelines](https://discord.com/guidelines). They must also be a community server in order to be listed and must have a explicit content filter set to scan messages from all members. This may lead to a ban with no chance of appeal as well!**
-4. All servers must adhere to human rights laws. This includes doxxing, hate speech, sexual harassment and self-harm which are *not* allowed on Fates List Server Listing. They may not promote the spread of misinformation nor may they violate export laws and other regulation.
+4. All servers must adhere to human rights laws. This includes promoting or participating in doxxing, hate speech, sexual harassment or self-harm which is *not* allowed on Fates List in any shape or form. Servers may not promote the spread of misinformation nor may they violate export laws and other regulation.
 5. Servers may not 'scalp' tags or in any way attempt to harm other servers through Fates List Server Listing *or* other means.
 6. All vanities set must be safe-for-work. There are checks to try and ensure this but the list of words is indefinite. All vanities must be set with benevolent intent (as in, it must not be set to harm other users or to grief servers)
 7. To protect your privacy, all servers have 'Requires Login To Join' enabled by default. This can be changed using ``/set``.
+8. You may not use Fates List Server Listing to aid in any critical activity where failure may lead to personal injury. You may also not use Fates List Server Listing as a payment provider or middleman in any shape or form.
 
 </blockquote>
 
