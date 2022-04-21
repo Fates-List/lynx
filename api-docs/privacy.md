@@ -152,7 +152,7 @@ These are our guidelines you must follow and adhere to when using Fates List!
 
 ### Server Listing
 
-1. Fates List is not responsible for activities ongoing on listed servers. We do not verify these servers as we do with bots. That being said, any server that violates our rules should be reported. They will be banned as soon as we verify they violate our rules. We will randomly check servers to ensure they follow our rules and users are recommended to report all servers breaking the below rules immediately! 
+1. Fates List is not responsible for activities ongoing on listed servers. We cannot verify these servers as we do with bots as they may not be honest. That being said, any server that violates our rules should be reported. They will be banned as soon as we verify they violate our rules. We will randomly check servers to ensure they follow our rules and users are recommended to report all servers breaking the below rules immediately! Furthermore, we require all servers on server listing to be Community Servers. We will take steps such as manual server verification if users attempt to spam servers violating our rules or third-party rights such as intellectual property.
 2. Servers may not promote illegal activity such as gambling (of any form), violation of basic human rights (such as servers attempting to dox, harm or harass other members), intellectual property laws (piracy servers as a example) and copyright laws. *This may lead to a ban with no chance of appeal depending on severity!*
 3. **All servers must follow [Discord Community Guidelines](https://discord.com/guidelines). They must also be a community server in order to be listed and must have a explicit content filter set to scan messages from all members. This may lead to a ban with no chance of appeal as well!**
 4. All servers must adhere to human rights laws. This includes promoting or participating in doxxing, hate speech, sexual harassment or self-harm which is *not* allowed on Fates List in any shape or form. Servers may not promote the spread of misinformation nor may they violate export laws and other regulation.
@@ -161,6 +161,14 @@ These are our guidelines you must follow and adhere to when using Fates List!
 7. To protect your privacy, all servers have 'Requires Login To Join' enabled by default. This can be changed using ``/set``.
 8. You may not use Fates List Server Listing to aid in any critical activity where failure may lead to personal injury. You may also not use Fates List Server Listing as a payment provider or middleman in any shape or form.
 9. **Fates List Server Listing is not a gambling system neither are votes**. By using this service you agree to not use Fates List Server Listing for such purposes. This list is non-exhaustive and may lead to a ban with no chance of appeal or even bans on specific owners as it is unacceptable to do so and is illegal in many places.
+10. **Monetizing Fates List Server Listing, reproduction or sale of information in Fates List Server Listing without written permission from server admins is strictly strictly probihited. In an event something like this happens, we WILL attempt to contact all members on the server targetted (if possible) and all members involved in the violation will be immediately banned with no chance of appeal.**
+11. **We allow servers to set their own invite links or for a randomly generated link (which expires in 15 minutes) if the user does not set a invite. We also allow for whitelist-only servers as well as the ability to blacklist raiding members. We highly recommend all servers use these features to protect themselves**
+12. Users must explicitly agree to join your server out of their own free will. This means that you may not use Fates List Server Listing to enforce users join your guild for a specific reward.
+13. **By using server listing, you agree for your server to be publicly listed on our stats page and API for easier moderation. You can opt out by setting state to private_viewable**
+14. This list is non-exhaustive and malicious violations/loopholes of the rules will be counted as breaking them.
+
+- We rely on reports in most cases to perform actions. This is because it is unfeasible to go through every single server. We require servers to be community servers to aid in moderation.
+- Feel free to DM Rootspring#6701 if you have any questions.
 
 </blockquote>
 
