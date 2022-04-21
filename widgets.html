@@ -1,0 +1,20 @@
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+    <style>h5,div,span,p{font-family:'Lexend Deca',sans-serif;}</style>
+</head>
+<a href="https://fateslist.xyz/{{type}}/{{id}}">
+    <div style="display:inline-block;background:{{bgcolor.replace('H', '#', 1) or '#111112'}};width:300px;height:175px;">
+        <div style="margin-bottom:2px;">
+            <div style="display:block;">
+                <h5 style="color:white;margin-left:7px;margin-top:2px;"><strong>{{user.username}}</strong></h5>
+                <img loading="lazy" src="{{user.avatar}}" style="border-radius:50px 50px 50px 50px;margin: 0 3px auto;text-align:center;width:100px;height:100px;display:inline-flex;float:left">
+            </div>
+            <div style="margin-left:10px;">
+                <p style="color:{{textcolor.replace('H', '#', 1) or 'white'}};"><span class="iconify" data-icon="fa-solid:server"></span><span style="margin-left:5px;">{{human_format(bot.guild_count)}}</span><br/></p>
+                <p style="color:{{textcolor.replace('H', '#', 1) or 'white'}};"><span class="iconify" data-icon="fa-solid:thumbs-up"></span><span style="margin-left:5px;">{{human_format(bot.votes)}}</span></p>
+            </div>
+        </div><br/>
+        <p style="padding:3px;color:white;opacity:0.98;margin-top:2px;">Fates List</p>
+    </div>
+</a>
