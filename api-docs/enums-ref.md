@@ -106,6 +106,7 @@ All available user experiments
 | **LynxExperimentRolloutView** | 2 |
 | **BotReport** | 3 |
 | **ServerAppealCertification** | 4 |
+| **UserVotePrivacy** | 5 |
 
 
     

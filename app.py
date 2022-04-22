@@ -1117,8 +1117,6 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
     await app.state.db.execute("UPDATE lynx_data SET default_user_experiments = array_append(default_user_experiments, $1)", int(data["exp"]))
 
     await app.state.db.execute("UPDATE users SET experiments = array_remove(experiments, $1)", int(data["exp"]))
-    await app.state.db.execute("UPDATE users SET experiments = array_append(experiments, $1)", int(data["exp"]))
-
     await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/exp-rollout"})
     return {"detail": "Rolled out"}
 
@@ -2388,9 +2386,23 @@ async def ws(ws: WebSocket, cli: str, plat: str):
             pass
 
     if ws.state.user:
-        ws.state.experiments = await app.state.db.fetchval("SELECT experiments FROM users WHERE user_id = $1", int(ws.state.user["id"]))   
+        experiments = await app.state.db.fetchval("SELECT experiments FROM users WHERE user_id = $1", int(ws.state.user["id"]))   
     else:
-        ws.state.experiments = []
+        experiments = []
+
+    default_exp = await app.state.db.fetchval("SELECT default_user_experiments FROM lynx_data")
+    if not default_exp:
+        default_exp = []
+    
+    for el in default_exp:
+        if el not in experiments:
+            experiments.append(el)
+
+    print(f"Experiments: {experiments}")
+
+    ws.state.experiments = experiments
+
+    print(ws.state.experiments)
 
     if ws.state.plat in ("WEB", "DOCREADER"):
         docs = []
@@ -2441,6 +2453,14 @@ async def ws(ws: WebSocket, cli: str, plat: str):
                     ws.state.experiments = await app.state.db.fetchval("SELECT experiments FROM users WHERE user_id = $1", int(ws.state.user["id"]))   
                 else:
                     ws.state.experiments = []
+
+                default_exp = await app.state.db.fetchval("SELECT default_user_experiments FROM lynx_data")
+                if not default_exp:
+                    default_exp = []
+                
+                for el in default_exp:
+                    if el not in ws.state.experiments:
+                        ws.state.experiments.append(el)
 
                 if ws.state.experiments != old_feature_list:
                     await manager.send_personal_message({"resp": "experiments", "experiments": ws.state.experiments}, ws)
