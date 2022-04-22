@@ -88,6 +88,24 @@ The flags of the bot or server (system bot etc)
 
 
     
+### UserFlags
+
+The flags of the user (such as vote privacy)
+
+**Common JSON keys**
+
+- ``flags``
+
+
+**Values**
+
+| Name | Value |
+| :--- | :--- |
+| **Unknown** | 0 |
+| **VotesPrivate** | 1 |
+
+
+    
 ### UserExperiments
 
 All available user experiments

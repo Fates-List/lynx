@@ -1623,7 +1623,7 @@ because the last thing people want to scrape are Fates List user votes anyways. 
 this however, it is prone to change *anytime* in the future and may return bogus results for privacy purposes**.
 - ``vts`` has been renamed to ``timestamps``
 
-**A method to opt out of this API is being made**
+**This endpoint will return bogus data if "Hide votes to other users" is enabled**
 
 
 **Path parameters**
@@ -1694,7 +1694,7 @@ because the last thing people want to scrape are Fates List user votes anyways. 
 this however, it is prone to change *anytime* in the future and may return bogus results for privacy purposes**.
 - ``vts`` has been renamed to ``timestamps``
 
-**A method to opt out of this API is being made**
+**This endpoint will return bogus data if "Hide votes to other users" is enabled**
 
 
 **Path parameters**
@@ -4110,7 +4110,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "0ea80c32-53a2-4ad5-8b20-febc7b603125"]
+- **parent_id** => (Optional) string [default/example = "553f2ea1-dcbd-4a9e-8284-9bf4f04d42e9"]
 
 
 
@@ -4136,7 +4136,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "0ea80c32-53a2-4ad5-8b20-febc7b603125"
+    "parent_id": "553f2ea1-dcbd-4a9e-8284-9bf4f04d42e9"
 }
 ```
 
@@ -4201,7 +4201,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "04bd2dd1-d634-47a3-a274-f73754fd088e"]
+- **id** => (Optional) string [default/example = "0b5bbcf0-cf64-4b7c-849e-57b9c366467b"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4231,7 +4231,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "04bd2dd1-d634-47a3-a274-f73754fd088e",
+    "id": "0b5bbcf0-cf64-4b7c-849e-57b9c366467b",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4295,7 +4295,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "b75ed80e-0c32-45a2-8488-b95a1e621736"]
+- **rid** => string [default/example = "13897389-c35a-4ce1-afe5-fd3b42139f68"]
 
 
 
@@ -4361,7 +4361,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "7bf8ed5f-f966-49ed-b37a-3dd40190c79b"]
+- **rid** => string [default/example = "c1c2b7ec-1309-42b3-964c-3c85745dd236"]
 
 
 
@@ -4612,7 +4612,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "910ba66f-30a9-4c79-b9ff-6b67a388c49a"]
+- **id** => string [default/example = "695767e7-d519-4149-951a-ff55df3085fc"]
 - **target_type** => i32 [default/example = 0]
 
 
