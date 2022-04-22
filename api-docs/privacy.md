@@ -166,6 +166,7 @@ These are our guidelines you must follow and adhere to when using Fates List!
 12. Users must explicitly agree to join your server out of their own free will. This means that you may not use Fates List Server Listing to enforce users join your guild for a specific reward.
 13. **By using server listing, you agree for your server to be publicly listed on our stats page and API for easier moderation. You can opt out by setting state to private_viewable**
 14. This list is non-exhaustive and malicious violations/loopholes of the rules will be counted as breaking them.
+15. **When you as a user last voted for a server is *public* to otther users**
 
 - We rely on reports in most cases to perform actions. This is because it is unfeasible to go through every single server. We require servers to be community servers to aid in moderation.
 - Feel free to DM Rootspring#6701 if you have any questions.

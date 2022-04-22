@@ -1,5 +1,6 @@
 **API URL**: ``https://api.fateslist.xyz``
-**Widgets URL:** ``https://lynx.fateslist.xyz/widgets``
+**Widgets URL:** ``https://lynx.fateslist.xyz/widgets`` (docs for widgets available at https://lynx.fateslist.xyz/widgets)
+
 
 ## Authorization
 
@@ -1610,7 +1611,7 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 Endpoint to check amount of votes a user has.
 
 - votes | The amount of votes the bot has.
-- voted | Whether or not the user has *ever* voted for the bot.
+- voted | Whether or not the user has *ever* voted for a bot in the past 8 hours.
 - timestamps | A list of timestamps that the user has voted for the bot on that has been recorded.
 - expiry | The time when the user can next vote.
 - vote_right_now | Whether a user can vote right now. Currently equivalent to `vote_epoch < 0`.
@@ -1619,14 +1620,87 @@ Differences from API v2:
 
 - Unlike API v2, this does not require authorization to use. This is to speed up responses and 
 because the last thing people want to scrape are Fates List user votes anyways. **You should not rely on
-this however, it is prone to change *anytime* in the future**.
+this however, it is prone to change *anytime* in the future and may return bogus results for privacy purposes**.
 - ``vts`` has been renamed to ``timestamps``
+
+**A method to opt out of this API is being made**
 
 
 **Path parameters**
 
 - **user_id** => i64 [default/example = 0]
 - **bot_id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **votes** => i64 [default/example = 10]
+- **voted** => bool [default/example = true]
+- **vote_right_now** => bool [default/example = false]
+- **expiry** => u64 [default/example = 101]
+- **timestamps** => (Array) string [default/example = "1970-01-01T00:00:00Z"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "votes": 10,
+    "voted": true,
+    "vote_right_now": false,
+    "expiry": 101,
+    "timestamps": [
+        "1970-01-01T00:00:00Z"
+    ]
+}
+```
+**Authorization Needed** | 
+
+
+### Get Server Votes
+#### GET /users/{user_id}/servers/{server_id}/votes
+
+
+Endpoint to check amount of votes a user has.
+
+- votes | The amount of votes the server has.
+- voted | Whether or not the user has *ever* voted for a server in the past 8 hours.
+- timestamps | A list of timestamps that the user has voted for the server on that has been recorded.
+- expiry | The time when the user can next vote.
+- vote_right_now | Whether a user can vote right now. Currently equivalent to `vote_epoch < 0`.
+
+Differences from API v2:
+
+- Unlike API v2, this does not require authorization to use. This is to speed up responses and 
+because the last thing people want to scrape are Fates List user votes anyways. **You should not rely on
+this however, it is prone to change *anytime* in the future and may return bogus results for privacy purposes**.
+- ``vts`` has been renamed to ``timestamps``
+
+**A method to opt out of this API is being made**
+
+
+**Path parameters**
+
+- **user_id** => i64 [default/example = 0]
+- **server_id** => i64 [default/example = 0]
 
 
 
@@ -3557,6 +3631,7 @@ Gets a user profile.
 
 
 - **user_experiments** => (Array) 
+- **flags** => (Array) 
 
 
 
@@ -3590,7 +3665,8 @@ Gets a user profile.
             "context": "Some context as to why the action happened"
         }
     ],
-    "user_experiments": []
+    "user_experiments": [],
+    "flags": []
 }
 ```
 **Authorization Needed** | 
@@ -3648,6 +3724,7 @@ be present
 
 
 - **user_experiments** => (Array) 
+- **flags** => (Array) 
 
 
 
@@ -3681,7 +3758,8 @@ be present
             "context": "Some context as to why the action happened"
         }
     ],
-    "user_experiments": []
+    "user_experiments": [],
+    "flags": []
 }
 ```
 
@@ -4032,7 +4110,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "c1e56c14-eb5a-4b0c-8132-2b759bf90ed5"]
+- **parent_id** => (Optional) string [default/example = "3376b479-b091-464c-9df1-6d68054150d3"]
 
 
 
@@ -4058,7 +4136,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "c1e56c14-eb5a-4b0c-8132-2b759bf90ed5"
+    "parent_id": "3376b479-b091-464c-9df1-6d68054150d3"
 }
 ```
 
@@ -4123,7 +4201,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "94151f2a-3326-406a-b401-43b8a3dd7122"]
+- **id** => (Optional) string [default/example = "ea59fd57-eadf-4e71-8750-06e0b4ec8d0b"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4153,7 +4231,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "94151f2a-3326-406a-b401-43b8a3dd7122",
+    "id": "ea59fd57-eadf-4e71-8750-06e0b4ec8d0b",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4217,7 +4295,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "58603ea8-843a-4a00-ab2c-083bbcc20fc8"]
+- **rid** => string [default/example = "c7dfe9d7-197d-46d8-b1b3-83f1f27a2a03"]
 
 
 
@@ -4283,7 +4361,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "cdfa7708-73b1-4879-ab18-115c6a8afa1d"]
+- **rid** => string [default/example = "91336f76-cc55-4773-bf30-a280d42c1001"]
 
 
 
@@ -4534,7 +4612,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "daf393e2-cbaf-4871-9804-18fdf07c89a9"]
+- **id** => string [default/example = "fce117ad-8d33-4b52-bfde-2d1578a26c7e"]
 - **target_type** => i32 [default/example = 0]
 
 

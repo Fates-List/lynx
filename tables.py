@@ -9,7 +9,7 @@ from piccolo.table import Table
 import uuid
 from enum import Enum
 
-from modules.models import enums
+import enums
 
 class LeaveOfAbsence(Table, tablename="leave_of_absence"):
     id = Serial(primary_key=True)

@@ -4,9 +4,6 @@ from base64 import b64decode
 import io
 import os
 import textwrap
-
-sys.path.append("/home/meow/FatesList")
-
 import asyncio
 import datetime
 import hashlib
@@ -25,6 +22,7 @@ import orjson
 import requests
 from dateutil import parser
 from pydantic import BaseModel
+import enums
 
 import aiohttp
 import aioredis
@@ -35,7 +33,6 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Requ
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import StreamingResponse, ORJSONResponse
 from fastapi.staticfiles import StaticFiles
-from modules.models import enums
 from piccolo.apps.user.tables import BaseUser
 from piccolo.engine import engine_finder
 from piccolo_admin.endpoints import create_admin
