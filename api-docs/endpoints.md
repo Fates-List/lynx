@@ -1,4 +1,5 @@
-**API URL**: ``https://next.fateslist.xyz`` *or* ``https://api.fateslist.xyz`` (for now, can change in future)
+**API URL**: ``https://api.fateslist.xyz``
+**Widgets URL:** ``https://lynx.fateslist.xyz/widgets``
 
 ## Authorization
 
@@ -4031,7 +4032,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "c87ec754-7fa0-4360-b256-71e683793693"]
+- **parent_id** => (Optional) string [default/example = "c1e56c14-eb5a-4b0c-8132-2b759bf90ed5"]
 
 
 
@@ -4057,7 +4058,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "c87ec754-7fa0-4360-b256-71e683793693"
+    "parent_id": "c1e56c14-eb5a-4b0c-8132-2b759bf90ed5"
 }
 ```
 
@@ -4122,7 +4123,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "0eafecd4-362d-421a-95b5-46e115a75a51"]
+- **id** => (Optional) string [default/example = "94151f2a-3326-406a-b401-43b8a3dd7122"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4152,7 +4153,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "0eafecd4-362d-421a-95b5-46e115a75a51",
+    "id": "94151f2a-3326-406a-b401-43b8a3dd7122",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4216,7 +4217,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "67cc93f3-179a-4836-a0ec-1f6cec58ec55"]
+- **rid** => string [default/example = "58603ea8-843a-4a00-ab2c-083bbcc20fc8"]
 
 
 
@@ -4282,7 +4283,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "3cff6766-5b07-4925-b771-d97db01be1e6"]
+- **rid** => string [default/example = "cdfa7708-73b1-4879-ab18-115c6a8afa1d"]
 
 
 
@@ -4533,7 +4534,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "02161d45-9ed6-40a6-882e-01885b475fbd"]
+- **id** => string [default/example = "daf393e2-cbaf-4871-9804-18fdf07c89a9"]
 - **target_type** => i32 [default/example = 0]
 
 
