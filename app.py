@@ -47,12 +47,17 @@ from PIL import Image, ImageDraw, ImageFont
 import staffapps
 import zlib
 from experiments import Experiments, exp_props
-from tables import (Bot, BotCommand, BotListTags, BotPack, BotTag, BotVotes,
+from tables import (Bots, BotCommands, BotListTags, BotPacks, BotTags, UserVoteTable, UserServerVoteTable,
                     LeaveOfAbsence, LynxRatings, LynxSurveyResponses,
-                    LynxSurveys, Notifications, Reviews, ReviewVotes,
-                    ServerTags, User, UserBotLogs, Vanity)
+                    LynxSurveys, LynxNotifications, Reviews, ReviewVotes,
+                    ServerTags, Users, UserBotLogs, Vanity)
 
 debug = False
+
+limited_view = ["reviews", "review_votes", "bot_packs", "vanity", "leave_of_absence", "user_vote_table",
+                "lynx_surveys", "lynx_survey_responses"]
+
+limited_view_api = tuple(map(lambda el: f"/_admin/api/tables/{el}", limited_view))
 
 
 class SPLDEvent(enum.Enum):
@@ -238,8 +243,8 @@ with open("api-docs/staff-guide.md") as f:
     staff_guide_md = f.read()
 
 admin = create_admin(
-    [Notifications, LynxSurveys, LynxSurveyResponses, LynxRatings, LeaveOfAbsence, Vanity, User, Bot, BotPack, BotCommand, BotTag, BotListTags,
-     ServerTags, Reviews, ReviewVotes, UserBotLogs, BotVotes],
+    [LynxNotifications, LynxSurveys, LynxSurveyResponses, LynxRatings, LeaveOfAbsence, Vanity, Users, Bots, BotPacks, BotCommands, BotTags, BotListTags,
+     ServerTags, Reviews, ReviewVotes, UserBotLogs, UserVoteTable, UserServerVoteTable],
     allowed_hosts=["lynx.fateslist.xyz"],
     production=True,
     site_name="Lynx Admin"
@@ -304,11 +309,10 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
             return RedirectResponse("/staff-verify")
 
         # Perm check
+
         if request.url.path.startswith("/_admin/api"):
             if request.url.path == "/_admin/api/tables/" and perm < 4:
-                return ORJSONResponse(
-                    ["reviews", "review_votes", "bot_packs", "vanity", "leave_of_absence", "user_vote_table",
-                     "lynx_surveys", "lynx_survey_responses"])
+                return ORJSONResponse(limited_view)
             elif request.url.path == "/_admin/api/tables/users/ids/" and request.method == "GET":
                 pass
             elif request.url.path in (
@@ -342,11 +346,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
                         return ORJSONResponse({"error": "You do not have permission to update this leave of absence"},
                                               status_code=403)
 
-                elif not request.url.path.startswith(("/_admin/api/tables/reviews", "/_admin/api/tables/review_votes",
-                                                      "/_admin/api/tables/bot_packs",
-                                                      "/_admin/api/tables/user_vote_table",
-                                                      "/_admin/api/tables/leave_of_absence",
-                                                      "/_admin/api/tables/lynx_survey")):
+                elif not request.url.path.startswith(limited_view_api):
                     return ORJSONResponse({"error": "You do not have permission to access this page"}, status_code=403)
 
         key = "rl:%s" % request.scope["sunbeam_user"]["user"]["id"]
