@@ -32,7 +32,8 @@ from discord import Embed
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request, Response
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import StreamingResponse, ORJSONResponse
-from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.exceptions import HTTPException
 from piccolo.apps.user.tables import BaseUser
 from piccolo.engine import engine_finder
 from piccolo_admin.endpoints import create_admin
@@ -2735,8 +2736,6 @@ def handle_kill(*args, **kwargs):
     task = asyncio.create_task(_close())
     task.add_done_callback(_gohome)
 
-app.add_middleware(CustomHeaderMiddleware)
-
 # Widget Server
 
 # Load in static assets for bot widgets
@@ -2757,8 +2756,6 @@ static_assets["votes_pil"] = Image.open(static_assets["votes_img"]).resize(
     (15, 15))
 static_assets["server_pil"] = Image.open(
     static_assets["server_img"]).resize((15, 15))
-
-app.state.static = static_assets
 
 def is_color_like(c):
     try:
@@ -2900,10 +2897,9 @@ Note that no_cache is slow and may lead to ratelimits and/or your got being bann
             async with sess.get(data["user"]["avatar"]) as res:
                 avatar_img = await res.read()
 
-        static = request.app.state.static
-        fates_pil = static["fates_pil"]
-        votes_pil = static["votes_pil"]
-        server_pil = static["server_pil"]
+        fates_pil = static_assets["fates_pil"]
+        votes_pil = static_assets["votes_pil"]
+        server_pil = static_assets["server_pil"]
         avatar_pil = Image.open(io.BytesIO(avatar_img)).resize((100, 100))
         avatar_pil_bg = Image.new('RGBA', avatar_pil.size, (0,0,0))
         
@@ -3027,3 +3023,6 @@ Note that no_cache is slow and may lead to ratelimits and/or your got being bann
             output.close()
 
         return StreamingResponse(_stream(), media_type=f"image/{format.name}")
+
+
+app.add_middleware(CustomHeaderMiddleware)

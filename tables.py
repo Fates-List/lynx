@@ -25,17 +25,10 @@ from decimal import Decimal
 # api_token, webhook_secret intentionally omitted
 
 class Bots(Table, tablename="bots"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     bot_id = BigInt(
         default=0,
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=True,
         index=True,
         secret=False,
@@ -315,16 +308,10 @@ class Bots(Table, tablename="bots"):
     ) 
 
 class BotListTags(Table, tablename="bot_list_tags"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        secret=False,
-    )
     id = Text(
         default="",
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=True,
         index=True,
         secret=False,
@@ -559,17 +546,10 @@ class Users(Table, tablename="users"):
 
 
 class Events(Table, tablename="events"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     id = BigInt(
         default=0,
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -597,17 +577,10 @@ class Events(Table, tablename="events"):
 
 
 class Features(Table, tablename="features"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     id = Text(
         default="",
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -639,7 +612,6 @@ class LeaveOfAbsence(Table, tablename="leave_of_absence"):
         null=False,
         primary_key=True,
         unique=False,
-        
         secret=False,
     )
     reason = Text(
@@ -678,13 +650,6 @@ class LeaveOfAbsence(Table, tablename="leave_of_absence"):
         unique=False,
         secret=False,
     )
-    id = Integer(
-        default=0,
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
 
 
 class LynxData(Table, tablename="lynx_data"):
@@ -695,11 +660,11 @@ class LynxData(Table, tablename="lynx_data"):
 
 
 class LynxNotifications(Table, tablename="lynx_notifications"):
-    id = Serial(
+    id = UUID(
+        default=UUID4(),
         null=False,
         primary_key=True,
         unique=False,
-        
         secret=False,
     )
     acked_users = Array(
@@ -718,13 +683,6 @@ class LynxNotifications(Table, tablename="lynx_notifications"):
     )
     type = Text(
         default="",
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    id = UUID(
-        default=UUID4(),
         null=False,
         primary_key=False,
         unique=False,
@@ -771,18 +729,11 @@ class LynxSurveys(Table, tablename="lynx_surveys"):
     )
 
 class PlatformMap(Table, tablename="platform_map"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     fates_id = Numeric(
         default=Decimal("0"),
         digits=None,
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -842,17 +793,10 @@ class Resources(Table, tablename="resources"):
 
 
 class ServerTags(Table, tablename="server_tags"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     id = Text(
         default="",
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=True,
         index=True,
         secret=False,
@@ -881,11 +825,11 @@ class ServerTags(Table, tablename="server_tags"):
     )
 
 class Vanity(Table, tablename="vanity"):
-    id = Serial(
+    id = Integer(
+        default=0,
         null=False,
         primary_key=True,
         unique=False,
-        
         secret=False,
     )
     type = Integer(
@@ -911,20 +855,13 @@ class Vanity(Table, tablename="vanity"):
         index=True,
         secret=False,
     )
-    id = Integer(
-        default=0,
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
 
 
 class BotCommands(Table, tablename="bot_commands"):
     id = UUID(
         default=UUID4(),
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -1065,7 +1002,6 @@ class BotOwner(Table, tablename="bot_owner"):
         null=False,
         primary_key=True,
         unique=False,
-        
         secret=False,
     )
     bot_id = ForeignKey(
@@ -1088,13 +1024,6 @@ class BotOwner(Table, tablename="bot_owner"):
     main = Boolean(
         default=False,
         null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    id = Integer(
-        default=0,
-        null=False,
         primary_key=False,
         unique=False,
         secret=False,
@@ -1154,7 +1083,6 @@ class BotTags(Table, tablename="bot_tags"):
         null=False,
         primary_key=True,
         unique=False,
-        
         secret=False,
     )
     bot_id = ForeignKey(
@@ -1177,23 +1105,9 @@ class BotTags(Table, tablename="bot_tags"):
         unique=False,
         secret=False,
     )
-    id = Integer(
-        default=0,
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
 
 
 class BotVoters(Table, tablename="bot_voters"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     bot_id = BigInt(
         default=0,
         null=False,
@@ -1270,16 +1184,10 @@ class LynxApps(Table, tablename="lynx_apps"):
 
 
 class LynxRatings(Table, tablename="lynx_ratings"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        secret=False,
-    )
     id = UUID(
         default=UUID4(),
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -1390,16 +1298,9 @@ class Reviews(Table, tablename="reviews"):
 
 
 class Servers(Table, tablename="servers"):
-    id = Serial(
+    guild_id = BigInt(
         null=False,
         primary_key=True,
-        unique=False,
-        secret=False,
-    )
-    guild_id = BigInt(
-        default=0,
-        null=False,
-        primary_key=False,
         unique=True,
         secret=False,
     )
@@ -1633,17 +1534,10 @@ class Servers(Table, tablename="servers"):
 
 
 class ServerVoters(Table, tablename="server_voters"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     guild_id = BigInt(
         default=0,
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -1667,20 +1561,12 @@ class ServerVoters(Table, tablename="server_voters"):
 
 
 class UserBotLogs(Table, tablename="user_bot_logs"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     user_id = ForeignKey(
         references=Users,
         on_delete=OnDelete.cascade,
         on_update=OnUpdate.cascade,
-        target_column=None,
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -1771,17 +1657,10 @@ class UserVoteTable(Table, tablename="user_vote_table"):
 
 
 class LynxSurveyResponses(Table, tablename="lynx_survey_responses"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     id = UUID(
         default=UUID4(),
         null=False,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -1859,11 +1738,17 @@ class ReviewVotes(Table, tablename="review_votes"):
 
 
 class ServerAuditLogs(Table, tablename="server_audit_logs"):
+    action_id = UUID(
+        default=UUID4(),
+        null=False,
+        primary_key=True,
+        unique=False,
+        secret=False,
+    )
     guild_id = ForeignKey(
         references=Servers,
         on_delete=OnDelete.cascade,
         on_update=OnUpdate.cascade,
-        target_column=None,
         null=False,
         primary_key=False,
         unique=False,
@@ -1873,7 +1758,6 @@ class ServerAuditLogs(Table, tablename="server_audit_logs"):
         references=Users,
         on_delete=OnDelete.cascade,
         on_update=OnUpdate.cascade,
-        target_column=None,
         null=False,
         primary_key=False,
         unique=False,
@@ -1912,13 +1796,5 @@ class ServerAuditLogs(Table, tablename="server_audit_logs"):
         null=False,
         primary_key=False,
         unique=False,
-        secret=False,
-    )
-    action_id = UUID(
-        default=UUID4(),
-        null=False,
-        primary_key=True,
-        unique=False,
-        index=True,
         secret=False,
     )
