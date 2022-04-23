@@ -47,6 +47,8 @@ actions = {
         } else if(data.e == "P") {
             debug("Silverpelt", "Ping event. Going home...")
             $("#ws-info").text(`Websocket still connected as of ${Date()}`)
+        } else if(data.e == "T") {
+            info(...data.data)
         }
     },
     "notifs": (data) => {

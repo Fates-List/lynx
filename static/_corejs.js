@@ -3,6 +3,14 @@
 // Not a module, should never be loaded as one
 
 const log = (...args) => {
+    if(args[0] == "error" || args[0] == "warn") {
+        try {
+            wsSend({"request": "spld", "e": "T", "data": args}, true)
+        } catch(e) {
+            error("StarClan", e)
+        }
+    }
+
     console[args[0]](`%c[${Date.now()}]%c[${args[1]}]%c`, "color:red;font-weight:bold;", "color:purple;font-weight:bold;", "", ...args.slice(2))
 }
 
@@ -41,4 +49,4 @@ function loadModule(name, path, callback = () => {}) {
 }
 
 // Load launcher
-loadModule("launcher", "/_static/launcher.js?v=m1")
+loadModule("launcher", `/_static/launcher.js?v=${lver}`)

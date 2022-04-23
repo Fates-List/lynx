@@ -7,17 +7,21 @@ var wsFatal = false
 var wsContentResp = new Set([])
 var wsContentSpecial = new Set([])
 
-async function wsSend(data) {
+async function wsSend(data, lazy = false) {
     if(!wsUp) {
-        info("Nightheart", "Waiting for ws to come up to start recieving notification")
-        wsStart()
+        info("Nightheart", "Waiting for ws to come up to start sending messages")
+        if(!lazy) {
+            wsStart()
+        }
         return
     }
 
     if(ws.readyState === ws.OPEN) {
         ws.send(pako.deflate(MessagePack.encode(data)))
     } else {
-        restartWs()
+        if(!lazy) {
+            restartWs()
+        }
     }
 }
 

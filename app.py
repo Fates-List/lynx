@@ -80,6 +80,7 @@ class SPLDEvent(enum.Enum):
     unsupported = "U"
     verify_needed = "VN"
     ping = "P"
+    telemetry = "T"
 
 async def fetch_user(user_id: int):
     async with aiohttp.ClientSession() as sess:
@@ -960,7 +961,22 @@ def ws_action(name: str):
         return func
     return decorator
 
-# Experimental, remove if broken
+@ws_action("spld")
+async def spld(ws: WebSocket, data: dict):
+    if ws.state.plat != "WEB":
+        return await unsupported(ws)
+    
+    try:
+        event = SPLDEvent(data.get("e"))
+    except:
+        return await unsupported(ws)
+
+    if event == SPLDEvent.telemetry:
+        # We may collect telemetry logs for errors in the future
+        print(f"[LYNX] Message from JS: {data.get('data')}")
+    else:
+        return await unsupported(ws)
+
 @ws_action("exp_rollout_menu")
 async def exp_rollout_menu(ws: WebSocket, _: dict):
     # Possible remove on experiment over
@@ -1827,7 +1843,7 @@ async def notifs(ws: WebSocket):
 
 @ws_action("docs")
 async def docs(ws: WebSocket, data: dict):
-    time_s = time.time()
+    await js_log("Tawnypelt", "Server now handling docs", ws=ws)
     page = data.get("path", "/").split("#")[0]
     source = data.get("source", False)
 
@@ -1846,9 +1862,9 @@ async def docs(ws: WebSocket, data: dict):
     except FileNotFoundError as exc:
         return {"detail": f"api-docs/{page}.md not found -> {exc}"}
 
+    await js_log("Tawnypelt", "Sending source for docs:", source, ws=ws)
+
     if source:
-        print("Sending source")
-        print(time.time() - time_s)
         return {
             "title": page.split('/')[-1].replace('-', ' ').title() + " (Source)",
             "data": f"""
@@ -1856,8 +1872,6 @@ async def docs(ws: WebSocket, data: dict):
             """ if ws.state.plat != "DOCREADER" else md_data,
             "source": True
         }
-
-    print(time.time() - time_s)
     
     return {
         "title": page.split('/')[-1].replace('-', ' ').title(),
@@ -2287,9 +2301,19 @@ async def submit_survey(ws: WebSocket, data: dict):
 print(ws_action_dict)
 
 async def do_task_and_send(f, ws, data):
+    start_time = time.time()
+
     ret = await f(ws, data)
+
+    if not ret:
+        return
+
     if not ret.get("resp"):
         ret["resp"] = data.get("request", "")
+    
+    if ws.state.plat == "WEB":
+        await js_log("Tawnypelt", f"Time taken for server handler: {(time.time() - start_time)*1000} ms", ws=ws)
+
     await manager.send_personal_message(ret, ws)
 
 async def out_of_date(ws):
@@ -2297,6 +2321,14 @@ async def out_of_date(ws):
     await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.out_of_date}, ws)
     await asyncio.sleep(0.3)
     await ws.close(4008)
+
+async def unsupported(ws):
+    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.unsupported}, ws)
+    await asyncio.sleep(0.3)
+    await ws.close(4008)
+
+async def js_log(*log, ws):
+    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.telemetry, "data": log}, ws)
 
 def replace_if_web(msg, ws):
     if ws.state.plat == "WEB":
@@ -2505,13 +2537,11 @@ async def ws(ws: WebSocket, cli: str, plat: str):
             
             try:
                 if ws.state.plat == "SQUIRREL" and data.get("request") not in ("bot_action", "user_action"):
-                    print("[LYNX] Warning: Unsupported squirrel action")
-                    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.unsupported}, ws)
-                    continue
+                    print("[LYNX] Error: Unsupported squirrel action")
+                    return await unsupported(ws)
                 elif ws.state.plat == "DOCREADER" and data.get("request") not in ("docs",):
-                    print("[LYNX] Warning: Unsupported docreader action")
-                    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.unsupported}, ws)
-                    continue
+                    print("[LYNX] Error: Unsupported docreader action")
+                    return await unsupported(ws)
 
                 f = ws_action_dict.get(data.get("request"))
                 if not f:

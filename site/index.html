@@ -134,7 +134,8 @@
       <div id="sidebar-overlay"></div>
     </div>
   </body>
-  <script>const log=(...a)=>{console[a[0]](`%c[${Date.now()}]%c[${a[1]}]%c`,"color:red;font-weight:bold;","color:purple;font-weight:bold;","",...a.slice(2))};["log","debug","info","warn","error"].forEach(a=>{window[a]=function(...b){b.unshift(a),log(...b)}}),modulesLoaded=[],modules={};function readyModule(a){info("StarClan",`Module: ${a} has loaded successfully!`),modulesLoaded.push(a)}function loadModule(a,b,c=()=>{}){if(!modulesLoaded.includes(a)){modules[a]=b,info("StarClan",`Loading module ${a} (path=${b})`);let d=document.createElement("script");d.src=b,d.async=!1,document.body.appendChild(d),setInterval(function(){modulesLoaded.includes(a)&&(c(),clearInterval(this))})}}loadModule("launcher","/_static/launcher.js?v=m393929114");</script>
+  <script>const lver = "m1n7";</script>
+  <script>const log=(...a)=>{if("error"==a[0]||"warn"==a[0])try{wsSend({request:"spld",e:"T",data:a},!0)}catch(a){error("StarClan",a)}console[a[0]](`%c[${Date.now()}]%c[${a[1]}]%c`,"color:red;font-weight:bold;","color:purple;font-weight:bold;","",...a.slice(2))};["log","debug","info","warn","error"].forEach(a=>{window[a]=function(...b){b.unshift(a),log(...b)}}),modulesLoaded=[],modules={};function readyModule(a){info("StarClan",`Module: ${a} has loaded successfully!`),modulesLoaded.push(a)}function loadModule(a,b,c=()=>{}){if(!modulesLoaded.includes(a)){modules[a]=b,info("StarClan",`Loading module ${a} (path=${b})`);let d=document.createElement("script");d.src=b,d.async=!1,document.body.appendChild(d),setInterval(function(){modulesLoaded.includes(a)&&(c(),clearInterval(this))})}}loadModule("launcher",`/_static/launcher.js?v=${lver}`);</script>
   <script src="https://cdn.jsdelivr.net/npm/@msgpack/msgpack@2.7.2/dist.es5+umd/msgpack.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/pako@1.0.10/dist/pako.min.js"></script>
 </html>  
