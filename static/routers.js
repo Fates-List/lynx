@@ -166,6 +166,8 @@ async function loadContent(loc) {
             wsSend({request: "exp_rollout_menu"})
         })     
         return    
+    } else if(loc.startsWith("/widgets")) {
+        window.location.reload()
     } else if(loc.startsWith("/missing-perms")) {
         alert("missing-perms", "Missing Permissions", "You do not have permission to view this page.")
         setData({"title": "401 - Unauthorized", "data": `Unauthorized User`})
