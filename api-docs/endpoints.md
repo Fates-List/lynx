@@ -1,5 +1,6 @@
 **API URL**: ``https://api.fateslist.xyz``
-**Widgets URL:** ``https://lynx.fateslist.xyz/widgets`` (docs for widgets available at https://lynx.fateslist.xyz/widgets)
+
+**Widgets Documentation:** ``https://lynx.fateslist.xyz/widgets`` (docs for widgets available at https://lynx.fateslist.xyz/widgets)
 
 
 ## Authorization
@@ -4110,7 +4111,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "553f2ea1-dcbd-4a9e-8284-9bf4f04d42e9"]
+- **parent_id** => (Optional) string [default/example = "efce0e83-32cd-4972-a36a-02f2374ae3b8"]
 
 
 
@@ -4136,7 +4137,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "553f2ea1-dcbd-4a9e-8284-9bf4f04d42e9"
+    "parent_id": "efce0e83-32cd-4972-a36a-02f2374ae3b8"
 }
 ```
 
@@ -4201,7 +4202,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "0b5bbcf0-cf64-4b7c-849e-57b9c366467b"]
+- **id** => (Optional) string [default/example = "c3874bcb-34bf-4a26-ab41-39e14bc89b0f"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4231,7 +4232,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "0b5bbcf0-cf64-4b7c-849e-57b9c366467b",
+    "id": "c3874bcb-34bf-4a26-ab41-39e14bc89b0f",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4295,7 +4296,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "13897389-c35a-4ce1-afe5-fd3b42139f68"]
+- **rid** => string [default/example = "bba1d9fe-1459-4c15-8def-1c9fadd2c0c3"]
 
 
 
@@ -4361,7 +4362,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "c1c2b7ec-1309-42b3-964c-3c85745dd236"]
+- **rid** => string [default/example = "8f4d0f5a-7691-4f85-a8d7-d1fb66d98563"]
 
 
 
@@ -4612,7 +4613,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "695767e7-d519-4149-951a-ff55df3085fc"]
+- **id** => string [default/example = "3aaff2b5-ba72-42b0-ad3e-4cee793dfcca"]
 - **target_type** => i32 [default/example = 0]
 
 
