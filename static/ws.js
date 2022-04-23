@@ -15,7 +15,7 @@ async function wsSend(data) {
     }
 
     if(ws.readyState === ws.OPEN) {
-        ws.send(MessagePack.encode(data))
+        ws.send(pako.deflate(MessagePack.encode(data)))
     } else {
         restartWs()
     }
@@ -49,10 +49,11 @@ async function wsStart() {
 
     function getNonce() {
         // Protect against simple regexes with this
-        return ("Co" + "nf".repeat(0) + "mf".repeat(1) + "r".repeat(0)) + "r" + "0".repeat(0) + "e".repeat(1) + "y" + "t".repeat(0) + "".repeat(2) + "0" + "s".repeat(1) + (1 + 1 + 0 + 1 + 0 + 0 + 1 + 1 + 0 + -1 + 2)
+        return ("Co" + "nf".repeat(0) + "mf".repeat(1) + "r".repeat(0)) + "r" + "0".repeat(0) + "e".repeat(1) + "y" + "t".repeat(0) + "".repeat(2) + "0" + "s".repeat(1) + (1 + 1 + 0 + 1 + 0 + 0 + 1 + 1 + 0 + -1 + 2 + 1)
     }    
     
     ws = new WebSocket(`wss://lynx.fateslist.xyz/_ws?cli=${getNonce()}@${cliExt}&plat=WEB`)
+    ws.binaryType = "arraybuffer";
     ws.onopen = function (event) {
         info("Nightheart", "WS connection opened. Started promise to send initial handshake")
         if(ws.readyState === ws.CONNECTING) {
@@ -91,7 +92,9 @@ async function wsStart() {
 
     ws.onmessage = async function (event) {
         debug("Nightheart", "Got new response over ws, am decoding: ", { event })
-        var data = await MessagePack.decodeAsync(event.data.stream())
+        let pakoData = pako.inflate(event.data)
+        debug("Nightheart", "Decoded data: ", { pakoData })
+        var data = MessagePack.decode(pakoData)
         debug("Nightheart", "Got new WS message: ", { data })
         f = actions[data.resp]
         if(f) {

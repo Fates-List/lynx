@@ -45,6 +45,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from colour import Color
 from PIL import Image, ImageDraw, ImageFont
 import staffapps
+import zlib
 from experiments import Experiments, exp_props
 from tables import (Bot, BotCommand, BotListTags, BotPack, BotTag, BotVotes,
                     LeaveOfAbsence, LynxRatings, LynxSurveyResponses,
@@ -927,9 +928,9 @@ class ConnectionManager:
                 await websocket.send_json(jsonable_encoder(message))
             else:
                 try:
-                    await websocket.send_bytes(msgpack.packb(message))
+                    await websocket.send_bytes(zlib.compress(msgpack.packb(message)))
                 except:
-                    await websocket.send_bytes(msgpack.packb(jsonable_encoder(message)))
+                    await websocket.send_bytes(zlib.compress(msgpack.packb(jsonable_encoder(message))))
         except RuntimeError as e:
             try:
                 await websocket.close(1008)
@@ -2325,7 +2326,7 @@ async def ws(ws: WebSocket, cli: str, plat: str):
         return await out_of_date(ws)
 
     # Check nonce to ensure client is up to date
-    if (ws.state.plat == "WEB" and cli != "Comfrey0s6"  # TODO, obfuscate/hide nonce in core.js and app.py
+    if (ws.state.plat == "WEB" and cli != "Comfrey0s7"  # TODO, obfuscate/hide nonce in core.js and app.py
         or (ws.state.plat == "SQUIRREL" and cli != "BurdockRoot")
         or (ws.state.plat == "DOCREADER" and cli != "Quailfeather")
     ):
@@ -2445,7 +2446,7 @@ async def ws(ws: WebSocket, cli: str, plat: str):
                 if ws.state.debug:
                     data = await ws.receive_json()
                 else:
-                    data = msgpack.unpackb(await ws.receive_bytes())
+                    data = msgpack.unpackb(zlib.decompress(await ws.receive_bytes()))
 
                 # Recompute user experiment list
                 old_feature_list = ws.state.experiments
