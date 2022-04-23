@@ -146,20 +146,6 @@ class Bots(Table, tablename="bots"):
         unique=False,
         secret=False,
     )
-    private = Boolean(
-        default=False,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    html_long_description = Boolean(
-        default=False,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
     invite_amount = Integer(
         default=0,
         null=True,
@@ -183,13 +169,6 @@ class Bots(Table, tablename="bots"):
     )
     shards = Array(
         base_column=Integer(),
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    js_whitelist = Boolean(
-        default=False,
         null=True,
         primary_key=False,
         unique=False,
@@ -261,13 +240,6 @@ class Bots(Table, tablename="bots"):
     di_text = Text(
         default="",
         null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    id = BigInt(
-        default=0,
-        null=False,
         primary_key=False,
         unique=False,
         secret=False,
@@ -510,13 +482,6 @@ class Users(Table, tablename="users"):
     )
     coins = Integer(
         default=0,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    js_allowed = Boolean(
-        default=True,
         null=True,
         primary_key=False,
         unique=False,
@@ -1682,13 +1647,6 @@ class Servers(Table, tablename="servers"):
         unique=False,
         secret=False,
     )
-    js_allowed = Boolean(
-        default=True,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
     owner_id = ForeignKey(
         references=Users,
         on_delete=OnDelete.cascade,
@@ -1832,61 +1790,6 @@ class UserBotLogs(Table, tablename="user_bot_logs"):
     )
     context = Text(
         default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-
-
-class UserPayments(Table, tablename="user_payments"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
-    user_id = ForeignKey(
-        references=Users,
-        on_delete=OnDelete.cascade,
-        on_update=OnUpdate.cascade,
-        target_column=None,
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    coins = Integer(
-        default=0,
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    paid = Boolean(
-        default=False,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    token = Text(
-        default="",
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    stripe_id = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    livemode = Boolean(
-        default=False,
         null=True,
         primary_key=False,
         unique=False,
