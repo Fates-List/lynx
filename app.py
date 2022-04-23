@@ -47,10 +47,22 @@ from PIL import Image, ImageDraw, ImageFont
 import staffapps
 import zlib
 from experiments import Experiments, exp_props
-from tables import (Bots, BotCommands, BotListTags, BotPacks, BotTags, UserVoteTable, UserServerVoteTable,
-                    LeaveOfAbsence, LynxRatings, LynxSurveyResponses,
-                    LynxSurveys, LynxNotifications, Reviews, ReviewVotes,
-                    ServerTags, Users, UserBotLogs, Vanity)
+
+import inspect
+import tables
+import piccolo
+
+_tables = []
+
+tables_dict = vars(tables)
+
+for obj in tables_dict.values():
+    if obj == tables.Table:
+        continue
+    if inspect.isclass(obj) and isinstance(obj, piccolo.table.TableMetaclass):
+        _tables.append(obj)
+
+print(_tables)
 
 debug = False
 
@@ -243,8 +255,7 @@ with open("api-docs/staff-guide.md") as f:
     staff_guide_md = f.read()
 
 admin = create_admin(
-    [LynxNotifications, LynxSurveys, LynxSurveyResponses, LynxRatings, LeaveOfAbsence, Vanity, Users, Bots, BotPacks, BotCommands, BotTags, BotListTags,
-     ServerTags, Reviews, ReviewVotes, UserBotLogs, UserVoteTable, UserServerVoteTable],
+   _tables,
     allowed_hosts=["lynx.fateslist.xyz"],
     production=True,
     site_name="Lynx Admin"
@@ -311,7 +322,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
         # Perm check
 
         if request.url.path.startswith("/_admin/api"):
-            if request.url.path == "/_admin/api/tables/" and perm < 4:
+            if request.url.path == "/_admin/api/tables/" and perm < 5:
                 return ORJSONResponse(limited_view)
             elif request.url.path == "/_admin/api/tables/users/ids/" and request.method == "GET":
                 pass
@@ -409,10 +420,6 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
             await send_message({"content": f"<@{owner}>", "embed": embed, "channel_id": bot_logs})
 
         return response
-
-
-admin = CustomHeaderMiddleware(admin)
-
 
 async def server_error(request, exc):
     return HTMLResponse(content="Error", status_code=exc.status_code)

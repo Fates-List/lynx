@@ -18,7 +18,6 @@ from piccolo.columns.defaults.interval import IntervalCustom
 from piccolo.columns.defaults.timestamp import TimestampNow
 from piccolo.columns.defaults.timestamptz import TimestamptzNow
 from piccolo.columns.defaults.uuid import UUID4
-from piccolo.columns.indexes import IndexMethod
 from piccolo.table import Table
 from decimal import Decimal
 
@@ -401,17 +400,10 @@ class BotPacks(Table, tablename="bot_packs"):
 
 
 class BotStatsVotesPm(Table, tablename="bot_stats_votes_pm"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     bot_id = BigInt(
         default=0,
         null=True,
-        primary_key=False,
+        primary_key=True,
         unique=False,
         secret=False,
     )
@@ -696,19 +688,9 @@ class LeaveOfAbsence(Table, tablename="leave_of_absence"):
 
 
 class LynxData(Table, tablename="lynx_data"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
     default_user_experiments = Array(
         base_column=Integer(),
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
+        help_text="Do not modify this if you do not know what you are doing"
     )
 
 
@@ -787,32 +769,6 @@ class LynxSurveys(Table, tablename="lynx_surveys"):
         unique=False,
         secret=False,
     )
-
-
-class ManagerStaff(Table, tablename="manager_staff"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        
-        secret=False,
-    )
-    user_id = BigInt(
-        default=0,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    user_token = Text(
-        default="",
-        null=False,
-        primary_key=False,
-        unique=True,
-        index=True,
-        secret=False,
-    )
-
 
 class PlatformMap(Table, tablename="platform_map"):
     id = Serial(
@@ -918,45 +874,6 @@ class ServerTags(Table, tablename="server_tags"):
     )
     iconify_data = Text(
         default="",
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-
-
-class Sessions(Table, tablename="sessions"):
-    id = Serial(
-        null=False,
-        primary_key=True,
-        unique=False,
-        index=True,
-        secret=False,
-    )
-    token = Varchar(
-        length=100,
-        default="",
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    user_id = Integer(
-        default=0,
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    expiry_date = Timestamp(
-        default=TimestampNow(),
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    max_expiry_date = Timestamp(
-        default=TimestampNow(),
         null=False,
         primary_key=False,
         unique=False,
