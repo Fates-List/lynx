@@ -2709,6 +2709,9 @@ Then head on over to https://lynx.fateslist.xyz to read our staff guide and get 
                 "detail": f"Failed to send message (possibly blocked): {res.status}",
                 "err": True
             }
+        
+    await app.state.db.execute("UPDATE users SET flags = array_remove(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.user_id)
+    await app.state.db.execute("UPDATE users SET flags = array_append(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.user_id)
 
     return {"detail": "Successfully added staff member"}
 
@@ -2717,7 +2720,6 @@ async def remove_staff_member(data: UserActionWithReason):
     for role in staff_roles.keys():
         await del_role(main_server, data.user_id, staff_roles[role]["id"], data.reason)
     await app.state.db.execute("UPDATE users SET flags = array_remove(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.user_id)
-    await app.state.db.execute("UPDATE users SET flags = array_append(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.user_id)
 
     embed = Embed(
         url=f"https://fateslist.xyz/profile/{data.user_id}",
