@@ -18,6 +18,12 @@ class BotFlag(IntEnum):
     vote_locked = 4
     system = 5
 
+class UserFlag(IntEnum):
+    Unknown = 0
+    VotesPrivate = 1
+    Staff = 2
+    AvidVoter = 3
+
 class UserState(IntEnum):
     normal = 0
     global_ban = 1

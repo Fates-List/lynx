@@ -247,6 +247,21 @@ we do not use this whatsoever for privacy purposes. We do not use IP addresses f
 
 <blockquote class="quote">
 
+### Avid Voter
+
+The Avid Voter badge will be given if you vote for over 5 different bots and 3 different servers and have voted for a specific bot for at least 3 times
+
+In addition, certified developer badges are coming back as well in the near future 
+
+Some rules regarding the badge:
+
+1. There are no special perks other than a badge
+2. We will revoke this badge if it causes spam or unwanted joins so dont 
+
+</blockquote>
+
+<blockquote class="quote">
+
 ### Contact
 
 You can contact our staff by joining the Fates List support server. Note that our support server is the only official way of contacting the Fates List staff team and we may not respond elsewhere.

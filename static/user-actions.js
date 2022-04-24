@@ -15,12 +15,22 @@ async function addStaff() {
     sendUserAction("add_staff", userId, "STUB_REASON")
 }
 
+async function removeStaff() {
+    let userId = document.querySelector("#staff_remove_user_id").value
+    let reason = document.querySelector("#staff_remove_reason").value
+    sendUserAction("remove_staff", userId, reason)
+}
+
+async function modStaffFlag() {
+    let isStaffPublic = document.querySelector("#is_staff_public").checked
+    sendUserAction("mod_staff_flag", user.id, "STUB_REASON", isStaffPublic)
+}
+
 async function deleteAppByUser(userID) {
     confirm("Are you sure you want to delete this and all application belonging to this user?")
     sendUserAction("ack_staff_app", userID, "STUB_REASON")
 }
 
-// TODO: This does not yet exist!
 async function setUserState() {
     let userId = document.querySelector("#user_state_id").value
     let state = document.querySelector("#user_state_select").value

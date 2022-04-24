@@ -103,6 +103,8 @@ The flags of the user (such as vote privacy)
 | :--- | :--- |
 | **Unknown** | 0 |
 | **VotesPrivate** | 1 |
+| **Staff** | 2 |
+| **AvidVoter** | 3 |
 
 
     

@@ -1447,6 +1447,49 @@ Now that we're all caught up with the staff guide, here are the list of actions 
 
 :::
 
+::: action-removestaff
+
+### Remove Staff
+
+- Head Admin+ only
+- Definition: staff => user
+
+<div class="form-group">
+<label for="staff_remove_user_id">User ID</label>
+<input class="form-control" id="staff_remove_user_id" name="staff_remove_user_id" placeholder='user id here' type="number" />
+</div>
+
+<div class="form-group">
+<label for="staff_remove_reason">Reason</label>
+<textarea 
+class="form-control"
+type="text" 
+id="staff_remove_reason" 
+name="staff_remove_reason"
+placeholder="Enter reason for removal of staff here!"
+></textarea>
+</div>
+
+<button onclick="removeStaff()">Remove</button>
+
+:::
+
+::: action-setflag
+
+### Set/Unset Staff Flag
+
+- Bot Reviewer+ only
+- Definition: flag => ~flag 
+
+<div class="form-check">
+<input class="form-check-input" type="checkbox" id="is_staff_public" name="is_staff_public" />
+<label class="form-check-label" for="is_staff_public">Staff Flag Mode (unchecked = Set)</label>
+</div>
+
+<button onclick="modStaffFlag()">Update</button>
+
+:::
+
 ::: action-userstate
 
 ### Set User State
@@ -1749,6 +1792,7 @@ placeholder="Reason for resetting all votes. Defaults to 'Monthly Votes Reset'"
 </div>
 
 <button onclick="setFlag()">Update</button>
+
 :::
 """,
         "ext_script": "bot-actions",
@@ -1844,7 +1888,6 @@ async def notifs(ws: WebSocket):
 
 @ws_action("docs")
 async def docs(ws: WebSocket, data: dict):
-    await js_log("Tawnypelt", "Server now handling docs", ws=ws)
     page = data.get("path", "/").split("#")[0]
     source = data.get("source", False)
 
@@ -1862,8 +1905,6 @@ async def docs(ws: WebSocket, data: dict):
             md_data = f.read()
     except FileNotFoundError as exc:
         return {"detail": f"api-docs/{page}.md not found -> {exc}"}
-
-    await js_log("Tawnypelt", "Sending source for docs:", source, ws=ws)
 
     if source:
         return {
@@ -2457,7 +2498,7 @@ async def ws(ws: WebSocket, cli: str, plat: str):
             "resp": "cfg", 
             "assets": {
                 "bot-actions": "75",
-                "user-actions": "74",
+                "user-actions": "76",
                 "surveys": "73",
                 "apply": "81",
                 "admin-nav": "m8",
@@ -2671,6 +2712,25 @@ Then head on over to https://lynx.fateslist.xyz to read our staff guide and get 
 
     return {"detail": "Successfully added staff member"}
 
+@user_action("remove_staff", [], min_perm=5)
+async def remove_staff_member(data: UserActionWithReason):
+    for role in staff_roles.keys():
+        await del_role(main_server, data.user_id, staff_roles[role]["id"], data.reason)
+    await app.state.db.execute("UPDATE users SET flags = array_remove(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.user_id)
+    await app.state.db.execute("UPDATE users SET flags = array_append(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.user_id)
+
+    embed = Embed(
+        url=f"https://fateslist.xyz/profile/{data.user_id}",
+        color=0xe74c3c,
+        title="User Demoted",
+        description=f"<@{data.initiator}> has demoted <@{data.user_id}>.\n\n We are sorry, but we had to do this.",
+    )
+
+    embed.add_field(name="Reason", value=data.reason)
+
+    await send_message({"content": f"<@{data.user_id}>", "embed": embed, "channel_id": bot_logs})
+
+    return {"detail": "Successfully removed staff member"}
 
 ### Client should lie here and give a generic reason for ack_staff_app
 
@@ -2706,6 +2766,14 @@ async def set_user_state(data: UserActionWithReason):
 
     return {"detail": "Successfully set user state"}
 
+@user_action("mod_staff_flag", [], min_perm=2)
+async def set_flags(data: UserActionWithReason):
+    if data.context:
+        await app.state.db.execute("UPDATE users SET flags = array_remove(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.initiator)
+        await app.state.db.execute("UPDATE users SET flags = array_append(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.initiator)
+    else:
+        await app.state.db.execute("UPDATE users SET flags = array_remove(flags, $1) WHERE user_id = $2", enums.UserFlag.Staff, data.initiator)
+    return {"detail": "Successfully set staff flag"}
 
 print(app.state.user_actions)
 print(app.state.bot_actions)
