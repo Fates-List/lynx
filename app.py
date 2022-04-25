@@ -1993,24 +1993,22 @@ async def index(_, __):
     return {
         "title": "Welcome To Lynx", 
         "data": """
-<h3>Homepage!</h3>
+Welcome to Lynx. This page provides our API documentation, privacy policies, terms of service and is our admin console for staff members!
+
 By continuing, you agree to:
-<ul>
-<li>Abide by Discord ToS</li>
-<li>Abide by Fates List ToS</li>
-<li>Agree to try and be at least partially active on the list</li>
-<li>Be able to join group chats (group DMs) if required by Fates List Admin+</li>
-</ul>
-If you disagree with any of the above, you should stop now and consider taking a 
-Leave Of Absence or leaving the staff team though we hope it won't come to this...
-<br/><br/>
 
-Please <em>read</em> the staff guide carefully. Do NOT just Ctrl-F. If you ask questions
-already in the staff guide, you will just be told to reread the staff guide!
+- Abide by Discord ToS</li>
+- Abide by Fates List ToS available [here](/privacy)
 
-<br/>
+### Notes for staff members
 
-In case, you haven't went through staff verification and you somehow didn't get redirected to it, click <a href="/staff-verify">here</a> 
+- If you are a staff member and you disagree with any of the above, you should stop now and consider taking a Leave Of Absence or leaving the staff team though we hope it won't come to this...
+
+- If you are a staff member at Fates List, you must be able to join group chats (group DMs) if required by Fates List Admin+
+
+- Please <em>read</em> the staff guide carefully. Do NOT just Ctrl-F. If you ask questions already in the staff guide, you will just be told to reread the staff guide!
+
+- In case, you haven't went through staff verification and you somehow didn't get redirected to it, click <a href="/staff-verify">here</a> 
 <br/><br/>
 <a href="/links">Some Useful Links!</a>
                 """}

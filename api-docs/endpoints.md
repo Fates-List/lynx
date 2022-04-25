@@ -498,7 +498,7 @@ Resolves the vanity for a bot/server in the list
 ### Get Partners
 #### GET /partners
 
-Get policies (rules, privacy policy, terms of service)
+Get current partnership list
 
 **Path parameters**
 
@@ -529,14 +529,20 @@ Get policies (rules, privacy policy, terms of service)
 	- **owner** => string [default/example = "12345678901234567"]
 	- **image** => string [default/example = ""]
 	- **description** => string [default/example = "Some random description"]
-	- **links** => 	- **discord** => string [default/example = "https://discord.com/lmao"]
-	- **website** => string [default/example = "https://example.com"]
+	- **links** => Struct PartnerLinks 
+		- **discord** => string [default/example = "https://discord.com/lmao"]
+		- **website** => string [default/example = "https://example.com"]
 
 
 
 
 
-- **icons** => 
+
+- **icons** => Struct PartnerLinks 
+	- **discord** => string [default/example = ""]
+	- **website** => string [default/example = ""]
+
+
 
 
 
@@ -558,7 +564,10 @@ Get policies (rules, privacy policy, terms of service)
             }
         }
     ],
-    "icons": {}
+    "icons": {
+        "discord": "",
+        "website": ""
+    }
 }
 ```
 **Authorization Needed** | 
@@ -4111,7 +4120,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "717610d5-fd6a-45f7-9b7d-a37c53eb449f"]
+- **parent_id** => (Optional) string [default/example = "17695a1c-cfbb-4fd8-bdb9-fa04c34be7c4"]
 
 
 
@@ -4137,7 +4146,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "717610d5-fd6a-45f7-9b7d-a37c53eb449f"
+    "parent_id": "17695a1c-cfbb-4fd8-bdb9-fa04c34be7c4"
 }
 ```
 
@@ -4202,7 +4211,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "899032dc-c8b1-494f-8b87-bc22b2b44f15"]
+- **id** => (Optional) string [default/example = "987a1282-a6c5-4f9d-a1c2-a9d67a05f76f"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4232,7 +4241,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "899032dc-c8b1-494f-8b87-bc22b2b44f15",
+    "id": "987a1282-a6c5-4f9d-a1c2-a9d67a05f76f",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4296,7 +4305,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "d0212740-cfc7-4ba5-a20c-c45e8d78171e"]
+- **rid** => string [default/example = "d2c75cc3-e9fa-44f1-918e-e0a210d44c0a"]
 
 
 
@@ -4362,7 +4371,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "b51d4a37-5886-4b3c-a725-c7fdca6181fc"]
+- **rid** => string [default/example = "26d36f15-4923-4d64-ace8-a4894d902b10"]
 
 
 
@@ -4613,7 +4622,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "b605f9f1-72b6-4a72-8d9e-9b419c53dd24"]
+- **id** => string [default/example = "47042bba-8cc4-4909-8af9-9b7e507d83f5"]
 - **target_type** => i32 [default/example = 0]
 
 
