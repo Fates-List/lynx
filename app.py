@@ -18,6 +18,7 @@ import math
 
 import asyncpg
 import bleach
+import discord
 import orjson
 import requests
 from dateutil import parser
@@ -962,11 +963,37 @@ def ws_action(name: str):
         return func
     return decorator
 
-@ws_action("spld")
-async def spld(ws: WebSocket, data: dict):
-    if ws.state.plat != "WEB":
-        return await unsupported(ws)
+# Checks which approved and denied bots are on the site but not on support server
+@ws_action("ss_check")
+async def ss_check(websocket: WebSocket, _: dict):
+    exc_bots = [536991182035746816]
+
+    bots = await app.state.db.fetch("SELECT bot_id FROM bots WHERE state = $1 OR state = $2", enums.BotState.approved, enums.BotState.certified)
+
+    count = await app.state.db.fetchval("SELECT COUNT(1) FROM bots")
+    in_ss = 0
+    error_bots = []
+
+    for bot in bots:
+        if bot["bot_id"] in exc_bots:
+            continue
+        guild = app.state.discord.get_guild(int(main_server))
+        member = guild.get_member(bot["bot_id"])
+        if member:
+            in_ss += 1
+        else:
+            error_bots.append(str(bot["bot_id"]) + ": " + f"https://discord.com/api/oauth2/authorize?client_id={bot['bot_id']}&permissions=0&scope=bot%20applications.commands")
     
+    return {
+        "resp": "ss_check",
+        "total_count": count,
+        "approved_count": len(bots),
+        "in_ss": in_ss + len(exc_bots),
+        "error_bots": error_bots,
+    }
+
+@ws_action("spld")
+async def spld(ws: WebSocket, data: dict):    
     try:
         event = SPLDEvent(data.get("e"))
     except:
@@ -2786,6 +2813,8 @@ async def startup():
     app.state.engine = engine
     app.state.redis = aioredis.from_url("redis://localhost:1001", db=1)
     app.state.db = await asyncpg.create_pool()
+    app.state.discord = discord.Client(intents=discord.Intents(guilds=True, members=True))
+    asyncio.create_task(app.state.discord.start(main_bot_token))
     await engine.start_connection_pool()
 
 

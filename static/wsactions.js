@@ -122,6 +122,20 @@ actions = {
             document.querySelector("#verify-btn").innerText = "Verify";    
         }
     },
+    "ss_check": (data) => {
+        info("Nightheart", "Get ss_check")
+        setData({
+            "title": "Support Server Check",
+            "data": `
+- **Total count:** ${data.total_count}
+- **Approved count:** ${data.approved_count}  
+- **Approved bots in support server:** ${data.in_ss}
+
+### Error Bots (bots not in support server, to be invited)
+
+${data.error_bots.join('\n\n')}
+        `})
+    },
     "data_request": (data) => {
         info("Nightheart", "Got data request")
         if(data.detail) {

@@ -1,4 +1,4 @@
-async function loadDocs() {
+function loadDocs() {
     hljs.highlightAll();
     window.highlightJsBadge();
 
@@ -25,12 +25,12 @@ async function loadDocs() {
     })
 }
 
-async function rateDoc() {
+function rateDoc() {
     feedback = document.querySelector("#doc-feedback").value
     wsSend({request: "eternatus", feedback: feedback, page: window.location.pathname})
 }
 
-async function genClientWhitelist() {
+function genClientWhitelist() {
     reason = document.querySelector('#whitelist-reason').value
 
     if(reason.length < 10) {
@@ -60,13 +60,13 @@ async function genClientWhitelist() {
     document.querySelector("#verify-screen").innerHTML = `<h3>Next step</h3><p>Copy and send <code style='display: inline'>${encodedString}</code> to any Head Admin+ to continue</p>`
 }
 
-async function dataRequest() {
+function dataRequest() {
     userId = document.querySelector("#user-id").value
     wsSend({request: "data_request", user: userId})
     document.querySelector("#request-btn").innerText = "Requesting..."
 }
 
-async function dataDelete() {
+function dataDelete() {
     let confirm = prompt("Are you sure you want to delete all data? This cannot be undone. Please read all warnings carefully. This may in the future trigger a webhook to all bots you have voted for.\n\nType 'DELETE-POPPYPAW' to confirm.")
     if(confirm !== "DELETE-POPPYPAW") {
         alert("del-res", "Aborted", "Aborted data deletion")

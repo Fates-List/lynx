@@ -4,12 +4,12 @@ const launcherVer = "ashfur-v1"
 loadModule("cstate", "/_static/cstate.js?v=m10")
 loadModule("experiments", "/_static/experiments.js?v=m9")
 loadModule("doctree", "/_static/doctree.js?v=m9")
-loadModule("docs", "/_static/docs.js?v=m1")
+loadModule("docs", "/_static/docs.js?v=m3")
 loadModule("utils", "/_static/utils.js?v=m1")
-loadModule("ws", "/_static/ws.js?v=m223")
-loadModule("cms", "/_static/cms.js?v=m107")
-loadModule("wsactions", "/_static/wsactions.js?v=m99")
-loadModule("routers", "/_static/routers.js?v=m53") // Change this on router add/remove
+loadModule("ws", "/_static/ws.js?v=m225")
+loadModule("cms", "/_static/cms.js?v=m199")
+loadModule("wsactions", "/_static/wsactions.js?v=m110")
+loadModule("routers", "/_static/routers.js?v=m54") // Change this on router add/remove
 loadModule("alert", "/_static/alert.js?v=m3")
 
 function lynxInfo() {

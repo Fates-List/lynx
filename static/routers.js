@@ -168,6 +168,8 @@ async function loadContent(loc) {
         return    
     } else if(loc.startsWith("/widgets")) {
         window.location.reload()
+    } else if(loc.startsWith("/sscheck")) {
+        wsSend({request: "ss_check"})
     } else if(loc.startsWith("/missing-perms")) {
         alert("missing-perms", "Missing Permissions", "You do not have permission to view this page.")
         setData({"title": "401 - Unauthorized", "data": `Unauthorized User`})
