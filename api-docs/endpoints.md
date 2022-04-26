@@ -722,6 +722,7 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 - **support** => (Optional) string [default/example = ""]
 - **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
 - **css** => string [default/example = "<style></style>"]
+- **css_raw** => string [default/example = "unsanitized css"]
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
@@ -750,7 +751,7 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 
 - **uptime_checks_total** => (Optional) i32 [default/example = 30]
 - **uptime_checks_failed** => (Optional) i32 [default/example = 19]
-- **commands** => - **default** => (Array) Struct BotCommand 
+- **commands** => (Array) Struct BotCommand 
 	- **cmd_type** => i32 [default/example = 0]
 	- **groups** => (Array) 
 	- **name** => string [default/example = ""]
@@ -763,8 +764,6 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
 	- **nsfw** => bool [default/example = false]
-
-
 
 
 
@@ -841,6 +840,7 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
     "support": "",
     "github": "https://github.com/Fates-List/FatesList",
     "css": "<style></style>",
+    "css_raw": "unsanitized css",
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
@@ -869,24 +869,22 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
     ],
     "uptime_checks_total": 30,
     "uptime_checks_failed": 19,
-    "commands": {
-        "default": [
-            {
-                "cmd_type": 0,
-                "groups": [],
-                "name": "",
-                "vote_locked": false,
-                "description": "",
-                "args": [],
-                "examples": [],
-                "premium_only": false,
-                "notes": [],
-                "doc_link": null,
-                "id": null,
-                "nsfw": false
-            }
-        ]
-    },
+    "commands": [
+        {
+            "cmd_type": 0,
+            "groups": [],
+            "name": "",
+            "vote_locked": false,
+            "description": "",
+            "args": [],
+            "examples": [],
+            "premium_only": false,
+            "notes": [],
+            "doc_link": null,
+            "id": null,
+            "nsfw": false
+        }
+    ],
     "resources": [
         {
             "id": null,
@@ -1567,6 +1565,7 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 - **state** => i32 [default/example = 0]
 - **flags** => (Array) 
 - **css** => string [default/example = ""]
+- **css_raw** => string [default/example = "unsanitized css"]
 - **website** => (Optional) string [default/example = "https://frostpaw.com"]
 - **banner_card** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-card.png"]
 - **banner_page** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-page.png"]
@@ -1602,6 +1601,7 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
     "state": 0,
     "flags": [],
     "css": "",
+    "css_raw": "unsanitized css",
     "website": "https://frostpaw.com",
     "banner_card": "https://frostpaw.com/assets/img/banner-card.png",
     "banner_page": "https://frostpaw.com/assets/img/banner-page.png",
@@ -2044,6 +2044,7 @@ Due to massive changes, this API cannot be mapped onto any v2 API
 	- **support** => (Optional) string [default/example = ""]
 	- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
 	- **css** => string [default/example = "<style></style>"]
+	- **css_raw** => string [default/example = "unsanitized css"]
 	- **votes** => i64 [default/example = 0]
 	- **total_votes** => i64 [default/example = 0]
 	- **vanity** => string [default/example = ""]
@@ -2072,7 +2073,7 @@ Due to massive changes, this API cannot be mapped onto any v2 API
 
 	- **uptime_checks_total** => (Optional) i32 [default/example = 30]
 	- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
-	- **commands** => 	- **default** => (Array) Struct BotCommand 
+	- **commands** => (Array) Struct BotCommand 
 		- **cmd_type** => i32 [default/example = 0]
 		- **groups** => (Array) 
 		- **name** => string [default/example = ""]
@@ -2088,22 +2089,20 @@ Due to massive changes, this API cannot be mapped onto any v2 API
 
 
 
+	- **resources** => (Array) Struct Resource 
+		- **id** => None (unknown value type)
+		- **resource_title** => string [default/example = ""]
+		- **resource_link** => string [default/example = ""]
+		- **resource_description** => string [default/example = ""]
 
 
 
-- **resources** => (Array) Struct Resource 
-	- **id** => None (unknown value type)
-	- **resource_title** => string [default/example = ""]
-	- **resource_link** => string [default/example = ""]
-	- **resource_description** => string [default/example = ""]
+	- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+	- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+	- **webhook_type** => None (unknown value type)
+	- **webhook_hmac_only** => None (unknown value type)
+	- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
 
-
-
-- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
-- **webhook_type** => None (unknown value type)
-- **webhook_hmac_only** => None (unknown value type)
-- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
 
 
 - **context** => Struct BotSettingsContext 
@@ -2187,6 +2186,7 @@ Due to massive changes, this API cannot be mapped onto any v2 API
         "support": "",
         "github": "https://github.com/Fates-List/FatesList",
         "css": "<style></style>",
+        "css_raw": "unsanitized css",
         "votes": 0,
         "total_votes": 0,
         "vanity": "",
@@ -2215,24 +2215,22 @@ Due to massive changes, this API cannot be mapped onto any v2 API
         ],
         "uptime_checks_total": 30,
         "uptime_checks_failed": 19,
-        "commands": {
-            "default": [
-                {
-                    "cmd_type": 0,
-                    "groups": [],
-                    "name": "",
-                    "vote_locked": false,
-                    "description": "",
-                    "args": [],
-                    "examples": [],
-                    "premium_only": false,
-                    "notes": [],
-                    "doc_link": null,
-                    "id": null,
-                    "nsfw": false
-                }
-            ]
-        },
+        "commands": [
+            {
+                "cmd_type": 0,
+                "groups": [],
+                "name": "",
+                "vote_locked": false,
+                "description": "",
+                "args": [],
+                "examples": [],
+                "premium_only": false,
+                "notes": [],
+                "doc_link": null,
+                "id": null,
+                "nsfw": false
+            }
+        ],
         "resources": [
             {
                 "id": null,
@@ -2683,6 +2681,7 @@ to false.
 - **support** => (Optional) string [default/example = ""]
 - **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
 - **css** => string [default/example = "<style></style>"]
+- **css_raw** => string [default/example = "unsanitized css"]
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
@@ -2711,7 +2710,7 @@ to false.
 
 - **uptime_checks_total** => (Optional) i32 [default/example = 30]
 - **uptime_checks_failed** => (Optional) i32 [default/example = 19]
-- **commands** => - **default** => (Array) Struct BotCommand 
+- **commands** => (Array) Struct BotCommand 
 	- **cmd_type** => i32 [default/example = 0]
 	- **groups** => (Array) 
 	- **name** => string [default/example = ""]
@@ -2724,8 +2723,6 @@ to false.
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
 	- **nsfw** => bool [default/example = false]
-
-
 
 
 
@@ -2802,6 +2799,7 @@ to false.
     "support": "",
     "github": "https://github.com/Fates-List/FatesList",
     "css": "<style></style>",
+    "css_raw": "unsanitized css",
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
@@ -2830,24 +2828,22 @@ to false.
     ],
     "uptime_checks_total": 30,
     "uptime_checks_failed": 19,
-    "commands": {
-        "default": [
-            {
-                "cmd_type": 0,
-                "groups": [],
-                "name": "",
-                "vote_locked": false,
-                "description": "",
-                "args": [],
-                "examples": [],
-                "premium_only": false,
-                "notes": [],
-                "doc_link": null,
-                "id": null,
-                "nsfw": false
-            }
-        ]
-    },
+    "commands": [
+        {
+            "cmd_type": 0,
+            "groups": [],
+            "name": "",
+            "vote_locked": false,
+            "description": "",
+            "args": [],
+            "examples": [],
+            "premium_only": false,
+            "notes": [],
+            "doc_link": null,
+            "id": null,
+            "nsfw": false
+        }
+    ],
     "resources": [
         {
             "id": null,
@@ -2971,6 +2967,7 @@ to false.
 - **support** => (Optional) string [default/example = ""]
 - **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
 - **css** => string [default/example = "<style></style>"]
+- **css_raw** => string [default/example = "unsanitized css"]
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
@@ -2999,7 +2996,7 @@ to false.
 
 - **uptime_checks_total** => (Optional) i32 [default/example = 30]
 - **uptime_checks_failed** => (Optional) i32 [default/example = 19]
-- **commands** => - **default** => (Array) Struct BotCommand 
+- **commands** => (Array) Struct BotCommand 
 	- **cmd_type** => i32 [default/example = 0]
 	- **groups** => (Array) 
 	- **name** => string [default/example = ""]
@@ -3012,8 +3009,6 @@ to false.
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
 	- **nsfw** => bool [default/example = false]
-
-
 
 
 
@@ -3090,6 +3085,7 @@ to false.
     "support": "",
     "github": "https://github.com/Fates-List/FatesList",
     "css": "<style></style>",
+    "css_raw": "unsanitized css",
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
@@ -3118,24 +3114,22 @@ to false.
     ],
     "uptime_checks_total": 30,
     "uptime_checks_failed": 19,
-    "commands": {
-        "default": [
-            {
-                "cmd_type": 0,
-                "groups": [],
-                "name": "",
-                "vote_locked": false,
-                "description": "",
-                "args": [],
-                "examples": [],
-                "premium_only": false,
-                "notes": [],
-                "doc_link": null,
-                "id": null,
-                "nsfw": false
-            }
-        ]
-    },
+    "commands": [
+        {
+            "cmd_type": 0,
+            "groups": [],
+            "name": "",
+            "vote_locked": false,
+            "description": "",
+            "args": [],
+            "examples": [],
+            "premium_only": false,
+            "notes": [],
+            "doc_link": null,
+            "id": null,
+            "nsfw": false
+        }
+    ],
     "resources": [
         {
             "id": null,
@@ -4120,7 +4114,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "17695a1c-cfbb-4fd8-bdb9-fa04c34be7c4"]
+- **parent_id** => (Optional) string [default/example = "f1881003-98c0-4d28-aa6b-8befb22ec0d4"]
 
 
 
@@ -4146,7 +4140,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "17695a1c-cfbb-4fd8-bdb9-fa04c34be7c4"
+    "parent_id": "f1881003-98c0-4d28-aa6b-8befb22ec0d4"
 }
 ```
 
@@ -4211,7 +4205,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "987a1282-a6c5-4f9d-a1c2-a9d67a05f76f"]
+- **id** => (Optional) string [default/example = "b4ae8fee-ca8e-424d-b32f-ff0fe014f2d0"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4241,7 +4235,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "987a1282-a6c5-4f9d-a1c2-a9d67a05f76f",
+    "id": "b4ae8fee-ca8e-424d-b32f-ff0fe014f2d0",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4305,7 +4299,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "d2c75cc3-e9fa-44f1-918e-e0a210d44c0a"]
+- **rid** => string [default/example = "6cfa7c0a-d2fb-43e2-a7cb-4c367ec027d6"]
 
 
 
@@ -4371,7 +4365,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "26d36f15-4923-4d64-ace8-a4894d902b10"]
+- **rid** => string [default/example = "88a25840-68b5-4f21-8acc-e36d4459f2d5"]
 
 
 
@@ -4622,7 +4616,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "47042bba-8cc4-4909-8af9-9b7e507d83f5"]
+- **id** => string [default/example = "c06c3ce9-caeb-45a1-84d9-028cb21c7edb"]
 - **target_type** => i32 [default/example = 0]
 
 
