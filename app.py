@@ -244,9 +244,8 @@ async def is_staff(user_id: int, base_perm: int) -> Union[bool, int, StaffMember
         staff_perm = None
     else:
         async with aiohttp.ClientSession() as sess:
-            async with sess.get(f"https://api.fateslist.xyz/flamepaw/_getperm?user_id={user_id}") as res:
-                staff_perm = await res.text()
-                staff_perm = orjson.loads(staff_perm)
+            async with sess.get(f"http://localhost:1234/perms/{user_id}") as res:
+                staff_perm = await res.json()
     if not staff_perm:
         staff_perm = {"fname": "Unknown", "id": "0", "staff_id": "0", "perm": 0}
     sm = StaffMember(name=staff_perm["fname"], id=staff_perm["id"], staff_id=staff_perm["staff_id"],

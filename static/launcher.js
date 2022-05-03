@@ -9,7 +9,7 @@ loadModule("utils", "/_static/utils.js?v=m1")
 loadModule("ws", "/_static/ws.js?v=m225")
 loadModule("cms", "/_static/cms.js?v=m199")
 loadModule("wsactions", "/_static/wsactions.js?v=m110")
-loadModule("routers", "/_static/routers.js?v=m54") // Change this on router add/remove
+loadModule("routers", "/_static/routers.js?v=m56") // Change this on router add/remove
 loadModule("alert", "/_static/alert.js?v=m3")
 
 function lynxInfo() {

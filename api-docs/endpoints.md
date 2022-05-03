@@ -139,7 +139,7 @@ Returns the index for bots and servers
 
 **Query parameters**
 
-- **target_type** => (Optional) string [default/example = "bot"]
+- **target_type** => i32 [default/example = 1]
 
 
 
@@ -4114,7 +4114,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "f1881003-98c0-4d28-aa6b-8befb22ec0d4"]
+- **parent_id** => (Optional) string [default/example = "b8eb0c06-dd94-4881-b563-3e13419a4fd6"]
 
 
 
@@ -4140,7 +4140,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "f1881003-98c0-4d28-aa6b-8befb22ec0d4"
+    "parent_id": "b8eb0c06-dd94-4881-b563-3e13419a4fd6"
 }
 ```
 
@@ -4205,7 +4205,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "b4ae8fee-ca8e-424d-b32f-ff0fe014f2d0"]
+- **id** => (Optional) string [default/example = "4145bf70-ccbe-4a5c-a52a-3c068792c3fc"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4235,7 +4235,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "b4ae8fee-ca8e-424d-b32f-ff0fe014f2d0",
+    "id": "4145bf70-ccbe-4a5c-a52a-3c068792c3fc",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4299,7 +4299,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "6cfa7c0a-d2fb-43e2-a7cb-4c367ec027d6"]
+- **rid** => string [default/example = "5d6817ea-6046-40d6-836a-b4265ee40d0d"]
 
 
 
@@ -4365,7 +4365,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "88a25840-68b5-4f21-8acc-e36d4459f2d5"]
+- **rid** => string [default/example = "e87c3ca9-eedf-458d-9c62-90fd9b6dbd94"]
 
 
 
@@ -4616,7 +4616,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "c06c3ce9-caeb-45a1-84d9-028cb21c7edb"]
+- **id** => string [default/example = "be583ae1-da5e-4b48-85ac-0367ca88de19"]
 - **target_type** => i32 [default/example = 0]
 
 
