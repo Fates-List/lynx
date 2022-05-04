@@ -2722,7 +2722,7 @@ async def add_staff(data: UserActionWithReason):
             "channel_id": channel_id,
             "embed": embed,
             "content": """
-Please join our staff server first of all: https://fateslist.xyz/banappeal/invite
+Please join our staff server first of all: https://fateslist.xyz/staffserver/invite
 
 Then head on over to https://lynx.fateslist.xyz to read our staff guide and get started!
             """
