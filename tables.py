@@ -20,6 +20,7 @@ from piccolo.columns.defaults.timestamptz import TimestamptzNow
 from piccolo.columns.defaults.uuid import UUID4
 from piccolo.table import Table
 from decimal import Decimal
+import secrets
 
 # Should have feature parity, be sure to always update whenever used
 # api_token, webhook_secret intentionally omitted
@@ -604,6 +605,52 @@ class Features(Table, tablename="features"):
         primary_key=False,
         unique=False,
         secret=False,
+    )
+
+class FrostpawClient(Table, tablename="frostpaw_clients"):
+    id = Text(
+        null=False,
+        primary_key=True,
+        default=lambda: secrets.token_urlsafe().replace(".", "")
+    )
+    
+    name = Text(
+        null=False,
+    )
+    
+    domain = Text(
+        null=False,
+    )
+    
+    privacy_policy = Text(
+        null=False,
+    )
+
+    secret= Text(
+        null=False,
+        default=secrets.token_urlsafe
+    )
+
+class UserConnection(Table, tablename="user_connections"):
+    user_id = ForeignKey(
+        references=Users,
+        on_delete=OnDelete.cascade,
+        on_update=OnUpdate.cascade,
+        null=True,
+        primary_key=True,
+    )
+
+    client_id = Text(
+        null=False
+    )
+
+    refresh_token = Text(
+        null=False
+    )
+
+    expires_on = Timestamptz(
+        null=False,
+        default=TimestamptzNow
     )
 
 

@@ -27,7 +27,9 @@ before the user token such as `User abcdef` is supported and can be
 used to avoid ambiguity but is not required outside of endpoints that 
 have both a user and a bot authentication option such as Get Votes. 
 In such endpoints, the default will always be a bot auth unless 
-you prefix the token with `User`
+you prefix the token with `User`. **A access token (for custom clients)
+can also be used on *most* endpoints as long as the token is prefixed with 
+``Frostpaw``**
 
 ## Base Response
 
@@ -2273,7 +2275,16 @@ Due to massive changes, this API cannot be mapped onto any v2 API
 ### Get OAuth2 Link
 #### GET /oauth2
 
+
 Returns the oauth2 link used to login with. ``reason`` contains the state UUID
+
+- `Frostpaw-Server` header must be set to `https://fateslist.xyz` if you are a custom client
+- If you are a custom client, then ignore the state present here and instead set `state` to `Bayshine.${YOUR CLIENT ID}.${CURRENT TIME}.${HMAC PAYLOAD}` where 
+client ID is the client ID given during whitelisting, CURRENT TIME is the current time in Unix Epoch and HMAC PAYLOAD is that same current time HMAC-SHA256
+signed with your client secret given to you during whitelisting. **You must calculate state server side**
+
+Once login succeeds and is authorized by the user, then the user will be redirected to ${YOUR DOMAIN}/frostpaw?data=${BASE64 encoded OauthUserLogin}
+
 
 **Path parameters**
 
@@ -2316,10 +2327,122 @@ Returns the oauth2 link used to login with. ``reason`` contains the state UUID
 **Authorization Needed** | 
 
 
+### Get Frostpaw Client
+#### GET /frostpaw/clients/{id}
+
+
+Returns the Frostpaw client with the given ID.
+        
+
+**Path parameters**
+
+- **id** => string [default/example = "client id here"]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **id** => string [default/example = ""]
+- **name** => string [default/example = ""]
+- **domain** => string [default/example = ""]
+- **privacy_policy** => string [default/example = ""]
+- **secret** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "id": "",
+    "name": "",
+    "domain": "",
+    "privacy_policy": "",
+    "secret": null
+}
+```
+**Authorization Needed** | 
+
+
+### Refresh Frostpaw Token
+#### POST /frostpaw/clients/{client_id}/refresh
+
+
+Returns the Frostpaw client with the given ID.
+        
+
+**Path parameters**
+
+- **id** => string [default/example = "client id here"]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **done** => bool [default/example = true]
+- **reason** => (Optional) string [default/example = "Reason for error, if any"]
+- **context** => (Optional) string [default/example = "Refresh token, if everything went ok :)"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": "Reason for error, if any",
+    "context": "Refresh token, if everything went ok :)"
+}
+```
+**Authorization Needed** | 
+
+
 ### Create OAuth2 Login
 #### POST /oauth2
 
-Creates a oauth2 login given a code
+
+Creates a oauth2 login given a code. 
+
+**The below is already done for you by the actual site**
+
+- Set `frostpaw` in the JSON if you are a custom client
+- `Frostpaw-Server` header must be set to `https://fateslist.xyz`
+- ``frostpaw_blood`` (client ID), ``frostpaw_claw`` (hmac'd time you sent) and 
+``frostpaw_claw_unseathe_time`` (time you sent in state) are internal fields used 
+by the site to login.
+
 
 **Path parameters**
 
@@ -2335,6 +2458,10 @@ Creates a oauth2 login given a code
 
 - **code** => string [default/example = "code from discord oauth"]
 - **state** => (Optional) string [default/example = "Random UUID right now"]
+- **frostpaw** => bool [default/example = true]
+- **frostpaw_blood** => None (unknown value type)
+- **frostpaw_claw** => None (unknown value type)
+- **frostpaw_claw_unseathe_time** => None (unknown value type)
 
 
 
@@ -2343,7 +2470,11 @@ Creates a oauth2 login given a code
 ```json
 {
     "code": "code from discord oauth",
-    "state": "Random UUID right now"
+    "state": "Random UUID right now",
+    "frostpaw": true,
+    "frostpaw_blood": null,
+    "frostpaw_claw": null,
+    "frostpaw_claw_unseathe_time": null
 }
 ```
 
@@ -2351,6 +2482,7 @@ Creates a oauth2 login given a code
 
 - **state** => i32 [default/example = 0]
 - **token** => string [default/example = ""]
+- **refresh_token** => None (unknown value type)
 - **user** => Struct User 
 	- **id** => string [default/example = ""]
 	- **username** => string [default/example = ""]
@@ -2373,6 +2505,7 @@ Creates a oauth2 login given a code
 {
     "state": 0,
     "token": "",
+    "refresh_token": null,
     "user": {
         "id": "",
         "username": "",
@@ -4114,7 +4247,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "b8eb0c06-dd94-4881-b563-3e13419a4fd6"]
+- **parent_id** => (Optional) string [default/example = "ed940dd9-0676-4d63-80dc-1364444f0d7e"]
 
 
 
@@ -4140,7 +4273,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "b8eb0c06-dd94-4881-b563-3e13419a4fd6"
+    "parent_id": "ed940dd9-0676-4d63-80dc-1364444f0d7e"
 }
 ```
 
@@ -4205,7 +4338,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "4145bf70-ccbe-4a5c-a52a-3c068792c3fc"]
+- **id** => (Optional) string [default/example = "20660903-776d-4814-9af1-763a60966597"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4235,7 +4368,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "4145bf70-ccbe-4a5c-a52a-3c068792c3fc",
+    "id": "20660903-776d-4814-9af1-763a60966597",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4299,7 +4432,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "5d6817ea-6046-40d6-836a-b4265ee40d0d"]
+- **rid** => string [default/example = "c85d3d35-872b-4d53-ae77-1faec93e9f54"]
 
 
 
@@ -4365,7 +4498,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "e87c3ca9-eedf-458d-9c62-90fd9b6dbd94"]
+- **rid** => string [default/example = "f61a280e-64d0-41da-b4dc-949187623e58"]
 
 
 
@@ -4616,7 +4749,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "be583ae1-da5e-4b48-85ac-0367ca88de19"]
+- **id** => string [default/example = "021bd3e1-741c-4ced-bd06-9d713877ced3"]
 - **target_type** => i32 [default/example = 0]
 
 
