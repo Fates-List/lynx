@@ -71,9 +71,7 @@ After a "Gateway Task" acks, the task itself will have stopped however **the gat
 
 ### Authentication
 
-Currently in development.
-
-The ``AUTH`` command has been added and is required to call ``SUB`` and ``ARCHIVE``. This was readded for privacy and security reasons.
+The ``AUTH`` command has been added and may be required for sensitive information. We may start limiting events based on this in the future.
 
 ### Pings
 
