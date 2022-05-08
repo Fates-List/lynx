@@ -73,6 +73,9 @@ After a "Gateway Task" acks, the task itself will have stopped however **the gat
 
 The ``AUTH`` command has been added and may be required for sensitive information. We may start limiting events based on this in the future.
 
+The ``CHECKAUTH`` command can be sent to check if the user is authenticated or not.
+
+
 ### Pings
 
 Your websocket client must send a ``PING`` every 20 seconds or it will be disconnected. A ping frame does not count though is still needed, it must be a message frame containing the string ``PING``. 
@@ -197,6 +200,14 @@ class FatesWsConn:
         await self.ws.send("SUB")
         return _Sub(self)
 
+    async def authorise(self, token: str):
+        """Sends auth."""
+        await self.ws.send(f"AUTH {token}")
+
+    async def is_auth(self):
+        """This will immediately return but will lead to a FatesHeader"""
+        await self.ws.send("CHECKAUTH")
+
     async def archive(self):
         if self.gw_task:
             raise RuntimeError("GWTask cannot already be running")
@@ -227,9 +238,8 @@ class FatesWsConn:
         return _Sub(self)
 
 @asynccontextmanager
-async def fates_ws(id: int, mode: WsMode, token: str):
+async def fates_ws(id: int, mode: WsMode):
     async with websockets.connect(f"wss://api.fateslist.xyz/ws/{id}?mode={mode.value}") as websocket:
-        await websocket.send(f"AUTH {token}") # Send auth immediately after
 	conn = FatesWsConn(websocket)
 	yield conn
         conn.up = False
@@ -240,11 +250,11 @@ async def fates_ws(id: int, mode: WsMode, token: str):
 1. Bot subscription example
 
 ```py
-import test
+import test # Or whatever you named it as
 import asyncio
 
 async def main():
-    async with test.fates_ws(519850436899897346, test.WsMode.bot, TOKEN) as bot:
+    async with test.fates_ws(519850436899897346, test.WsMode.bot) as bot:
         sub = await bot.sub()
         async for v in sub:
             print(v)

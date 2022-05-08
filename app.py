@@ -1030,6 +1030,7 @@ async def exp_rollout_menu(ws: WebSocket, _: dict):
 - Description: **{exp_prop.description}**
 - Status: **{exp_prop.status.name} ({exp_prop.status.value})**
 - Minimum Perm Filter (does not apply to full/controlled rollouts): **{exp_prop.min_perm}**
+- Rollout Allowed (only applies to mass/controlled roll outs): **{exp_prop.rollout_allowed}**
 """
 
         users = await app.state.db.fetch("SELECT user_id FROM users WHERE experiments && $1", [exp.value])
@@ -1164,6 +1165,14 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
     elif not ws.state.verified:
         return {"resp": "spld", "e": SPLDEvent.verify_needed}
 
+    try:
+        exp = Experiments(int(data["exp"]))
+        exp_prop = exp_props[exp.name]
+        if not exp_prop.rollout_allowed:
+            return {"detail": "Rollout not allowed for this experiment"}
+    except:
+        return {"detail": "Invalid experiment data"}
+
     await app.state.db.execute("UPDATE lynx_data SET default_user_experiments = array_remove(default_user_experiments, $1)", int(data["exp"]))
     await app.state.db.execute("UPDATE lynx_data SET default_user_experiments = array_append(default_user_experiments, $1)", int(data["exp"]))
 
@@ -1198,13 +1207,21 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
     elif not ws.state.verified:
         return {"resp": "spld", "e": SPLDEvent.verify_needed}
 
+    try:
+        exp = Experiments(int(data["exp"]))
+        exp_prop = exp_props[exp.name]
+        if not exp_prop.rollout_allowed:
+            return {"detail": "Rollout not allowed for this experiment"}
+    except:
+        return {"detail": "Invalid experiment data"}
+
     # Check percent prefix
     try:
         if data["limit"].endswith("%"):     
             user_count = await app.state.db.fetchval("SELECT COUNT(1) FROM users")
             data["limit"] = math.ceil((float(data["limit"][:-1]) / 100) * user_count)
     except:
-        return {"detail": "Invalid experiment data"}
+        return {"detail": "Invalid limit data"}
 
     users = await app.state.db.fetch("SELECT user_id, experiments FROM users WHERE NOT (experiments && $1) ORDER BY RANDOM() LIMIT $2", [int(data["exp"])], int(data["limit"]))        
 
