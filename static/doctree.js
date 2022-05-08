@@ -115,4 +115,19 @@ function shadowsightSidebar(sidebar) {
     $(sidebarHtml).insertBefore("#sidebar")
 }
 
+function shadowsightExtraPanes() {
+    if(experiments.hasExperiment(UserExperiments.DevPortal)) {
+        info("Shadowsight", "Adding dev portal pane")
+        $(`
+        <li class="nav-item">
+        <a id="develop-nav" href="https://lynx.fateslist.xyz/develop" class="nav-link"
+          ><i class="nav-icon fa-solid fa-server"></i>
+          <p>
+            Dev Portal
+          </p></a>
+      </li>
+        `).insertBefore("#links-nav-li")
+    }
+}
+
 readyModule("doctree")

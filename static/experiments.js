@@ -19,6 +19,7 @@ class UserExperiments {
     // These are the supported experiments by lynx
     static Unknown = new UserExperiments(0)
     static LynxExperimentRolloutView = new UserExperiments(2)
+    static DevPortal = new UserExperiments(6)
   
     constructor(id) {
       this.id = id

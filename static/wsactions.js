@@ -14,6 +14,7 @@ actions = {
         experiments = UserExperiments.from(data.experiments)
         shadowsightTreeParse(data.tree)
         shadowsightSidebar(data.sidebar)
+        shadowsightExtraPanes()
     },
     "spld": (data) => {
         debug("Silverpelt", `Got a spld (server pipeline) message: ${data.e}`)
@@ -49,6 +50,10 @@ actions = {
             $("#ws-info").text(`Websocket still connected as of ${Date()}`)
         } else if(data.e == "T") {
             info(...data.data)
+        } else if(data.e == "NF") {
+            // Not found
+            alert("not-found", "Whoa!", "This page apparently does not exist")
+            setData({"title": "404 - Not Found", "data": `<h4>404<h4><a href='/'>Index</a><br/><a href='/links'>Some Useful Links</a></h4><h5>Animus magic is broken today! If you are trying to view a experimental page, click the White reload icon at the bottom right corner of your screen</h5>`})
         }
     },
     "notifs": (data) => {

@@ -162,22 +162,32 @@ async function loadContent(loc) {
         return
     } else if(loc.startsWith("/exp-rollout")) {
         waitForWsAndLoad({loc: loc}, (data) => {
-            info("Lionblaze", "Requested for experimental experiment rollout menu")
+            info("Lionblaze", "Requested for experiment rollout menu")
             wsSend({request: "exp_rollout_menu"})
+        })     
+        return    
+    } else if(loc.startsWith("/develop")) {
+        waitForWsAndLoad({loc: loc}, (data) => {
+            info("Lionblaze", "Requested for experimental dev portal")
+            wsSend({request: "dev_portal"})
         })     
         return    
     } else if(loc.startsWith("/widgets")) {
         window.location.reload()
     } else if(loc.startsWith("/sscheck")) {
-	waitForWsAndLoad({loc: loc}, (data) => {
+	    waitForWsAndLoad({loc: loc}, (data) => {
             info("Lionblaze", "Requested for sscheck")
-	    wsSend({request: "ss_check"})
+	        wsSend({request: "ss_check"})
         })
     } else if(loc.startsWith("/missing-perms")) {
         alert("missing-perms", "Missing Permissions", "You do not have permission to view this page.")
         setData({"title": "401 - Unauthorized", "data": `Unauthorized User`})
     } else {
-        setData({"title": "404 - Not Found", "data": `<h4>404<h4><a href='/'>Index</a><br/><a href='/links'>Some Useful Links</a></h4><h5>Animus magic is broken today! If you are trying to view a experimental page, click the White reload icon at the bottom right corner of your screen</h5>`})
+        // Give a best guess at what the user is trying to view
+	    waitForWsAndLoad({loc: loc}, (data) => {
+            info("Lionblaze", "Requested for sscheck")
+	        wsSend({request: loc.replaceAll("/", "")})
+        })
     }
 
     linkMod()

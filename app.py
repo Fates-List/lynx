@@ -83,6 +83,7 @@ class SPLDEvent(enum.Enum):
     verify_needed = "VN"
     ping = "P"
     telemetry = "T"
+    not_found = "NF"
 
 async def fetch_user(user_id: int):
     async with aiohttp.ClientSession() as sess:
@@ -2254,6 +2255,15 @@ WHERE c.contype = 'f'""")
         "data": msgpack.packb(jsonable_encoder(data))
     }
 
+@ws_action("dev_portal")
+async def dev_portal(ws: WebSocket, data: dict):
+    if Experiments.DevPortal not in ws.state.experiments:
+        return {"resp": "spld", "e": SPLDEvent.missing_perms}
+    return {
+        "title": "Dev Portal",
+        "data": "Dev Portal HTML"
+    }
+
 @ws_action("data_deletion")
 async def data_deletion(ws: WebSocket, data: dict):
     user_id = data.get("user", None)
@@ -2548,7 +2558,7 @@ async def ws(ws: WebSocket, cli: str, plat: str):
                 "exp-rollout": "m3298",
             },
             "sidebar": [["login", "fa-arrow-right-to-bracket", "loginUser()"], ["status", "fa-gear"], ["privacy", "fa-shield"], ["surveys", "fa-shield"], ["staff-guide", "fa-rectangle-list"], ["apply-for-staff", "fa-rectangle-list"], ["links", "fa-link"]],
-            "responses": ['docs', 'links', 'staff_guide', 'index', "request_logs", "reset_page", "staff_apps", "loa", "user_actions", "bot_actions", "staff_verify", "survey_list", "admin"],
+            "responses": ['docs', 'links', 'staff_guide', 'index', "request_logs", "reset_page", "staff_apps", "loa", "user_actions", "bot_actions", "staff_verify", "survey_list", "admin", "dev_portal"],
             "actions": ['user_action', 'bot_action', 'eternatus', 'survey', 'data_deletion', 'apply_staff', 'send_loa', 'exp_rollout_add', 'exp_rollout_del', 'exp_rollout_all', 'exp_rollout_undo', 'exp_rollout_controlled'],
             "tree": docs,
             "experiments": ws.state.experiments
@@ -2629,6 +2639,7 @@ async def ws(ws: WebSocket, cli: str, plat: str):
                 f = ws_action_dict.get(data.get("request"))
                 if not f:
                     print(f"could not find {data}")
+                    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.not_found}, ws)
                 else:
                     asyncio.create_task(do_task_and_send(f, ws, data))
             except Exception as exc:
