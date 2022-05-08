@@ -310,8 +310,6 @@ This section was made to handle GDPR requirements such as data requests and dele
 
 ### Request Data
 
-To see how to decode this raw data into any target electronic format of your choosing, click [here](https://lynx.fateslist.xyz/docs/read-data-requests)
-
 <div class="form-group">
     <label for='user-id'>User ID</label>
     <input 

@@ -2250,9 +2250,24 @@ WHERE c.contype = 'f'""")
     for bot in data["owners"]:
         data["owned_bots"].append(await app.state.db.fetch("SELECT * FROM bots WHERE bot_id = $1", bot["bot_id"]))
 
+    def ddr_parse(d: dict | object):
+        if isinstance(d, int):
+            if d > 9007199254740991:
+                return str(d)
+            return d
+        elif isinstance(d, list):
+            return [ddr_parse(i) for i in d]
+        elif isinstance(d, dict):
+            nd = {} # New dict
+            for k, v in d.items():
+                nd[k] = ddr_parse(v)
+            return nd
+        else:
+            return d        
+
     return {
         "user": str(user_id),
-        "data": msgpack.packb(jsonable_encoder(data))
+        "data": orjson.dumps(ddr_parse(jsonable_encoder(data)))
     }
 
 @ws_action("dev_portal")

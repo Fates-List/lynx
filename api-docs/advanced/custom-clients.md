@@ -48,13 +48,11 @@ To do this:
 - Store the current location if needed (use localStorage if needed)
 
 - Send a request to [Get Oauth2 Login](https://lynx.fateslist.xyz/docs/endpoints#get-oauth2-link).
-    - Make sure to send the `Frostpaw` header (set this to the client version in the [About](https://fateslist.xyz/frostpaw/about) section)
-    - Set the `Frostpaw-Server` header to the *origin servers hostname*, for example https://fateslist.xyz/bot/admin/add would set `Frostpaw-Server` as https://fateslist.xyz. You can use `window.location.origin` for this if this is for a browser
-    - The final redirect *requires explicit whitelisting, possible source code access and a possible POC to be shown*
+    - Set the `Frostpaw-Server` header to `https://fateslist.xyz` always.
 
-- The final url to redirect to will be in the `url` key of the response
-
-- We will guide you on the `redirect_uri` side. There is a very specific route you will need to give (official sunbeam client uses `/frostpaw/login` and as such your client will also need to expose a `/frostpaw/login` route as well)
+- Then create state with the format of: `Bayshine.{CTIME}.{HTIME}`
+    - CTIME is the current time in seconds (``int(time.time())`` or ``(new Date).getTime()/1000``)
+    - HTIME is the ``HMAC-SHA512 of the current time with the key being your client secret (which will be given to you on whitelist and will have a regenerate option on our upcoming dev portal)
 
 ### Get login information
 

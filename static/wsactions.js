@@ -148,7 +148,7 @@ ${data.error_bots.join('\n\n')}
             document.querySelector("#request-btn").innerText = "Request"
             return
         } else if(data.data) {
-            downloadTextFile(data.data, `data-request-${data.user}.fates`)
+            downloadTextFile(data.data, `data-request-${data.user}.json`)
             hljs.highlightAll();
             window.highlightJsBadge();
             document.querySelector("#request-btn").innerText = "Requested"
