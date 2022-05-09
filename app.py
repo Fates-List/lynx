@@ -2274,9 +2274,11 @@ WHERE c.contype = 'f'""")
 async def dev_portal(ws: WebSocket, data: dict):
     if Experiments.DevPortal not in ws.state.experiments:
         return {"resp": "spld", "e": SPLDEvent.missing_perms}
+
+    user_connections = await app.state.db.fetch("SELECT client_id, expires_on FROM user_connections WHERE user_id = $1", int(ws.state.user["id"]))
+
     return {
-        "title": "Dev Portal",
-        "data": "Dev Portal HTML"
+        "connections": user_connections
     }
 
 @ws_action("data_deletion")
@@ -2573,7 +2575,7 @@ async def ws(ws: WebSocket, cli: str, plat: str):
                 "exp-rollout": "m3298",
             },
             "sidebar": [["login", "fa-arrow-right-to-bracket", "loginUser()"], ["status", "fa-gear"], ["privacy", "fa-shield"], ["surveys", "fa-shield"], ["staff-guide", "fa-rectangle-list"], ["apply-for-staff", "fa-rectangle-list"], ["links", "fa-link"]],
-            "responses": ['docs', 'links', 'staff_guide', 'index', "request_logs", "reset_page", "staff_apps", "loa", "user_actions", "bot_actions", "staff_verify", "survey_list", "admin", "dev_portal"],
+            "responses": ['docs', 'links', 'staff_guide', 'index', "request_logs", "reset_page", "staff_apps", "loa", "user_actions", "bot_actions", "staff_verify", "survey_list", "admin"],
             "actions": ['user_action', 'bot_action', 'eternatus', 'survey', 'data_deletion', 'apply_staff', 'send_loa', 'exp_rollout_add', 'exp_rollout_del', 'exp_rollout_all', 'exp_rollout_undo', 'exp_rollout_controlled'],
             "tree": docs,
             "experiments": ws.state.experiments

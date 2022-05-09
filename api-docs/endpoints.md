@@ -45,90 +45,6 @@ A default API Response will be of the below format:
 
 ## Core
 
-### Post Stats
-#### POST /bots/{id}/stats
-
-
-Post stats to the list
-
-Example:
-```py
-import requests
-
-# On dpy, guild_count is usually the below
-guild_count = len(client.guilds)
-
-# If you are using sharding
-shard_count = len(client.shards)
-shards = client.shards.keys()
-
-# Optional: User count (this is not accurate for larger bots)
-user_count = len(client.users) 
-
-def post_stats(bot_id: int, guild_count: int):
-    res = requests.post(f"{api_url}/bots/{bot_id}/stats", json={"guild_count": guild_count})
-    json = res.json()
-    if res.status != 200:
-        # Handle an error in the api
-        ...
-    return json
-```
-
-
-**Path parameters**
-
-- **id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-- **guild_count** => i64 [default/example = 3939]
-- **shard_count** => (Optional) i64 [default/example = 48484]
-- **shards** => (Optional) (Array) i32 [default/example = 149]i32 [default/example = 22020]
-- **user_count** => (Optional) i64 [default/example = 39393]
-
-
-
-**Request Body Example**
-
-```json
-{
-    "guild_count": 3939,
-    "shard_count": 48484,
-    "shards": [
-        149,
-        22020
-    ],
-    "user_count": 39393
-}
-```
-
-**Response Body Description**
-
-- **done** => bool [default/example = false]
-- **reason** => None (unknown value type)
-- **context** => None (unknown value type)
-
-
-
-**Response Body Example**
-
-```json
-{
-    "done": false,
-    "reason": null,
-    "context": null
-}
-```
-**Authorization Needed** | [Bot](https://lynx.fateslist.xyz/docs/endpoints#authorization)
-
-
 ### Index
 #### GET /index
 
@@ -159,12 +75,12 @@ Returns the index for bots and servers
 **Response Body Description**
 
 - **new** => (Array) Struct IndexBot 
-	- **guild_count** => i64 [default/example = 0]
-	- **description** => string [default/example = ""]
-	- **banner** => string [default/example = ""]
+	- **guild_count** => i64 [default/example = 30]
+	- **description** => string [default/example = "My description"]
+	- **banner** => string [default/example = "My banner or default banner url"]
 	- **nsfw** => bool [default/example = false]
-	- **votes** => i64 [default/example = 0]
-	- **state** => i32 [default/example = 0]
+	- **votes** => i64 [default/example = 40]
+	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
 		- **id** => string [default/example = ""]
 		- **username** => string [default/example = ""]
@@ -176,16 +92,17 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
+	- **created_at** => string [default/example = "2022-05-09T10:34:48.354940250Z"]
 
 
 
 - **top_voted** => (Array) Struct IndexBot 
-	- **guild_count** => i64 [default/example = 0]
-	- **description** => string [default/example = ""]
-	- **banner** => string [default/example = ""]
+	- **guild_count** => i64 [default/example = 30]
+	- **description** => string [default/example = "My description"]
+	- **banner** => string [default/example = "My banner or default banner url"]
 	- **nsfw** => bool [default/example = false]
-	- **votes** => i64 [default/example = 0]
-	- **state** => i32 [default/example = 0]
+	- **votes** => i64 [default/example = 40]
+	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
 		- **id** => string [default/example = ""]
 		- **username** => string [default/example = ""]
@@ -197,16 +114,17 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
+	- **created_at** => string [default/example = "2022-05-09T10:34:48.354940250Z"]
 
 
 
 - **certified** => (Array) Struct IndexBot 
-	- **guild_count** => i64 [default/example = 0]
-	- **description** => string [default/example = ""]
-	- **banner** => string [default/example = ""]
+	- **guild_count** => i64 [default/example = 30]
+	- **description** => string [default/example = "My description"]
+	- **banner** => string [default/example = "My banner or default banner url"]
 	- **nsfw** => bool [default/example = false]
-	- **votes** => i64 [default/example = 0]
-	- **state** => i32 [default/example = 0]
+	- **votes** => i64 [default/example = 40]
+	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
 		- **id** => string [default/example = ""]
 		- **username** => string [default/example = ""]
@@ -218,6 +136,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
+	- **created_at** => string [default/example = "2022-05-09T10:34:48.354940250Z"]
 
 
 
@@ -246,12 +165,12 @@ Returns the index for bots and servers
 {
     "new": [
         {
-            "guild_count": 0,
-            "description": "",
-            "banner": "",
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
             "nsfw": false,
-            "votes": 0,
-            "state": 0,
+            "votes": 40,
+            "state": 3,
             "user": {
                 "id": "",
                 "username": "",
@@ -260,17 +179,18 @@ Returns the index for bots and servers
                 "bot": false,
                 "status": "Unknown"
             },
-            "flags": []
+            "flags": [],
+            "created_at": "2022-05-09T10:34:48.354940250Z"
         }
     ],
     "top_voted": [
         {
-            "guild_count": 0,
-            "description": "",
-            "banner": "",
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
             "nsfw": false,
-            "votes": 0,
-            "state": 0,
+            "votes": 40,
+            "state": 3,
             "user": {
                 "id": "",
                 "username": "",
@@ -279,17 +199,18 @@ Returns the index for bots and servers
                 "bot": false,
                 "status": "Unknown"
             },
-            "flags": []
+            "flags": [],
+            "created_at": "2022-05-09T10:34:48.354940250Z"
         }
     ],
     "certified": [
         {
-            "guild_count": 0,
-            "description": "",
-            "banner": "",
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
             "nsfw": false,
-            "votes": 0,
-            "state": 0,
+            "votes": 40,
+            "state": 3,
             "user": {
                 "id": "",
                 "username": "",
@@ -298,7 +219,8 @@ Returns the index for bots and servers
                 "bot": false,
                 "status": "Unknown"
             },
-            "flags": []
+            "flags": [],
+            "created_at": "2022-05-09T10:34:48.354940250Z"
         }
     ],
     "tags": [
@@ -622,289 +544,6 @@ Given the preview and long description, parse it and give the sanitized output. 
 **Authorization Needed** | 
 
 
-### Get Bot
-#### GET /bots/{id}
-
-
-Fetches bot information given a bot ID. If not found, 404 will be returned. 
-
-This endpoint handles both bot IDs and client IDs
-
-Differences from API v2:
-
-- Unlike API v2, this does not support compact or no_cache. Owner order is also guaranteed
-- *``long_description/css`` is sanitized with ammonia by default, use `long_description_raw` if you want the unsanitized version*
-- All responses are cached for a short period of time. There is *no* way to opt out unlike API v2
-- Some fields have been renamed or removed (such as ``promos`` which may be readded at a later date)
-
-This API returns some empty fields such as ``webhook``, ``webhook_secret``, ``api_token`` and more. 
-This is to allow reuse of the Bot struct in Get Bot Settings which *does* contain this sensitive data. 
-
-**Set the Frostpaw header if you are a custom client. Send Frostpaw-Invite header on invites**
-
-
-**Path parameters**
-
-- **id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
-
-
-
-- **description** => string [default/example = ""]
-- **tags** => (Array) 
-- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **last_updated_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **last_stats_post** => string [default/example = "1970-01-01T00:00:00Z"]
-- **long_description** => string [default/example = "blah blah blah"]
-- **long_description_raw** => string [default/example = "blah blah blah unsanitized"]
-- **long_description_type** => i32 [default/example = 1]
-- **guild_count** => i64 [default/example = 0]
-- **shard_count** => i64 [default/example = 493]
-- **user_count** => i64 [default/example = 0]
-- **shards** => (Array) 
-- **prefix** => (Optional) string [default/example = "Some prefix, null = slash command"]
-- **library** => string [default/example = ""]
-- **invite** => (Optional) string [default/example = "Raw invite, null = auto-generated. Use invite_link instead"]
-- **invite_link** => string [default/example = "https://discord.com/api/oauth2/authorize...."]
-- **invite_amount** => i32 [default/example = 48]
-- **owners** => (Array) Struct BotOwner 
-	- **user** => Struct User 
-		- **id** => string [default/example = ""]
-		- **username** => string [default/example = ""]
-		- **disc** => string [default/example = ""]
-		- **avatar** => string [default/example = ""]
-		- **bot** => bool [default/example = false]
-		- **status** => string [default/example = "Unknown"]
-
-
-
-	- **main** => bool [default/example = false]
-
-
-
-- **owners_html** => string [default/example = ""]
-- **features** => (Array) Struct Feature 
-	- **id** => string [default/example = ""]
-	- **name** => string [default/example = ""]
-	- **viewed_as** => string [default/example = ""]
-	- **description** => string [default/example = ""]
-
-
-
-- **state** => i32 [default/example = 0]
-- **page_style** => i32 [default/example = 1]
-- **website** => (Optional) string [default/example = "https://example.com"]
-- **support** => (Optional) string [default/example = ""]
-- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
-- **css** => string [default/example = "<style></style>"]
-- **css_raw** => string [default/example = "unsanitized css"]
-- **votes** => i64 [default/example = 0]
-- **total_votes** => i64 [default/example = 0]
-- **vanity** => string [default/example = ""]
-- **donate** => (Optional) string [default/example = "https://paypal.me/example"]
-- **privacy_policy** => (Optional) string [default/example = "https://lynx.fateslist.xyz/frostpaw/tos"]
-- **nsfw** => bool [default/example = false]
-- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **keep_banner_decor** => bool [default/example = false]
-- **client_id** => string [default/example = ""]
-- **flags** => (Array) 
-- **action_logs** => (Array) Struct ActionLog 
-	- **user_id** => string [default/example = ""]
-	- **bot_id** => string [default/example = ""]
-	- **action** => i32 [default/example = 0]
-	- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
-
-
-
-- **vpm** => (Optional) (Array) Struct VotesPerMonth 
-	- **votes** => i64 [default/example = 0]
-	- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
-
-
-
-- **uptime_checks_total** => (Optional) i32 [default/example = 30]
-- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
-- **commands** => (Array) Struct BotCommand 
-	- **cmd_type** => i32 [default/example = 0]
-	- **groups** => (Array) 
-	- **name** => string [default/example = ""]
-	- **vote_locked** => bool [default/example = false]
-	- **description** => string [default/example = ""]
-	- **args** => (Array) 
-	- **examples** => (Array) 
-	- **premium_only** => bool [default/example = false]
-	- **notes** => (Array) 
-	- **doc_link** => None (unknown value type)
-	- **id** => None (unknown value type)
-	- **nsfw** => bool [default/example = false]
-
-
-
-- **resources** => (Array) Struct Resource 
-	- **id** => None (unknown value type)
-	- **resource_title** => string [default/example = ""]
-	- **resource_link** => string [default/example = ""]
-	- **resource_description** => string [default/example = ""]
-
-
-
-- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
-- **webhook_type** => None (unknown value type)
-- **webhook_hmac_only** => None (unknown value type)
-- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-
-
-
-**Response Body Example**
-
-```json
-{
-    "user": {
-        "id": "",
-        "username": "",
-        "disc": "",
-        "avatar": "",
-        "bot": false,
-        "status": "Unknown"
-    },
-    "description": "",
-    "tags": [],
-    "created_at": "1970-01-01T00:00:00Z",
-    "last_updated_at": "1970-01-01T00:00:00Z",
-    "last_stats_post": "1970-01-01T00:00:00Z",
-    "long_description": "blah blah blah",
-    "long_description_raw": "blah blah blah unsanitized",
-    "long_description_type": 1,
-    "guild_count": 0,
-    "shard_count": 493,
-    "user_count": 0,
-    "shards": [],
-    "prefix": "Some prefix, null = slash command",
-    "library": "",
-    "invite": "Raw invite, null = auto-generated. Use invite_link instead",
-    "invite_link": "https://discord.com/api/oauth2/authorize....",
-    "invite_amount": 48,
-    "owners": [
-        {
-            "user": {
-                "id": "",
-                "username": "",
-                "disc": "",
-                "avatar": "",
-                "bot": false,
-                "status": "Unknown"
-            },
-            "main": false
-        }
-    ],
-    "owners_html": "",
-    "features": [
-        {
-            "id": "",
-            "name": "",
-            "viewed_as": "",
-            "description": ""
-        }
-    ],
-    "state": 0,
-    "page_style": 1,
-    "website": "https://example.com",
-    "support": "",
-    "github": "https://github.com/Fates-List/FatesList",
-    "css": "<style></style>",
-    "css_raw": "unsanitized css",
-    "votes": 0,
-    "total_votes": 0,
-    "vanity": "",
-    "donate": "https://paypal.me/example",
-    "privacy_policy": "https://lynx.fateslist.xyz/frostpaw/tos",
-    "nsfw": false,
-    "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
-    "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
-    "keep_banner_decor": false,
-    "client_id": "",
-    "flags": [],
-    "action_logs": [
-        {
-            "user_id": "",
-            "bot_id": "",
-            "action": 0,
-            "action_time": "1970-01-01T00:00:00Z",
-            "context": "Some context as to why the action happened"
-        }
-    ],
-    "vpm": [
-        {
-            "votes": 0,
-            "ts": "1970-01-01T00:00:00Z"
-        }
-    ],
-    "uptime_checks_total": 30,
-    "uptime_checks_failed": 19,
-    "commands": [
-        {
-            "cmd_type": 0,
-            "groups": [],
-            "name": "",
-            "vote_locked": false,
-            "description": "",
-            "args": [],
-            "examples": [],
-            "premium_only": false,
-            "notes": [],
-            "doc_link": null,
-            "id": null,
-            "nsfw": false
-        }
-    ],
-    "resources": [
-        {
-            "id": null,
-            "resource_title": "",
-            "resource_link": "",
-            "resource_description": ""
-        }
-    ],
-    "webhook": "This will be redacted for Get Bot endpoint",
-    "webhook_secret": "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint",
-    "webhook_type": null,
-    "webhook_hmac_only": null,
-    "api_token": "This will be redacted for Get Bot endpoint"
-}
-```
-**Authorization Needed** | 
-
-
 ### Search List
 #### GET /search?q={query}
 
@@ -940,12 +579,12 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 **Response Body Description**
 
 - **bots** => (Array) Struct IndexBot 
-	- **guild_count** => i64 [default/example = 0]
-	- **description** => string [default/example = ""]
-	- **banner** => string [default/example = ""]
+	- **guild_count** => i64 [default/example = 30]
+	- **description** => string [default/example = "My description"]
+	- **banner** => string [default/example = "My banner or default banner url"]
 	- **nsfw** => bool [default/example = false]
-	- **votes** => i64 [default/example = 0]
-	- **state** => i32 [default/example = 0]
+	- **votes** => i64 [default/example = 40]
+	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
 		- **id** => string [default/example = ""]
 		- **username** => string [default/example = ""]
@@ -957,16 +596,17 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
+	- **created_at** => string [default/example = "2022-05-09T10:34:48.355075247Z"]
 
 
 
 - **servers** => (Array) Struct IndexBot 
-	- **guild_count** => i64 [default/example = 0]
-	- **description** => string [default/example = ""]
-	- **banner** => string [default/example = ""]
+	- **guild_count** => i64 [default/example = 30]
+	- **description** => string [default/example = "My description"]
+	- **banner** => string [default/example = "My banner or default banner url"]
 	- **nsfw** => bool [default/example = false]
-	- **votes** => i64 [default/example = 0]
-	- **state** => i32 [default/example = 0]
+	- **votes** => i64 [default/example = 40]
+	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
 		- **id** => string [default/example = ""]
 		- **username** => string [default/example = ""]
@@ -978,6 +618,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
+	- **created_at** => string [default/example = "2022-05-09T10:34:48.355075456Z"]
 
 
 
@@ -1061,12 +702,12 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 {
     "bots": [
         {
-            "guild_count": 0,
-            "description": "",
-            "banner": "",
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
             "nsfw": false,
-            "votes": 0,
-            "state": 0,
+            "votes": 40,
+            "state": 3,
             "user": {
                 "id": "",
                 "username": "",
@@ -1075,17 +716,18 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "bot": false,
                 "status": "Unknown"
             },
-            "flags": []
+            "flags": [],
+            "created_at": "2022-05-09T10:34:48.355075247Z"
         }
     ],
     "servers": [
         {
-            "guild_count": 0,
-            "description": "",
-            "banner": "",
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
             "nsfw": false,
-            "votes": 0,
-            "state": 0,
+            "votes": 40,
+            "state": 3,
             "user": {
                 "id": "",
                 "username": "",
@@ -1094,7 +736,8 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "bot": false,
                 "status": "Unknown"
             },
-            "flags": []
+            "flags": [],
+            "created_at": "2022-05-09T10:34:48.355075456Z"
         }
     ],
     "profiles": [
@@ -1195,12 +838,12 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 **Response Body Description**
 
 - **bots** => (Array) Struct IndexBot 
-	- **guild_count** => i64 [default/example = 0]
-	- **description** => string [default/example = ""]
-	- **banner** => string [default/example = ""]
+	- **guild_count** => i64 [default/example = 30]
+	- **description** => string [default/example = "My description"]
+	- **banner** => string [default/example = "My banner or default banner url"]
 	- **nsfw** => bool [default/example = false]
-	- **votes** => i64 [default/example = 0]
-	- **state** => i32 [default/example = 0]
+	- **votes** => i64 [default/example = 40]
+	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
 		- **id** => string [default/example = ""]
 		- **username** => string [default/example = ""]
@@ -1212,16 +855,17 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
+	- **created_at** => string [default/example = "2022-05-09T10:34:48.355358723Z"]
 
 
 
 - **servers** => (Array) Struct IndexBot 
-	- **guild_count** => i64 [default/example = 0]
-	- **description** => string [default/example = ""]
-	- **banner** => string [default/example = ""]
+	- **guild_count** => i64 [default/example = 30]
+	- **description** => string [default/example = "My description"]
+	- **banner** => string [default/example = "My banner or default banner url"]
 	- **nsfw** => bool [default/example = false]
-	- **votes** => i64 [default/example = 0]
-	- **state** => i32 [default/example = 0]
+	- **votes** => i64 [default/example = 40]
+	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
 		- **id** => string [default/example = ""]
 		- **username** => string [default/example = ""]
@@ -1233,6 +877,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
+	- **created_at** => string [default/example = "2022-05-09T10:34:48.355358993Z"]
 
 
 
@@ -1267,12 +912,12 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 {
     "bots": [
         {
-            "guild_count": 0,
-            "description": "",
-            "banner": "",
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
             "nsfw": false,
-            "votes": 0,
-            "state": 0,
+            "votes": 40,
+            "state": 3,
             "user": {
                 "id": "",
                 "username": "",
@@ -1281,17 +926,18 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "bot": false,
                 "status": "Unknown"
             },
-            "flags": []
+            "flags": [],
+            "created_at": "2022-05-09T10:34:48.355358723Z"
         }
     ],
     "servers": [
         {
-            "guild_count": 0,
-            "description": "",
-            "banner": "",
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
             "nsfw": false,
-            "votes": 0,
-            "state": 0,
+            "votes": 40,
+            "state": 3,
             "user": {
                 "id": "",
                 "username": "",
@@ -1300,7 +946,8 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "bot": false,
                 "status": "Unknown"
             },
-            "flags": []
+            "flags": [],
+            "created_at": "2022-05-09T10:34:48.355358993Z"
         }
     ],
     "profiles": [],
@@ -1326,539 +973,6 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 }
 ```
 **Authorization Needed** | 
-
-
-### Random Bot
-#### GET /random-bot
-
-
-Fetches a random bot on the list
-
-Example:
-```py
-import requests
-
-def random_bot():
-    res = requests.get(api_url"/random-bot")
-    json = res.json()
-    if res.status != 200:
-        # Handle an error in the api
-        ...
-    return json
-```
-
-
-**Path parameters**
-
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **guild_count** => i64 [default/example = 0]
-- **description** => string [default/example = ""]
-- **banner** => string [default/example = ""]
-- **nsfw** => bool [default/example = false]
-- **votes** => i64 [default/example = 0]
-- **state** => i32 [default/example = 0]
-- **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
-
-
-
-- **flags** => (Array) 
-
-
-
-**Response Body Example**
-
-```json
-{
-    "guild_count": 0,
-    "description": "",
-    "banner": "",
-    "nsfw": false,
-    "votes": 0,
-    "state": 0,
-    "user": {
-        "id": "",
-        "username": "",
-        "disc": "",
-        "avatar": "",
-        "bot": false,
-        "status": "Unknown"
-    },
-    "flags": []
-}
-```
-**Authorization Needed** | 
-
-
-### Random Server
-#### GET /random-server
-
-
-Fetches a random server on the list
-
-Example:
-```py
-import requests
-
-def random_server():
-    res = requests.get(api_url"/random-server")
-    json = res.json()
-    if res.status != 200:
-        # Handle an error in the api
-        ...
-    return json
-```
-
-
-**Path parameters**
-
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **guild_count** => i64 [default/example = 0]
-- **description** => string [default/example = ""]
-- **banner** => string [default/example = ""]
-- **nsfw** => bool [default/example = false]
-- **votes** => i64 [default/example = 0]
-- **state** => i32 [default/example = 0]
-- **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
-
-
-
-- **flags** => (Array) 
-
-
-
-**Response Body Example**
-
-```json
-{
-    "guild_count": 0,
-    "description": "",
-    "banner": "",
-    "nsfw": false,
-    "votes": 0,
-    "state": 0,
-    "user": {
-        "id": "",
-        "username": "",
-        "disc": "",
-        "avatar": "",
-        "bot": false,
-        "status": "Unknown"
-    },
-    "flags": []
-}
-```
-**Authorization Needed** | 
-
-
-### Get Server
-#### GET /servers/{id}
-
-
-Fetches server information given a server/guild ID. If not found, 404 will be returned. 
-
-Differences from API v2:
-
-- Unlike API v2, this does not support compact or no_cache.
-- *``long_description/css`` is sanitized with ammonia by default, use `long_description_raw` if you want the unsanitized version*
-- All responses are cached for a short period of time. There is *no* way to opt out unlike API v2
-- Some fields have been renamed or removed
-- ``invite_link`` is returned, however is always None unless ``Frostpaw-Invite`` header is set which then pushes you into 
-server privacy restrictions. **Note that when fetching invite links, requires login to join is now enabled by default for all new servers**
-
-**Set the Frostpaw header if you are a custom client**
-
-
-**Path parameters**
-
-- **id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
-
-
-
-- **description** => string [default/example = ""]
-- **tags** => (Array) 
-- **long_description_type** => i32 [default/example = 1]
-- **long_description** => string [default/example = ""]
-- **long_description_raw** => string [default/example = ""]
-- **vanity** => (Optional) string [default/example = "server-vanity"]
-- **guild_count** => i64 [default/example = 0]
-- **invite_amount** => i32 [default/example = 0]
-- **invite_link** => (Optional) string [default/example = "Only present if ``Frostpaw-Invite`` header is set"]
-- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **state** => i32 [default/example = 0]
-- **flags** => (Array) 
-- **css** => string [default/example = ""]
-- **css_raw** => string [default/example = "unsanitized css"]
-- **website** => (Optional) string [default/example = "https://frostpaw.com"]
-- **banner_card** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-card.png"]
-- **banner_page** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-page.png"]
-- **keep_banner_decor** => bool [default/example = false]
-- **nsfw** => bool [default/example = false]
-- **votes** => i64 [default/example = 0]
-- **total_votes** => i64 [default/example = 0]
-
-
-
-**Response Body Example**
-
-```json
-{
-    "user": {
-        "id": "",
-        "username": "",
-        "disc": "",
-        "avatar": "",
-        "bot": false,
-        "status": "Unknown"
-    },
-    "description": "",
-    "tags": [],
-    "long_description_type": 1,
-    "long_description": "",
-    "long_description_raw": "",
-    "vanity": "server-vanity",
-    "guild_count": 0,
-    "invite_amount": 0,
-    "invite_link": "Only present if ``Frostpaw-Invite`` header is set",
-    "created_at": "1970-01-01T00:00:00Z",
-    "state": 0,
-    "flags": [],
-    "css": "",
-    "css_raw": "unsanitized css",
-    "website": "https://frostpaw.com",
-    "banner_card": "https://frostpaw.com/assets/img/banner-card.png",
-    "banner_page": "https://frostpaw.com/assets/img/banner-page.png",
-    "keep_banner_decor": false,
-    "nsfw": false,
-    "votes": 0,
-    "total_votes": 0
-}
-```
-**Authorization Needed** | 
-
-
-### Get Bot Votes
-#### GET /users/{user_id}/bots/{bot_id}/votes
-
-
-Endpoint to check amount of votes a user has.
-
-- votes | The amount of votes the bot has.
-- voted | Whether or not the user has *ever* voted for a bot in the past 8 hours.
-- timestamps | A list of timestamps that the user has voted for the bot on that has been recorded.
-- expiry | The time when the user can next vote.
-- vote_right_now | Whether a user can vote right now. Currently equivalent to `vote_epoch < 0`.
-
-Differences from API v2:
-
-- Unlike API v2, this does not require authorization to use. This is to speed up responses and 
-because the last thing people want to scrape are Fates List user votes anyways. **You should not rely on
-this however, it is prone to change *anytime* in the future and may return bogus results for privacy purposes**.
-- ``vts`` has been renamed to ``timestamps``
-
-**This endpoint will return bogus data if "Hide votes to other users" is enabled**
-
-
-**Path parameters**
-
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **votes** => i64 [default/example = 10]
-- **voted** => bool [default/example = true]
-- **vote_right_now** => bool [default/example = false]
-- **expiry** => u64 [default/example = 101]
-- **timestamps** => (Array) string [default/example = "1970-01-01T00:00:00Z"]
-
-
-
-**Response Body Example**
-
-```json
-{
-    "votes": 10,
-    "voted": true,
-    "vote_right_now": false,
-    "expiry": 101,
-    "timestamps": [
-        "1970-01-01T00:00:00Z"
-    ]
-}
-```
-**Authorization Needed** | 
-
-
-### Get Server Votes
-#### GET /users/{user_id}/servers/{server_id}/votes
-
-
-Endpoint to check amount of votes a user has.
-
-- votes | The amount of votes the server has.
-- voted | Whether or not the user has *ever* voted for a server in the past 8 hours.
-- timestamps | A list of timestamps that the user has voted for the server on that has been recorded.
-- expiry | The time when the user can next vote.
-- vote_right_now | Whether a user can vote right now. Currently equivalent to `vote_epoch < 0`.
-
-Differences from API v2:
-
-- Unlike API v2, this does not require authorization to use. This is to speed up responses and 
-because the last thing people want to scrape are Fates List user votes anyways. **You should not rely on
-this however, it is prone to change *anytime* in the future and may return bogus results for privacy purposes**.
-- ``vts`` has been renamed to ``timestamps``
-
-**This endpoint will return bogus data if "Hide votes to other users" is enabled**
-
-
-**Path parameters**
-
-- **user_id** => i64 [default/example = 0]
-- **server_id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **votes** => i64 [default/example = 10]
-- **voted** => bool [default/example = true]
-- **vote_right_now** => bool [default/example = false]
-- **expiry** => u64 [default/example = 101]
-- **timestamps** => (Array) string [default/example = "1970-01-01T00:00:00Z"]
-
-
-
-**Response Body Example**
-
-```json
-{
-    "votes": 10,
-    "voted": true,
-    "vote_right_now": false,
-    "expiry": 101,
-    "timestamps": [
-        "1970-01-01T00:00:00Z"
-    ]
-}
-```
-**Authorization Needed** | 
-
-
-### Create Bot Vote
-#### PATCH /users/{user_id}/bots/{bot_id}/votes
-
-
-This endpoint creates a vote for a bot which can only be done *once* every 8 hours.
-
-
-**Path parameters**
-
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-- **test** => bool [default/example = true]
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **done** => bool [default/example = false]
-- **reason** => (Optional) string [default/example = "Why the vote failed or any extra info to send to client if the vote succeeded"]
-- **context** => (Optional) string [default/example = "Some context on the vote"]
-
-
-
-**Response Body Example**
-
-```json
-{
-    "done": false,
-    "reason": "Why the vote failed or any extra info to send to client if the vote succeeded",
-    "context": "Some context on the vote"
-}
-```
-**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
-
-
-### Create Server Vote
-#### PATCH /users/{user_id}/servers/{server_id}/votes
-
-
-This endpoint creates a vote for a server which can only be done *once* every 8 hours
-and is independent from a bot vote.
-
-
-**Path parameters**
-
-- **user_id** => i64 [default/example = 0]
-- **server_id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-- **test** => bool [default/example = true]
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **done** => bool [default/example = false]
-- **reason** => (Optional) string [default/example = "Why the vote failed or any extra info to send to client if the vote succeeded"]
-- **context** => (Optional) string [default/example = "Some context on the vote"]
-
-
-
-**Response Body Example**
-
-```json
-{
-    "done": false,
-    "reason": "Why the vote failed or any extra info to send to client if the vote succeeded",
-    "context": "Some context on the vote"
-}
-```
-**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
 
 
 ### Mini Index
@@ -1943,331 +1057,6 @@ index is too costly and making a new struct is unnecessary.
 }
 ```
 **Authorization Needed** | 
-
-
-### Gets Bot Settings
-#### GET /users/{user_id}/bots/{bot_id}/settings
-
-
-Returns the bot settings.
-
-The ``bot`` key here is equivalent to a Get Bot response with the following
-differences:
-
-- Sensitive fields (see examples) like ``webhook``, ``api_token``, 
-``webhook_secret`` and others are filled out here
-- This API only allows bot owners to use it, otherwise it will 400!
-
-Staff members *should* instead use Lynx.
-
-Due to massive changes, this API cannot be mapped onto any v2 API
-
-
-**Path parameters**
-
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **bot** => Struct Bot 
-	- **user** => Struct User 
-		- **id** => string [default/example = ""]
-		- **username** => string [default/example = ""]
-		- **disc** => string [default/example = ""]
-		- **avatar** => string [default/example = ""]
-		- **bot** => bool [default/example = false]
-		- **status** => string [default/example = "Unknown"]
-
-
-
-	- **description** => string [default/example = ""]
-	- **tags** => (Array) 
-	- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **last_updated_at** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **last_stats_post** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **long_description** => string [default/example = "blah blah blah"]
-	- **long_description_raw** => string [default/example = "blah blah blah unsanitized"]
-	- **long_description_type** => i32 [default/example = 1]
-	- **guild_count** => i64 [default/example = 0]
-	- **shard_count** => i64 [default/example = 493]
-	- **user_count** => i64 [default/example = 0]
-	- **shards** => (Array) 
-	- **prefix** => (Optional) string [default/example = "Some prefix, null = slash command"]
-	- **library** => string [default/example = ""]
-	- **invite** => (Optional) string [default/example = "Raw invite, null = auto-generated. Use invite_link instead"]
-	- **invite_link** => string [default/example = "https://discord.com/api/oauth2/authorize...."]
-	- **invite_amount** => i32 [default/example = 48]
-	- **owners** => (Array) Struct BotOwner 
-		- **user** => Struct User 
-			- **id** => string [default/example = ""]
-			- **username** => string [default/example = ""]
-			- **disc** => string [default/example = ""]
-			- **avatar** => string [default/example = ""]
-			- **bot** => bool [default/example = false]
-			- **status** => string [default/example = "Unknown"]
-
-
-
-		- **main** => bool [default/example = false]
-
-
-
-	- **owners_html** => string [default/example = ""]
-	- **features** => (Array) Struct Feature 
-		- **id** => string [default/example = ""]
-		- **name** => string [default/example = ""]
-		- **viewed_as** => string [default/example = ""]
-		- **description** => string [default/example = ""]
-
-
-
-	- **state** => i32 [default/example = 0]
-	- **page_style** => i32 [default/example = 1]
-	- **website** => (Optional) string [default/example = "https://example.com"]
-	- **support** => (Optional) string [default/example = ""]
-	- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
-	- **css** => string [default/example = "<style></style>"]
-	- **css_raw** => string [default/example = "unsanitized css"]
-	- **votes** => i64 [default/example = 0]
-	- **total_votes** => i64 [default/example = 0]
-	- **vanity** => string [default/example = ""]
-	- **donate** => (Optional) string [default/example = "https://paypal.me/example"]
-	- **privacy_policy** => (Optional) string [default/example = "https://lynx.fateslist.xyz/frostpaw/tos"]
-	- **nsfw** => bool [default/example = false]
-	- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-	- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-	- **keep_banner_decor** => bool [default/example = false]
-	- **client_id** => string [default/example = ""]
-	- **flags** => (Array) 
-	- **action_logs** => (Array) Struct ActionLog 
-		- **user_id** => string [default/example = ""]
-		- **bot_id** => string [default/example = ""]
-		- **action** => i32 [default/example = 0]
-		- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
-		- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
-
-
-
-	- **vpm** => (Optional) (Array) Struct VotesPerMonth 
-		- **votes** => i64 [default/example = 0]
-		- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
-
-
-
-	- **uptime_checks_total** => (Optional) i32 [default/example = 30]
-	- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
-	- **commands** => (Array) Struct BotCommand 
-		- **cmd_type** => i32 [default/example = 0]
-		- **groups** => (Array) 
-		- **name** => string [default/example = ""]
-		- **vote_locked** => bool [default/example = false]
-		- **description** => string [default/example = ""]
-		- **args** => (Array) 
-		- **examples** => (Array) 
-		- **premium_only** => bool [default/example = false]
-		- **notes** => (Array) 
-		- **doc_link** => None (unknown value type)
-		- **id** => None (unknown value type)
-		- **nsfw** => bool [default/example = false]
-
-
-
-	- **resources** => (Array) Struct Resource 
-		- **id** => None (unknown value type)
-		- **resource_title** => string [default/example = ""]
-		- **resource_link** => string [default/example = ""]
-		- **resource_description** => string [default/example = ""]
-
-
-
-	- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-	- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
-	- **webhook_type** => None (unknown value type)
-	- **webhook_hmac_only** => None (unknown value type)
-	- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-
-
-
-- **context** => Struct BotSettingsContext 
-	- **tags** => (Array) Struct Tag 
-		- **name** => string [default/example = ""]
-		- **iconify_data** => string [default/example = ""]
-		- **id** => string [default/example = ""]
-		- **owner_guild** => None (unknown value type)
-
-
-
-	- **features** => (Array) Struct Feature 
-		- **id** => string [default/example = ""]
-		- **name** => string [default/example = ""]
-		- **viewed_as** => string [default/example = ""]
-		- **description** => string [default/example = ""]
-
-
-
-
-
-
-
-
-
-**Response Body Example**
-
-```json
-{
-    "bot": {
-        "user": {
-            "id": "",
-            "username": "",
-            "disc": "",
-            "avatar": "",
-            "bot": false,
-            "status": "Unknown"
-        },
-        "description": "",
-        "tags": [],
-        "created_at": "1970-01-01T00:00:00Z",
-        "last_updated_at": "1970-01-01T00:00:00Z",
-        "last_stats_post": "1970-01-01T00:00:00Z",
-        "long_description": "blah blah blah",
-        "long_description_raw": "blah blah blah unsanitized",
-        "long_description_type": 1,
-        "guild_count": 0,
-        "shard_count": 493,
-        "user_count": 0,
-        "shards": [],
-        "prefix": "Some prefix, null = slash command",
-        "library": "",
-        "invite": "Raw invite, null = auto-generated. Use invite_link instead",
-        "invite_link": "https://discord.com/api/oauth2/authorize....",
-        "invite_amount": 48,
-        "owners": [
-            {
-                "user": {
-                    "id": "",
-                    "username": "",
-                    "disc": "",
-                    "avatar": "",
-                    "bot": false,
-                    "status": "Unknown"
-                },
-                "main": false
-            }
-        ],
-        "owners_html": "",
-        "features": [
-            {
-                "id": "",
-                "name": "",
-                "viewed_as": "",
-                "description": ""
-            }
-        ],
-        "state": 0,
-        "page_style": 1,
-        "website": "https://example.com",
-        "support": "",
-        "github": "https://github.com/Fates-List/FatesList",
-        "css": "<style></style>",
-        "css_raw": "unsanitized css",
-        "votes": 0,
-        "total_votes": 0,
-        "vanity": "",
-        "donate": "https://paypal.me/example",
-        "privacy_policy": "https://lynx.fateslist.xyz/frostpaw/tos",
-        "nsfw": false,
-        "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
-        "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
-        "keep_banner_decor": false,
-        "client_id": "",
-        "flags": [],
-        "action_logs": [
-            {
-                "user_id": "",
-                "bot_id": "",
-                "action": 0,
-                "action_time": "1970-01-01T00:00:00Z",
-                "context": "Some context as to why the action happened"
-            }
-        ],
-        "vpm": [
-            {
-                "votes": 0,
-                "ts": "1970-01-01T00:00:00Z"
-            }
-        ],
-        "uptime_checks_total": 30,
-        "uptime_checks_failed": 19,
-        "commands": [
-            {
-                "cmd_type": 0,
-                "groups": [],
-                "name": "",
-                "vote_locked": false,
-                "description": "",
-                "args": [],
-                "examples": [],
-                "premium_only": false,
-                "notes": [],
-                "doc_link": null,
-                "id": null,
-                "nsfw": false
-            }
-        ],
-        "resources": [
-            {
-                "id": null,
-                "resource_title": "",
-                "resource_link": "",
-                "resource_description": ""
-            }
-        ],
-        "webhook": "This will be redacted for Get Bot endpoint",
-        "webhook_secret": "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint",
-        "webhook_type": null,
-        "webhook_hmac_only": null,
-        "api_token": "This will be redacted for Get Bot endpoint"
-    },
-    "context": {
-        "tags": [
-            {
-                "name": "",
-                "iconify_data": "",
-                "id": "",
-                "owner_guild": null
-            }
-        ],
-        "features": [
-            {
-                "id": "",
-                "name": "",
-                "viewed_as": "",
-                "description": ""
-            }
-        ]
-    }
-}
-```
-**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
 
 
 ## Auth
@@ -2363,6 +1152,16 @@ Returns the Frostpaw client with the given ID.
 - **domain** => string [default/example = ""]
 - **privacy_policy** => string [default/example = ""]
 - **secret** => None (unknown value type)
+- **owner** => Struct User 
+	- **id** => string [default/example = ""]
+	- **username** => string [default/example = ""]
+	- **disc** => string [default/example = ""]
+	- **avatar** => string [default/example = ""]
+	- **bot** => bool [default/example = false]
+	- **status** => string [default/example = "Unknown"]
+
+
+
 
 
 
@@ -2374,7 +1173,15 @@ Returns the Frostpaw client with the given ID.
     "name": "",
     "domain": "",
     "privacy_policy": "",
-    "secret": null
+    "secret": null,
+    "owner": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    }
 }
 ```
 **Authorization Needed** | 
@@ -2726,6 +1533,787 @@ token ever gets leaked.
 
 
 ## Bot Actions
+
+### Post Stats
+#### POST /bots/{id}/stats
+
+
+Post stats to the list
+
+Example:
+```py
+import requests
+
+# On dpy, guild_count is usually the below
+guild_count = len(client.guilds)
+
+# If you are using sharding
+shard_count = len(client.shards)
+shards = client.shards.keys()
+
+# Optional: User count (this is not accurate for larger bots)
+user_count = len(client.users) 
+
+def post_stats(bot_id: int, guild_count: int):
+    res = requests.post(f"{api_url}/bots/{bot_id}/stats", json={"guild_count": guild_count})
+    json = res.json()
+    if res.status != 200:
+        # Handle an error in the api
+        ...
+    return json
+```
+
+
+**Path parameters**
+
+- **id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+- **guild_count** => i64 [default/example = 3939]
+- **shard_count** => (Optional) i64 [default/example = 48484]
+- **shards** => (Optional) (Array) i32 [default/example = 149]i32 [default/example = 22020]
+- **user_count** => (Optional) i64 [default/example = 39393]
+
+
+
+**Request Body Example**
+
+```json
+{
+    "guild_count": 3939,
+    "shard_count": 48484,
+    "shards": [
+        149,
+        22020
+    ],
+    "user_count": 39393
+}
+```
+
+**Response Body Description**
+
+- **done** => bool [default/example = false]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": false,
+    "reason": null,
+    "context": null
+}
+```
+**Authorization Needed** | [Bot](https://lynx.fateslist.xyz/docs/endpoints#authorization)
+
+
+### Get Bot
+#### GET /bots/{id}
+
+
+Fetches bot information given a bot ID. If not found, 404 will be returned. 
+
+This endpoint handles both bot IDs and client IDs
+
+Differences from API v2:
+
+- Unlike API v2, this does not support compact or no_cache. Owner order is also guaranteed
+- *``long_description/css`` is sanitized with ammonia by default, use `long_description_raw` if you want the unsanitized version*
+- All responses are cached for a short period of time. There is *no* way to opt out unlike API v2
+- Some fields have been renamed or removed (such as ``promos`` which may be readded at a later date)
+
+This API returns some empty fields such as ``webhook``, ``webhook_secret``, ``api_token`` and more. 
+This is to allow reuse of the Bot struct in Get Bot Settings which *does* contain this sensitive data. 
+
+**Set the Frostpaw header if you are a custom client. Send Frostpaw-Invite header on invites**
+    
+
+**Path parameters**
+
+- **id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **user** => Struct User 
+	- **id** => string [default/example = ""]
+	- **username** => string [default/example = ""]
+	- **disc** => string [default/example = ""]
+	- **avatar** => string [default/example = ""]
+	- **bot** => bool [default/example = false]
+	- **status** => string [default/example = "Unknown"]
+
+
+
+- **description** => string [default/example = ""]
+- **tags** => (Array) 
+- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
+- **last_updated_at** => string [default/example = "1970-01-01T00:00:00Z"]
+- **last_stats_post** => string [default/example = "1970-01-01T00:00:00Z"]
+- **long_description** => string [default/example = "blah blah blah"]
+- **long_description_raw** => string [default/example = "blah blah blah unsanitized"]
+- **long_description_type** => i32 [default/example = 1]
+- **guild_count** => i64 [default/example = 0]
+- **shard_count** => i64 [default/example = 493]
+- **user_count** => i64 [default/example = 0]
+- **shards** => (Array) 
+- **prefix** => (Optional) string [default/example = "Some prefix, null = slash command"]
+- **library** => string [default/example = ""]
+- **invite** => (Optional) string [default/example = "Raw invite, null = auto-generated. Use invite_link instead"]
+- **invite_link** => string [default/example = "https://discord.com/api/oauth2/authorize...."]
+- **invite_amount** => i32 [default/example = 48]
+- **owners** => (Array) Struct BotOwner 
+	- **user** => Struct User 
+		- **id** => string [default/example = ""]
+		- **username** => string [default/example = ""]
+		- **disc** => string [default/example = ""]
+		- **avatar** => string [default/example = ""]
+		- **bot** => bool [default/example = false]
+		- **status** => string [default/example = "Unknown"]
+
+
+
+	- **main** => bool [default/example = false]
+
+
+
+- **owners_html** => string [default/example = ""]
+- **features** => (Array) Struct Feature 
+	- **id** => string [default/example = ""]
+	- **name** => string [default/example = ""]
+	- **viewed_as** => string [default/example = ""]
+	- **description** => string [default/example = ""]
+
+
+
+- **state** => i32 [default/example = 0]
+- **page_style** => i32 [default/example = 1]
+- **website** => (Optional) string [default/example = "https://example.com"]
+- **support** => (Optional) string [default/example = ""]
+- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
+- **css** => string [default/example = "<style></style>"]
+- **css_raw** => string [default/example = "unsanitized css"]
+- **votes** => i64 [default/example = 0]
+- **total_votes** => i64 [default/example = 0]
+- **vanity** => string [default/example = ""]
+- **donate** => (Optional) string [default/example = "https://paypal.me/example"]
+- **privacy_policy** => (Optional) string [default/example = "https://lynx.fateslist.xyz/frostpaw/tos"]
+- **nsfw** => bool [default/example = false]
+- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **keep_banner_decor** => bool [default/example = false]
+- **client_id** => string [default/example = ""]
+- **flags** => (Array) 
+- **action_logs** => (Array) Struct ActionLog 
+	- **user_id** => string [default/example = ""]
+	- **bot_id** => string [default/example = ""]
+	- **action** => i32 [default/example = 0]
+	- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
+	- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
+
+
+
+- **vpm** => (Optional) (Array) Struct VotesPerMonth 
+	- **votes** => i64 [default/example = 0]
+	- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
+
+
+
+- **uptime_checks_total** => (Optional) i32 [default/example = 30]
+- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
+- **commands** => (Array) Struct BotCommand 
+	- **cmd_type** => i32 [default/example = 0]
+	- **groups** => (Array) 
+	- **name** => string [default/example = ""]
+	- **vote_locked** => bool [default/example = false]
+	- **description** => string [default/example = ""]
+	- **args** => (Array) 
+	- **examples** => (Array) 
+	- **premium_only** => bool [default/example = false]
+	- **notes** => (Array) 
+	- **doc_link** => None (unknown value type)
+	- **id** => None (unknown value type)
+	- **nsfw** => bool [default/example = false]
+
+
+
+- **resources** => (Array) Struct Resource 
+	- **id** => None (unknown value type)
+	- **resource_title** => string [default/example = ""]
+	- **resource_link** => string [default/example = ""]
+	- **resource_description** => string [default/example = ""]
+
+
+
+- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+- **webhook_type** => None (unknown value type)
+- **webhook_hmac_only** => None (unknown value type)
+- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "user": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "description": "",
+    "tags": [],
+    "created_at": "1970-01-01T00:00:00Z",
+    "last_updated_at": "1970-01-01T00:00:00Z",
+    "last_stats_post": "1970-01-01T00:00:00Z",
+    "long_description": "blah blah blah",
+    "long_description_raw": "blah blah blah unsanitized",
+    "long_description_type": 1,
+    "guild_count": 0,
+    "shard_count": 493,
+    "user_count": 0,
+    "shards": [],
+    "prefix": "Some prefix, null = slash command",
+    "library": "",
+    "invite": "Raw invite, null = auto-generated. Use invite_link instead",
+    "invite_link": "https://discord.com/api/oauth2/authorize....",
+    "invite_amount": 48,
+    "owners": [
+        {
+            "user": {
+                "id": "",
+                "username": "",
+                "disc": "",
+                "avatar": "",
+                "bot": false,
+                "status": "Unknown"
+            },
+            "main": false
+        }
+    ],
+    "owners_html": "",
+    "features": [
+        {
+            "id": "",
+            "name": "",
+            "viewed_as": "",
+            "description": ""
+        }
+    ],
+    "state": 0,
+    "page_style": 1,
+    "website": "https://example.com",
+    "support": "",
+    "github": "https://github.com/Fates-List/FatesList",
+    "css": "<style></style>",
+    "css_raw": "unsanitized css",
+    "votes": 0,
+    "total_votes": 0,
+    "vanity": "",
+    "donate": "https://paypal.me/example",
+    "privacy_policy": "https://lynx.fateslist.xyz/frostpaw/tos",
+    "nsfw": false,
+    "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
+    "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
+    "keep_banner_decor": false,
+    "client_id": "",
+    "flags": [],
+    "action_logs": [
+        {
+            "user_id": "",
+            "bot_id": "",
+            "action": 0,
+            "action_time": "1970-01-01T00:00:00Z",
+            "context": "Some context as to why the action happened"
+        }
+    ],
+    "vpm": [
+        {
+            "votes": 0,
+            "ts": "1970-01-01T00:00:00Z"
+        }
+    ],
+    "uptime_checks_total": 30,
+    "uptime_checks_failed": 19,
+    "commands": [
+        {
+            "cmd_type": 0,
+            "groups": [],
+            "name": "",
+            "vote_locked": false,
+            "description": "",
+            "args": [],
+            "examples": [],
+            "premium_only": false,
+            "notes": [],
+            "doc_link": null,
+            "id": null,
+            "nsfw": false
+        }
+    ],
+    "resources": [
+        {
+            "id": null,
+            "resource_title": "",
+            "resource_link": "",
+            "resource_description": ""
+        }
+    ],
+    "webhook": "This will be redacted for Get Bot endpoint",
+    "webhook_secret": "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint",
+    "webhook_type": null,
+    "webhook_hmac_only": null,
+    "api_token": "This will be redacted for Get Bot endpoint"
+}
+```
+**Authorization Needed** | 
+
+
+### Gets Bot Settings
+#### GET /users/{user_id}/bots/{bot_id}/settings
+
+
+Returns the bot settings.
+
+The ``bot`` key here is equivalent to a Get Bot response with the following
+differences:
+
+- Sensitive fields (see examples) like ``webhook``, ``api_token``, 
+``webhook_secret`` and others are filled out here
+- This API only allows bot owners to use it, otherwise it will 400!
+
+Staff members *should* instead use Lynx.
+
+Due to massive changes, this API cannot be mapped onto any v2 API
+    
+
+**Path parameters**
+
+- **user_id** => i64 [default/example = 0]
+- **bot_id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **bot** => Struct Bot 
+	- **user** => Struct User 
+		- **id** => string [default/example = ""]
+		- **username** => string [default/example = ""]
+		- **disc** => string [default/example = ""]
+		- **avatar** => string [default/example = ""]
+		- **bot** => bool [default/example = false]
+		- **status** => string [default/example = "Unknown"]
+
+
+
+	- **description** => string [default/example = ""]
+	- **tags** => (Array) 
+	- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
+	- **last_updated_at** => string [default/example = "1970-01-01T00:00:00Z"]
+	- **last_stats_post** => string [default/example = "1970-01-01T00:00:00Z"]
+	- **long_description** => string [default/example = "blah blah blah"]
+	- **long_description_raw** => string [default/example = "blah blah blah unsanitized"]
+	- **long_description_type** => i32 [default/example = 1]
+	- **guild_count** => i64 [default/example = 0]
+	- **shard_count** => i64 [default/example = 493]
+	- **user_count** => i64 [default/example = 0]
+	- **shards** => (Array) 
+	- **prefix** => (Optional) string [default/example = "Some prefix, null = slash command"]
+	- **library** => string [default/example = ""]
+	- **invite** => (Optional) string [default/example = "Raw invite, null = auto-generated. Use invite_link instead"]
+	- **invite_link** => string [default/example = "https://discord.com/api/oauth2/authorize...."]
+	- **invite_amount** => i32 [default/example = 48]
+	- **owners** => (Array) Struct BotOwner 
+		- **user** => Struct User 
+			- **id** => string [default/example = ""]
+			- **username** => string [default/example = ""]
+			- **disc** => string [default/example = ""]
+			- **avatar** => string [default/example = ""]
+			- **bot** => bool [default/example = false]
+			- **status** => string [default/example = "Unknown"]
+
+
+
+		- **main** => bool [default/example = false]
+
+
+
+	- **owners_html** => string [default/example = ""]
+	- **features** => (Array) Struct Feature 
+		- **id** => string [default/example = ""]
+		- **name** => string [default/example = ""]
+		- **viewed_as** => string [default/example = ""]
+		- **description** => string [default/example = ""]
+
+
+
+	- **state** => i32 [default/example = 0]
+	- **page_style** => i32 [default/example = 1]
+	- **website** => (Optional) string [default/example = "https://example.com"]
+	- **support** => (Optional) string [default/example = ""]
+	- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
+	- **css** => string [default/example = "<style></style>"]
+	- **css_raw** => string [default/example = "unsanitized css"]
+	- **votes** => i64 [default/example = 0]
+	- **total_votes** => i64 [default/example = 0]
+	- **vanity** => string [default/example = ""]
+	- **donate** => (Optional) string [default/example = "https://paypal.me/example"]
+	- **privacy_policy** => (Optional) string [default/example = "https://lynx.fateslist.xyz/frostpaw/tos"]
+	- **nsfw** => bool [default/example = false]
+	- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
+	- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
+	- **keep_banner_decor** => bool [default/example = false]
+	- **client_id** => string [default/example = ""]
+	- **flags** => (Array) 
+	- **action_logs** => (Array) Struct ActionLog 
+		- **user_id** => string [default/example = ""]
+		- **bot_id** => string [default/example = ""]
+		- **action** => i32 [default/example = 0]
+		- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
+		- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
+
+
+
+	- **vpm** => (Optional) (Array) Struct VotesPerMonth 
+		- **votes** => i64 [default/example = 0]
+		- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
+
+
+
+	- **uptime_checks_total** => (Optional) i32 [default/example = 30]
+	- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
+	- **commands** => (Array) Struct BotCommand 
+		- **cmd_type** => i32 [default/example = 0]
+		- **groups** => (Array) 
+		- **name** => string [default/example = ""]
+		- **vote_locked** => bool [default/example = false]
+		- **description** => string [default/example = ""]
+		- **args** => (Array) 
+		- **examples** => (Array) 
+		- **premium_only** => bool [default/example = false]
+		- **notes** => (Array) 
+		- **doc_link** => None (unknown value type)
+		- **id** => None (unknown value type)
+		- **nsfw** => bool [default/example = false]
+
+
+
+	- **resources** => (Array) Struct Resource 
+		- **id** => None (unknown value type)
+		- **resource_title** => string [default/example = ""]
+		- **resource_link** => string [default/example = ""]
+		- **resource_description** => string [default/example = ""]
+
+
+
+	- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+	- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+	- **webhook_type** => None (unknown value type)
+	- **webhook_hmac_only** => None (unknown value type)
+	- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+
+
+
+- **context** => Struct BotSettingsContext 
+	- **tags** => (Array) Struct Tag 
+		- **name** => string [default/example = ""]
+		- **iconify_data** => string [default/example = ""]
+		- **id** => string [default/example = ""]
+		- **owner_guild** => None (unknown value type)
+
+
+
+	- **features** => (Array) Struct Feature 
+		- **id** => string [default/example = ""]
+		- **name** => string [default/example = ""]
+		- **viewed_as** => string [default/example = ""]
+		- **description** => string [default/example = ""]
+
+
+
+
+
+
+
+
+
+**Response Body Example**
+
+```json
+{
+    "bot": {
+        "user": {
+            "id": "",
+            "username": "",
+            "disc": "",
+            "avatar": "",
+            "bot": false,
+            "status": "Unknown"
+        },
+        "description": "",
+        "tags": [],
+        "created_at": "1970-01-01T00:00:00Z",
+        "last_updated_at": "1970-01-01T00:00:00Z",
+        "last_stats_post": "1970-01-01T00:00:00Z",
+        "long_description": "blah blah blah",
+        "long_description_raw": "blah blah blah unsanitized",
+        "long_description_type": 1,
+        "guild_count": 0,
+        "shard_count": 493,
+        "user_count": 0,
+        "shards": [],
+        "prefix": "Some prefix, null = slash command",
+        "library": "",
+        "invite": "Raw invite, null = auto-generated. Use invite_link instead",
+        "invite_link": "https://discord.com/api/oauth2/authorize....",
+        "invite_amount": 48,
+        "owners": [
+            {
+                "user": {
+                    "id": "",
+                    "username": "",
+                    "disc": "",
+                    "avatar": "",
+                    "bot": false,
+                    "status": "Unknown"
+                },
+                "main": false
+            }
+        ],
+        "owners_html": "",
+        "features": [
+            {
+                "id": "",
+                "name": "",
+                "viewed_as": "",
+                "description": ""
+            }
+        ],
+        "state": 0,
+        "page_style": 1,
+        "website": "https://example.com",
+        "support": "",
+        "github": "https://github.com/Fates-List/FatesList",
+        "css": "<style></style>",
+        "css_raw": "unsanitized css",
+        "votes": 0,
+        "total_votes": 0,
+        "vanity": "",
+        "donate": "https://paypal.me/example",
+        "privacy_policy": "https://lynx.fateslist.xyz/frostpaw/tos",
+        "nsfw": false,
+        "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
+        "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
+        "keep_banner_decor": false,
+        "client_id": "",
+        "flags": [],
+        "action_logs": [
+            {
+                "user_id": "",
+                "bot_id": "",
+                "action": 0,
+                "action_time": "1970-01-01T00:00:00Z",
+                "context": "Some context as to why the action happened"
+            }
+        ],
+        "vpm": [
+            {
+                "votes": 0,
+                "ts": "1970-01-01T00:00:00Z"
+            }
+        ],
+        "uptime_checks_total": 30,
+        "uptime_checks_failed": 19,
+        "commands": [
+            {
+                "cmd_type": 0,
+                "groups": [],
+                "name": "",
+                "vote_locked": false,
+                "description": "",
+                "args": [],
+                "examples": [],
+                "premium_only": false,
+                "notes": [],
+                "doc_link": null,
+                "id": null,
+                "nsfw": false
+            }
+        ],
+        "resources": [
+            {
+                "id": null,
+                "resource_title": "",
+                "resource_link": "",
+                "resource_description": ""
+            }
+        ],
+        "webhook": "This will be redacted for Get Bot endpoint",
+        "webhook_secret": "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint",
+        "webhook_type": null,
+        "webhook_hmac_only": null,
+        "api_token": "This will be redacted for Get Bot endpoint"
+    },
+    "context": {
+        "tags": [
+            {
+                "name": "",
+                "iconify_data": "",
+                "id": "",
+                "owner_guild": null
+            }
+        ],
+        "features": [
+            {
+                "id": "",
+                "name": "",
+                "viewed_as": "",
+                "description": ""
+            }
+        ]
+    }
+}
+```
+**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
+
+
+### Random Bot
+#### GET /random-bot
+
+
+Fetches a random bot on the list
+
+Example:
+```py
+import requests
+
+def random_bot():
+    res = requests.get(api_url"/random-bot")
+    json = res.json()
+    if res.status != 200:
+        # Handle an error in the api
+        ...
+    return json
+```
+    
+
+**Path parameters**
+
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **guild_count** => i64 [default/example = 30]
+- **description** => string [default/example = "My description"]
+- **banner** => string [default/example = "My banner or default banner url"]
+- **nsfw** => bool [default/example = false]
+- **votes** => i64 [default/example = 40]
+- **state** => i32 [default/example = 3]
+- **user** => Struct User 
+	- **id** => string [default/example = ""]
+	- **username** => string [default/example = ""]
+	- **disc** => string [default/example = ""]
+	- **avatar** => string [default/example = ""]
+	- **bot** => bool [default/example = false]
+	- **status** => string [default/example = "Unknown"]
+
+
+
+- **flags** => (Array) 
+- **created_at** => string [default/example = "2022-05-09T10:34:48.355673470Z"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "guild_count": 30,
+    "description": "My description",
+    "banner": "My banner or default banner url",
+    "nsfw": false,
+    "votes": 40,
+    "state": 3,
+    "user": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "flags": [],
+    "created_at": "2022-05-09T10:34:48.355673470Z"
+}
+```
+**Authorization Needed** | 
+
 
 ### New Bot
 #### POST /users/{id}/bots
@@ -3530,6 +3118,458 @@ Imports a bot from a source listed in ``Get Import Sources``.
 **Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
 
 
+## Server Actions
+
+### Get Server
+#### GET /servers/{id}
+
+
+Fetches server information given a server/guild ID. If not found, 404 will be returned. 
+
+Differences from API v2:
+
+- Unlike API v2, this does not support compact or no_cache.
+- *``long_description/css`` is sanitized with ammonia by default, use `long_description_raw` if you want the unsanitized version*
+- All responses are cached for a short period of time. There is *no* way to opt out unlike API v2
+- Some fields have been renamed or removed
+- ``invite_link`` is returned, however is always None unless ``Frostpaw-Invite`` header is set which then pushes you into 
+server privacy restrictions. **Note that when fetching invite links, requires login to join is now enabled by default for all new servers**
+
+**Set the Frostpaw header if you are a custom client**
+
+
+**Path parameters**
+
+- **id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **user** => Struct User 
+	- **id** => string [default/example = ""]
+	- **username** => string [default/example = ""]
+	- **disc** => string [default/example = ""]
+	- **avatar** => string [default/example = ""]
+	- **bot** => bool [default/example = false]
+	- **status** => string [default/example = "Unknown"]
+
+
+
+- **description** => string [default/example = ""]
+- **tags** => (Array) 
+- **long_description_type** => i32 [default/example = 1]
+- **long_description** => string [default/example = ""]
+- **long_description_raw** => string [default/example = ""]
+- **vanity** => (Optional) string [default/example = "server-vanity"]
+- **guild_count** => i64 [default/example = 0]
+- **invite_amount** => i32 [default/example = 0]
+- **invite_link** => (Optional) string [default/example = "Only present if ``Frostpaw-Invite`` header is set"]
+- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
+- **state** => i32 [default/example = 0]
+- **flags** => (Array) 
+- **css** => string [default/example = ""]
+- **css_raw** => string [default/example = "unsanitized css"]
+- **website** => (Optional) string [default/example = "https://frostpaw.com"]
+- **banner_card** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-card.png"]
+- **banner_page** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-page.png"]
+- **keep_banner_decor** => bool [default/example = false]
+- **nsfw** => bool [default/example = false]
+- **votes** => i64 [default/example = 0]
+- **total_votes** => i64 [default/example = 0]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "user": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "description": "",
+    "tags": [],
+    "long_description_type": 1,
+    "long_description": "",
+    "long_description_raw": "",
+    "vanity": "server-vanity",
+    "guild_count": 0,
+    "invite_amount": 0,
+    "invite_link": "Only present if ``Frostpaw-Invite`` header is set",
+    "created_at": "1970-01-01T00:00:00Z",
+    "state": 0,
+    "flags": [],
+    "css": "",
+    "css_raw": "unsanitized css",
+    "website": "https://frostpaw.com",
+    "banner_card": "https://frostpaw.com/assets/img/banner-card.png",
+    "banner_page": "https://frostpaw.com/assets/img/banner-page.png",
+    "keep_banner_decor": false,
+    "nsfw": false,
+    "votes": 0,
+    "total_votes": 0
+}
+```
+**Authorization Needed** | 
+
+
+### Random Server
+#### GET /random-server
+
+
+Fetches a random server on the list
+
+Example:
+```py
+import requests
+
+def random_server():
+    res = requests.get(api_url"/random-server")
+    json = res.json()
+    if res.status != 200:
+        # Handle an error in the api
+        ...
+    return json
+```
+
+
+**Path parameters**
+
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **guild_count** => i64 [default/example = 30]
+- **description** => string [default/example = "My description"]
+- **banner** => string [default/example = "My banner or default banner url"]
+- **nsfw** => bool [default/example = false]
+- **votes** => i64 [default/example = 40]
+- **state** => i32 [default/example = 3]
+- **user** => Struct User 
+	- **id** => string [default/example = ""]
+	- **username** => string [default/example = ""]
+	- **disc** => string [default/example = ""]
+	- **avatar** => string [default/example = ""]
+	- **bot** => bool [default/example = false]
+	- **status** => string [default/example = "Unknown"]
+
+
+
+- **flags** => (Array) 
+- **created_at** => string [default/example = "2022-05-09T10:34:48.355895161Z"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "guild_count": 30,
+    "description": "My description",
+    "banner": "My banner or default banner url",
+    "nsfw": false,
+    "votes": 40,
+    "state": 3,
+    "user": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "flags": [],
+    "created_at": "2022-05-09T10:34:48.355895161Z"
+}
+```
+**Authorization Needed** | 
+
+
+## Votes
+
+### Create Bot Vote
+#### PATCH /users/{user_id}/bots/{bot_id}/votes
+
+
+This endpoint creates a vote for a bot which can only be done *once* every 8 hours.
+    
+
+**Path parameters**
+
+- **user_id** => i64 [default/example = 0]
+- **bot_id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+- **test** => bool [default/example = true]
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **done** => bool [default/example = false]
+- **reason** => (Optional) string [default/example = "Why the vote failed or any extra info to send to client if the vote succeeded"]
+- **context** => (Optional) string [default/example = "Some context on the vote"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": false,
+    "reason": "Why the vote failed or any extra info to send to client if the vote succeeded",
+    "context": "Some context on the vote"
+}
+```
+**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
+
+
+### Create Server Vote
+#### PATCH /users/{user_id}/servers/{server_id}/votes
+
+
+    This endpoint creates a vote for a server which can only be done *once* every 8 hours
+    and is independent from a bot vote.
+    
+
+**Path parameters**
+
+- **user_id** => i64 [default/example = 0]
+- **server_id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+- **test** => bool [default/example = true]
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **done** => bool [default/example = false]
+- **reason** => (Optional) string [default/example = "Why the vote failed or any extra info to send to client if the vote succeeded"]
+- **context** => (Optional) string [default/example = "Some context on the vote"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": false,
+    "reason": "Why the vote failed or any extra info to send to client if the vote succeeded",
+    "context": "Some context on the vote"
+}
+```
+**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
+
+
+### Get Bot Votes
+#### GET /users/{user_id}/bots/{bot_id}/votes
+
+
+Endpoint to check amount of votes a user has.
+
+- votes | The amount of votes the bot has.
+- voted | Whether or not the user has *ever* voted for a bot in the past 8 hours.
+- timestamps | A list of timestamps that the user has voted for the bot on that has been recorded.
+- expiry | The time when the user can next vote.
+- vote_right_now | Whether a user can vote right now. Currently equivalent to `vote_epoch < 0`.
+
+Differences from API v2:
+
+- Unlike API v2, this does not require authorization to use. This is to speed up responses and 
+because the last thing people want to scrape are Fates List user votes anyways. **You should not rely on
+this however, it is prone to change *anytime* in the future and may return bogus results for privacy purposes**.
+- ``vts`` has been renamed to ``timestamps``
+
+**This endpoint will return bogus data if "Hide votes to other users" is enabled**
+
+
+**Path parameters**
+
+- **user_id** => i64 [default/example = 0]
+- **bot_id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **votes** => i64 [default/example = 10]
+- **voted** => bool [default/example = true]
+- **vote_right_now** => bool [default/example = false]
+- **expiry** => u64 [default/example = 101]
+- **timestamps** => (Array) string [default/example = "1970-01-01T00:00:00Z"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "votes": 10,
+    "voted": true,
+    "vote_right_now": false,
+    "expiry": 101,
+    "timestamps": [
+        "1970-01-01T00:00:00Z"
+    ]
+}
+```
+**Authorization Needed** | 
+
+
+### Get Server Votes
+#### GET /users/{user_id}/servers/{server_id}/votes
+
+
+Endpoint to check amount of votes a user has.
+
+- votes | The amount of votes the server has.
+- voted | Whether or not the user has *ever* voted for a server in the past 8 hours.
+- timestamps | A list of timestamps that the user has voted for the server on that has been recorded.
+- expiry | The time when the user can next vote.
+- vote_right_now | Whether a user can vote right now. Currently equivalent to `vote_epoch < 0`.
+
+Differences from API v2:
+
+- Unlike API v2, this does not require authorization to use. This is to speed up responses and 
+because the last thing people want to scrape are Fates List user votes anyways. **You should not rely on
+this however, it is prone to change *anytime* in the future and may return bogus results for privacy purposes**.
+- ``vts`` has been renamed to ``timestamps``
+
+**This endpoint will return bogus data if "Hide votes to other users" is enabled**
+
+
+**Path parameters**
+
+- **user_id** => i64 [default/example = 0]
+- **server_id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **votes** => i64 [default/example = 10]
+- **voted** => bool [default/example = true]
+- **vote_right_now** => bool [default/example = false]
+- **expiry** => u64 [default/example = 101]
+- **timestamps** => (Array) string [default/example = "1970-01-01T00:00:00Z"]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "votes": 10,
+    "voted": true,
+    "vote_right_now": false,
+    "expiry": 101,
+    "timestamps": [
+        "1970-01-01T00:00:00Z"
+    ]
+}
+```
+**Authorization Needed** | 
+
+
 ## Appeal
 
 ### New Appeal
@@ -3967,48 +4007,6 @@ Gives user roles on the Fates List support server
 **Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
 
 
-### Test Experiments
-#### GET /profiles/{id}/test-experiments
-
-
-Internal route to showcase experiments
-
-
-**Path parameters**
-
-- **id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-
-
-
-**Response Body Example**
-
-```json
-{}
-```
-**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
-
-
 ## Reviews
 
 ### Get Reviews
@@ -4247,7 +4245,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "baeb2d2a-f822-43e6-9e69-e0fb1a7b1837"]
+- **parent_id** => (Optional) string [default/example = "b8491c6e-f085-4411-b516-9877b857619f"]
 
 
 
@@ -4273,7 +4271,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "baeb2d2a-f822-43e6-9e69-e0fb1a7b1837"
+    "parent_id": "b8491c6e-f085-4411-b516-9877b857619f"
 }
 ```
 
@@ -4338,7 +4336,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "b12640fd-f528-4e76-99da-cde3c44823f8"]
+- **id** => (Optional) string [default/example = "180805d2-4dcb-440c-8f7d-6524420d7303"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4368,7 +4366,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "b12640fd-f528-4e76-99da-cde3c44823f8",
+    "id": "180805d2-4dcb-440c-8f7d-6524420d7303",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4432,7 +4430,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "8009add3-8a02-4701-8a11-103bc999f240"]
+- **rid** => string [default/example = "c0606727-205b-4f63-8f4a-e672b03eb7fd"]
 
 
 
@@ -4498,7 +4496,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "03fafdac-8958-4946-8134-8a2579149f11"]
+- **rid** => string [default/example = "622c1c98-75fe-4f49-b1cd-a56a9bdb8b72"]
 
 
 
@@ -4583,12 +4581,12 @@ if the list grows and then requires it.
 - **total_servers** => i64 [default/example = 0]
 - **total_users** => i64 [default/example = 0]
 - **bots** => (Array) Struct IndexBot 
-	- **guild_count** => i64 [default/example = 0]
-	- **description** => string [default/example = ""]
-	- **banner** => string [default/example = ""]
+	- **guild_count** => i64 [default/example = 30]
+	- **description** => string [default/example = "My description"]
+	- **banner** => string [default/example = "My banner or default banner url"]
 	- **nsfw** => bool [default/example = false]
-	- **votes** => i64 [default/example = 0]
-	- **state** => i32 [default/example = 0]
+	- **votes** => i64 [default/example = 40]
+	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
 		- **id** => string [default/example = ""]
 		- **username** => string [default/example = ""]
@@ -4600,6 +4598,7 @@ if the list grows and then requires it.
 
 
 	- **flags** => (Array) 
+	- **created_at** => string [default/example = "2022-05-09T10:34:48.354940250Z"]
 
 
 
@@ -4628,12 +4627,12 @@ if the list grows and then requires it.
     "total_users": 0,
     "bots": [
         {
-            "guild_count": 0,
-            "description": "",
-            "banner": "",
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
             "nsfw": false,
-            "votes": 0,
-            "state": 0,
+            "votes": 40,
+            "state": 3,
             "user": {
                 "id": "",
                 "username": "",
@@ -4642,7 +4641,8 @@ if the list grows and then requires it.
                 "bot": false,
                 "status": "Unknown"
             },
-            "flags": []
+            "flags": [],
+            "created_at": "2022-05-09T10:34:48.354940250Z"
         }
     ],
     "servers": [],
@@ -4749,7 +4749,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "9dd5b73e-a88e-4ed3-b51a-571255f2fee5"]
+- **id** => string [default/example = "97e1094e-ecac-4a89-abc6-6a48e0d6c3b6"]
 - **target_type** => i32 [default/example = 0]
 
 

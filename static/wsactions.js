@@ -141,6 +141,17 @@ actions = {
 ${data.error_bots.join('\n\n')}
         `})
     },
+    "dev_portal": async (data) => {
+        info("Nightheart", "Rendering dev_portal")
+
+        let html = ""
+
+        setData({
+            "title": "Developer Portal",
+            "data": html,
+            "ext_script": "apply"
+        })
+    },
     "data_request": (data) => {
         info("Nightheart", "Got data request")
         if(data.detail) {
