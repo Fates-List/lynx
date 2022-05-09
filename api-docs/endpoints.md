@@ -92,7 +92,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T12:09:07.163980566Z"]
+	- **created_at** => string [default/example = "2022-05-09T14:41:44.504878575Z"]
 
 
 
@@ -114,7 +114,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T12:09:07.163980566Z"]
+	- **created_at** => string [default/example = "2022-05-09T14:41:44.504878575Z"]
 
 
 
@@ -136,7 +136,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T12:09:07.163980566Z"]
+	- **created_at** => string [default/example = "2022-05-09T14:41:44.504878575Z"]
 
 
 
@@ -180,7 +180,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T12:09:07.163980566Z"
+            "created_at": "2022-05-09T14:41:44.504878575Z"
         }
     ],
     "top_voted": [
@@ -200,7 +200,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T12:09:07.163980566Z"
+            "created_at": "2022-05-09T14:41:44.504878575Z"
         }
     ],
     "certified": [
@@ -220,7 +220,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T12:09:07.163980566Z"
+            "created_at": "2022-05-09T14:41:44.504878575Z"
         }
     ],
     "tags": [
@@ -596,7 +596,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T12:09:07.164137574Z"]
+	- **created_at** => string [default/example = "2022-05-09T14:41:44.505046954Z"]
 
 
 
@@ -618,7 +618,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T12:09:07.164137738Z"]
+	- **created_at** => string [default/example = "2022-05-09T14:41:44.505047172Z"]
 
 
 
@@ -717,7 +717,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T12:09:07.164137574Z"
+            "created_at": "2022-05-09T14:41:44.505046954Z"
         }
     ],
     "servers": [
@@ -737,7 +737,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T12:09:07.164137738Z"
+            "created_at": "2022-05-09T14:41:44.505047172Z"
         }
     ],
     "profiles": [
@@ -855,7 +855,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T12:09:07.164214442Z"]
+	- **created_at** => string [default/example = "2022-05-09T14:41:44.505121219Z"]
 
 
 
@@ -877,7 +877,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T12:09:07.164214584Z"]
+	- **created_at** => string [default/example = "2022-05-09T14:41:44.505121399Z"]
 
 
 
@@ -927,7 +927,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T12:09:07.164214442Z"
+            "created_at": "2022-05-09T14:41:44.505121219Z"
         }
     ],
     "servers": [
@@ -947,7 +947,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T12:09:07.164214584Z"
+            "created_at": "2022-05-09T14:41:44.505121399Z"
         }
     ],
     "profiles": [],
@@ -1441,6 +1441,57 @@ token ever gets leaked.
 **Path parameters**
 
 - **id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **done** => bool [default/example = true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
+
+
+### Revoke Frostpaw Client Auth
+#### DELETE /users/{id}/frostpaw/clients/{client_id}
+
+
+'Deletes' a user token and reissues a new user token. Use this if your user
+token ever gets leaked.
+
+
+**Path parameters**
+
+- **id** => i64 [default/example = 0]
+- **client_id** => string [default/example = "client_id"]
 
 
 
@@ -2284,7 +2335,7 @@ def random_bot():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-09T12:09:07.164568020Z"]
+- **created_at** => string [default/example = "2022-05-09T14:41:44.505392808Z"]
 
 
 
@@ -2307,7 +2358,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-09T12:09:07.164568020Z"
+    "created_at": "2022-05-09T14:41:44.505392808Z"
 }
 ```
 **Authorization Needed** | 
@@ -3292,7 +3343,7 @@ def random_server():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-09T12:09:07.164832840Z"]
+- **created_at** => string [default/example = "2022-05-09T14:41:44.505607112Z"]
 
 
 
@@ -3315,7 +3366,7 @@ def random_server():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-09T12:09:07.164832840Z"
+    "created_at": "2022-05-09T14:41:44.505607112Z"
 }
 ```
 **Authorization Needed** | 
@@ -4247,7 +4298,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "21e0489a-e03a-4def-b2ca-0c6ef134af87"]
+- **parent_id** => (Optional) string [default/example = "85935ad9-ad47-4df7-9126-2d37965e8d48"]
 
 
 
@@ -4273,7 +4324,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "21e0489a-e03a-4def-b2ca-0c6ef134af87"
+    "parent_id": "85935ad9-ad47-4df7-9126-2d37965e8d48"
 }
 ```
 
@@ -4338,7 +4389,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "0e3ba3ac-46be-4ee6-8510-c230a88872e9"]
+- **id** => (Optional) string [default/example = "9979354b-748f-401a-832a-26f0f8d5f9b6"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4368,7 +4419,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "0e3ba3ac-46be-4ee6-8510-c230a88872e9",
+    "id": "9979354b-748f-401a-832a-26f0f8d5f9b6",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4432,7 +4483,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "a3cd3264-6a17-4652-9e43-314d64a7b89a"]
+- **rid** => string [default/example = "9a60e2c1-ae40-4169-a2da-f514ab8fd706"]
 
 
 
@@ -4498,7 +4549,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "e69f7fdf-bb3b-4874-9e5f-abae2e65dbec"]
+- **rid** => string [default/example = "0ab4929f-2532-45d6-accf-f808b0bd9405"]
 
 
 
@@ -4600,7 +4651,7 @@ if the list grows and then requires it.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T12:09:07.163980566Z"]
+	- **created_at** => string [default/example = "2022-05-09T14:41:44.504878575Z"]
 
 
 
@@ -4644,7 +4695,7 @@ if the list grows and then requires it.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T12:09:07.163980566Z"
+            "created_at": "2022-05-09T14:41:44.504878575Z"
         }
     ],
     "servers": [],
@@ -4751,7 +4802,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "7efbf3f2-2474-4893-8fce-bfe59e43b30f"]
+- **id** => string [default/example = "57d994c3-63a5-402f-81bb-78f8b7bfbd1f"]
 - **target_type** => i32 [default/example = 0]
 
 

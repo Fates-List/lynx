@@ -1449,8 +1449,8 @@ async def staff_apps(ws: WebSocket, data: dict):
 async def user_actions(ws: WebSocket, data: dict):
     data = data.get("data", {})
     # Easiest way to block cross origin is to just use a hidden input
-    if ws.state.member.perm < 3:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms, "min_perm": 3}
+    if ws.state.member.perm < 2:
+        return {"resp": "spld", "e": SPLDEvent.missing_perms, "min_perm": 2}
     elif not ws.state.verified:
         return {"resp": "spld", "e": SPLDEvent.verify_needed}
 
