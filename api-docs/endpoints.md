@@ -92,7 +92,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T10:34:48.354940250Z"]
+	- **created_at** => string [default/example = "2022-05-09T12:09:07.163980566Z"]
 
 
 
@@ -114,7 +114,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T10:34:48.354940250Z"]
+	- **created_at** => string [default/example = "2022-05-09T12:09:07.163980566Z"]
 
 
 
@@ -136,7 +136,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T10:34:48.354940250Z"]
+	- **created_at** => string [default/example = "2022-05-09T12:09:07.163980566Z"]
 
 
 
@@ -180,7 +180,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T10:34:48.354940250Z"
+            "created_at": "2022-05-09T12:09:07.163980566Z"
         }
     ],
     "top_voted": [
@@ -200,7 +200,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T10:34:48.354940250Z"
+            "created_at": "2022-05-09T12:09:07.163980566Z"
         }
     ],
     "certified": [
@@ -220,7 +220,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T10:34:48.354940250Z"
+            "created_at": "2022-05-09T12:09:07.163980566Z"
         }
     ],
     "tags": [
@@ -596,7 +596,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T10:34:48.355075247Z"]
+	- **created_at** => string [default/example = "2022-05-09T12:09:07.164137574Z"]
 
 
 
@@ -618,7 +618,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T10:34:48.355075456Z"]
+	- **created_at** => string [default/example = "2022-05-09T12:09:07.164137738Z"]
 
 
 
@@ -717,7 +717,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T10:34:48.355075247Z"
+            "created_at": "2022-05-09T12:09:07.164137574Z"
         }
     ],
     "servers": [
@@ -737,7 +737,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T10:34:48.355075456Z"
+            "created_at": "2022-05-09T12:09:07.164137738Z"
         }
     ],
     "profiles": [
@@ -855,7 +855,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T10:34:48.355358723Z"]
+	- **created_at** => string [default/example = "2022-05-09T12:09:07.164214442Z"]
 
 
 
@@ -877,7 +877,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T10:34:48.355358993Z"]
+	- **created_at** => string [default/example = "2022-05-09T12:09:07.164214584Z"]
 
 
 
@@ -927,7 +927,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T10:34:48.355358723Z"
+            "created_at": "2022-05-09T12:09:07.164214442Z"
         }
     ],
     "servers": [
@@ -947,7 +947,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T10:34:48.355358993Z"
+            "created_at": "2022-05-09T12:09:07.164214584Z"
         }
     ],
     "profiles": [],
@@ -1151,7 +1151,6 @@ Returns the Frostpaw client with the given ID.
 - **name** => string [default/example = ""]
 - **domain** => string [default/example = ""]
 - **privacy_policy** => string [default/example = ""]
-- **secret** => None (unknown value type)
 - **owner** => Struct User 
 	- **id** => string [default/example = ""]
 	- **username** => string [default/example = ""]
@@ -1173,7 +1172,6 @@ Returns the Frostpaw client with the given ID.
     "name": "",
     "domain": "",
     "privacy_policy": "",
-    "secret": null,
     "owner": {
         "id": "",
         "username": "",
@@ -2286,7 +2284,7 @@ def random_bot():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-09T10:34:48.355673470Z"]
+- **created_at** => string [default/example = "2022-05-09T12:09:07.164568020Z"]
 
 
 
@@ -2309,7 +2307,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-09T10:34:48.355673470Z"
+    "created_at": "2022-05-09T12:09:07.164568020Z"
 }
 ```
 **Authorization Needed** | 
@@ -3294,7 +3292,7 @@ def random_server():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-09T10:34:48.355895161Z"]
+- **created_at** => string [default/example = "2022-05-09T12:09:07.164832840Z"]
 
 
 
@@ -3317,7 +3315,7 @@ def random_server():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-09T10:34:48.355895161Z"
+    "created_at": "2022-05-09T12:09:07.164832840Z"
 }
 ```
 **Authorization Needed** | 
@@ -3789,6 +3787,7 @@ Gets a user profile.
 
 
 
+- **connections** => (Array) 
 - **bots** => (Array) 
 - **description_raw** => string [default/example = ""]
 - **description** => string [default/example = ""]
@@ -3824,6 +3823,7 @@ Gets a user profile.
         "bot": false,
         "status": "Unknown"
     },
+    "connections": [],
     "bots": [],
     "description_raw": "",
     "description": "",
@@ -3882,6 +3882,7 @@ be present
 
 
 
+- **connections** => (Array) 
 - **bots** => (Array) 
 - **description_raw** => string [default/example = ""]
 - **description** => string [default/example = ""]
@@ -3917,6 +3918,7 @@ be present
         "bot": false,
         "status": "Unknown"
     },
+    "connections": [],
     "bots": [],
     "description_raw": "",
     "description": "",
@@ -4245,7 +4247,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "b8491c6e-f085-4411-b516-9877b857619f"]
+- **parent_id** => (Optional) string [default/example = "21e0489a-e03a-4def-b2ca-0c6ef134af87"]
 
 
 
@@ -4271,7 +4273,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "b8491c6e-f085-4411-b516-9877b857619f"
+    "parent_id": "21e0489a-e03a-4def-b2ca-0c6ef134af87"
 }
 ```
 
@@ -4336,7 +4338,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "180805d2-4dcb-440c-8f7d-6524420d7303"]
+- **id** => (Optional) string [default/example = "0e3ba3ac-46be-4ee6-8510-c230a88872e9"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4366,7 +4368,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "180805d2-4dcb-440c-8f7d-6524420d7303",
+    "id": "0e3ba3ac-46be-4ee6-8510-c230a88872e9",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4430,7 +4432,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "c0606727-205b-4f63-8f4a-e672b03eb7fd"]
+- **rid** => string [default/example = "a3cd3264-6a17-4652-9e43-314d64a7b89a"]
 
 
 
@@ -4496,7 +4498,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "622c1c98-75fe-4f49-b1cd-a56a9bdb8b72"]
+- **rid** => string [default/example = "e69f7fdf-bb3b-4874-9e5f-abae2e65dbec"]
 
 
 
@@ -4598,7 +4600,7 @@ if the list grows and then requires it.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T10:34:48.354940250Z"]
+	- **created_at** => string [default/example = "2022-05-09T12:09:07.163980566Z"]
 
 
 
@@ -4642,7 +4644,7 @@ if the list grows and then requires it.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T10:34:48.354940250Z"
+            "created_at": "2022-05-09T12:09:07.163980566Z"
         }
     ],
     "servers": [],
@@ -4749,7 +4751,7 @@ The ``id`` here must be the resource id
 
 **Query parameters**
 
-- **id** => string [default/example = "97e1094e-ecac-4a89-abc6-6a48e0d6c3b6"]
+- **id** => string [default/example = "7efbf3f2-2474-4893-8fce-bfe59e43b30f"]
 - **target_type** => i32 [default/example = 0]
 
 
