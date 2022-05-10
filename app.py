@@ -3215,7 +3215,7 @@ async def metro_api(request: Request, action: str, data: Metro):
         if not bot:
             # Insert bot
             await app.state.db.execute(
-                "INSERT INTO bots (id, bot_id, bot_library, description, long_description, long_description_type, api_token, invite, website, discord) VALUES ($1, $1, $2, $3, $4, $5, $6, $7, $8, $9)", 
+                "INSERT INTO bots (id, bot_id, bot_library, description, long_description, long_description_type, api_token, invite, website, discord, prefix, state) VALUES ($1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)", 
                 data.bot_id,
                 data.library or "custom",
                 data.description,
@@ -3224,7 +3224,9 @@ async def metro_api(request: Request, action: str, data: Metro):
                 get_token(128),
                 data.invite or '',
                 data.website,
-                data.support
+                data.support,
+                data.prefix,
+                enums.BotState.under_review
             )
             for tag in data.tags:
                 try:
@@ -3234,10 +3236,10 @@ async def metro_api(request: Request, action: str, data: Metro):
             await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, "utility")
 
             # Insert bot owner
-            await app.state.db.execute("INSERT INTO bot_owners (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, int(data.owner))
+            await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, int(data.owner))
 
             for owner in data.extra_owners:
-                await app.state.db.execute("INSERT INTO bot_owners (bot_id, owner) VALUES ($1, $2)", data.bot_id, int(owner))
+                await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner) VALUES ($1, $2)", data.bot_id, int(owner))
 
             await app.state.db.execute("INSERT INTO vanity (redirect, type, vanity_url) VALUES ($1, 1, $2)", data.bot_id, get_token(32))
 
