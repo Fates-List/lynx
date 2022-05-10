@@ -158,7 +158,9 @@ with open("/home/meow/FatesList/config/data/discord.json") as json:
     certified_bot = json["roles"]["certified_bots_role"]
 
 with open("/home/meow/FatesList/config/data/secrets.json") as json:
-    main_bot_token = orjson.loads(json.read())["token_main"]
+    file = json.read()
+    main_bot_token = orjson.loads(file)["token_main"]
+    metro_key = orjson.loads(file)["metro_key"]
 
 with open("/home/meow/FatesList/config/data/staff_roles.json") as json:
     staff_roles = orjson.loads(json.read())
@@ -3164,6 +3166,93 @@ Note that no_cache is slow and may lead to ratelimits and/or your got being bann
             output.close()
 
         return StreamingResponse(_stream(), media_type=f"image/{format.name}")
+
+# Metro Code
+class Metro(BaseModel):
+    bot_id: str
+    reviewer: str
+    username: str
+    description: str
+    long_description: str
+    nsfw: bool
+    tags: list[str]
+    owner: str
+    reason: str | None = "STUB_REASON"
+    extra_owners: list[str]
+    website: str | None = None
+    github: str | None = None # May be added later
+    support: str | None = None
+    donate: str | None = None
+    library: str | None = None
+    prefix: str | None = None
+    invite: str | None = None
+
+class FakeWsState():
+    def __init__(self):
+        self.plat = "SQUIRREL"
+        self.user = None
+        self.memebr = None
+
+class FakeWs():
+    def __init__(self, reviewer: str):
+        self.state = FakeWsState()
+        self.state.user = {"id": reviewer, "username": "Unknown User"}
+        self.state.member = StaffMember(name="Reviewer (Metro)", id="0", perm=2, staff_id="0")
+
+# We use widgets here because its already proxied to the client
+@app.post("/widgets/_admin/metro", include_in_schema=False)
+async def metro_api(request: Request, action: str, data: Metro):
+    if request.headers.get("Authorization") != metro_key:
+        return {"detail": "Invalid key"}
+
+    if action not in ("claim", "unclaim", "approve", "deny"):
+        return {"detail": "Action does not exist!"}
+
+    data.bot_id = int(data.bot_id)
+
+    if action == "approve":
+        bot = await app.state.db.fetchrow("SELECT bot_id FROM bots WHERE bot_id = $1", data.bot_id)
+        if not bot:
+            # Insert bot
+            await app.state.db.execute(
+                "INSERT INTO bots (id, bot_id, bot_library, description, long_description, long_description_type, api_token, invite, website, discord) VALUES ($1, $1, $2, $3, $4, $5, $6, $7, $8, $9)", 
+                data.bot_id,
+                data.library or "custom",
+                data.description,
+                data.long_description,
+                enums.LongDescType.markdown_serverside,
+                get_token(128),
+                data.invite or '',
+                data.website,
+                data.support
+            )
+            for tag in data.tags:
+                try:
+                    await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, tag.lower())
+                except:
+                    pass
+            await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, "utility")
+
+            # Insert bot owner
+            await app.state.db.execute("INSERT INTO bot_owners (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, int(data.owner))
+
+            for owner in data.extra_owners:
+                await app.state.db.execute("INSERT INTO bot_owners (bot_id, owner) VALUES ($1, $2)", data.bot_id, int(owner))
+
+            await app.state.db.execute("INSERT INTO vanity (redirect, type, vanity_url) VALUES ($1, 1, $2)", data.bot_id, data.bot_id)
+
+    try:
+        action = app.state.bot_actions[action]
+    except:
+        return {"detail": "Action does not exist!"}
+    try:
+        action_data = ActionWithReason(bot_id=data.bot_id, reason=data.reason)
+    except Exception as exc:
+        return {"detail": f"{type(exc)}: {str(exc)}"}
+    return await action(FakeWs(data.reviewer), action_data)
+
+# End of metro code
+
 
 
 app.add_middleware(CustomHeaderMiddleware)
