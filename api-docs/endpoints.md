@@ -92,7 +92,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T16:16:38.334652494Z"]
+	- **created_at** => string [default/example = "2022-05-10T17:57:38.390754103Z"]
 
 
 
@@ -114,7 +114,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T16:16:38.334652494Z"]
+	- **created_at** => string [default/example = "2022-05-10T17:57:38.390754103Z"]
 
 
 
@@ -136,7 +136,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T16:16:38.334652494Z"]
+	- **created_at** => string [default/example = "2022-05-10T17:57:38.390754103Z"]
 
 
 
@@ -180,7 +180,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T16:16:38.334652494Z"
+            "created_at": "2022-05-10T17:57:38.390754103Z"
         }
     ],
     "top_voted": [
@@ -200,7 +200,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T16:16:38.334652494Z"
+            "created_at": "2022-05-10T17:57:38.390754103Z"
         }
     ],
     "certified": [
@@ -220,7 +220,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T16:16:38.334652494Z"
+            "created_at": "2022-05-10T17:57:38.390754103Z"
         }
     ],
     "tags": [
@@ -596,7 +596,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T16:16:38.334844980Z"]
+	- **created_at** => string [default/example = "2022-05-10T17:57:38.390894191Z"]
 
 
 
@@ -618,7 +618,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T16:16:38.334845251Z"]
+	- **created_at** => string [default/example = "2022-05-10T17:57:38.390894413Z"]
 
 
 
@@ -717,7 +717,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T16:16:38.334844980Z"
+            "created_at": "2022-05-10T17:57:38.390894191Z"
         }
     ],
     "servers": [
@@ -737,7 +737,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T16:16:38.334845251Z"
+            "created_at": "2022-05-10T17:57:38.390894413Z"
         }
     ],
     "profiles": [
@@ -855,7 +855,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T16:16:38.334930142Z"]
+	- **created_at** => string [default/example = "2022-05-10T17:57:38.390995408Z"]
 
 
 
@@ -877,7 +877,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T16:16:38.334930315Z"]
+	- **created_at** => string [default/example = "2022-05-10T17:57:38.390995651Z"]
 
 
 
@@ -927,7 +927,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T16:16:38.334930142Z"
+            "created_at": "2022-05-10T17:57:38.390995408Z"
         }
     ],
     "servers": [
@@ -947,7 +947,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T16:16:38.334930315Z"
+            "created_at": "2022-05-10T17:57:38.390995651Z"
         }
     ],
     "profiles": [],
@@ -1765,16 +1765,13 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 
 - **state** => i32 [default/example = 0]
 - **page_style** => i32 [default/example = 1]
-- **website** => (Optional) string [default/example = "https://example.com"]
-- **support** => (Optional) string [default/example = ""]
-- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
+- **extra_links** => 
+
 - **css** => string [default/example = "<style></style>"]
 - **css_raw** => string [default/example = "unsanitized css"]
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
-- **donate** => (Optional) string [default/example = "https://paypal.me/example"]
-- **privacy_policy** => (Optional) string [default/example = "https://lynx.fateslist.xyz/frostpaw/tos"]
 - **nsfw** => bool [default/example = false]
 - **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
 - **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
@@ -1811,14 +1808,6 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
 	- **nsfw** => bool [default/example = false]
-
-
-
-- **resources** => (Array) Struct Resource 
-	- **id** => None (unknown value type)
-	- **resource_title** => string [default/example = ""]
-	- **resource_link** => string [default/example = ""]
-	- **resource_description** => string [default/example = ""]
 
 
 
@@ -1883,16 +1872,12 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
     ],
     "state": 0,
     "page_style": 1,
-    "website": "https://example.com",
-    "support": "",
-    "github": "https://github.com/Fates-List/FatesList",
+    "extra_links": {},
     "css": "<style></style>",
     "css_raw": "unsanitized css",
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
-    "donate": "https://paypal.me/example",
-    "privacy_policy": "https://lynx.fateslist.xyz/frostpaw/tos",
     "nsfw": false,
     "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
     "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
@@ -1930,14 +1915,6 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
             "doc_link": null,
             "id": null,
             "nsfw": false
-        }
-    ],
-    "resources": [
-        {
-            "id": null,
-            "resource_title": "",
-            "resource_link": "",
-            "resource_description": ""
         }
     ],
     "webhook": "This will be redacted for Get Bot endpoint",
@@ -2047,69 +2024,58 @@ Due to massive changes, this API cannot be mapped onto any v2 API
 
 	- **state** => i32 [default/example = 0]
 	- **page_style** => i32 [default/example = 1]
-	- **website** => (Optional) string [default/example = "https://example.com"]
-	- **support** => (Optional) string [default/example = ""]
-	- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
-	- **css** => string [default/example = "<style></style>"]
-	- **css_raw** => string [default/example = "unsanitized css"]
+	- **extra_links** => 
+
+
+- **css** => string [default/example = "<style></style>"]
+- **css_raw** => string [default/example = "unsanitized css"]
+- **votes** => i64 [default/example = 0]
+- **total_votes** => i64 [default/example = 0]
+- **vanity** => string [default/example = ""]
+- **nsfw** => bool [default/example = false]
+- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **keep_banner_decor** => bool [default/example = false]
+- **client_id** => string [default/example = ""]
+- **flags** => (Array) 
+- **action_logs** => (Array) Struct ActionLog 
+	- **user_id** => string [default/example = ""]
+	- **bot_id** => string [default/example = ""]
+	- **action** => i32 [default/example = 0]
+	- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
+	- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
+
+
+
+- **vpm** => (Optional) (Array) Struct VotesPerMonth 
 	- **votes** => i64 [default/example = 0]
-	- **total_votes** => i64 [default/example = 0]
-	- **vanity** => string [default/example = ""]
-	- **donate** => (Optional) string [default/example = "https://paypal.me/example"]
-	- **privacy_policy** => (Optional) string [default/example = "https://lynx.fateslist.xyz/frostpaw/tos"]
+	- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
+
+
+
+- **uptime_checks_total** => (Optional) i32 [default/example = 30]
+- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
+- **commands** => (Array) Struct BotCommand 
+	- **cmd_type** => i32 [default/example = 0]
+	- **groups** => (Array) 
+	- **name** => string [default/example = ""]
+	- **vote_locked** => bool [default/example = false]
+	- **description** => string [default/example = ""]
+	- **args** => (Array) 
+	- **examples** => (Array) 
+	- **premium_only** => bool [default/example = false]
+	- **notes** => (Array) 
+	- **doc_link** => None (unknown value type)
+	- **id** => None (unknown value type)
 	- **nsfw** => bool [default/example = false]
-	- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-	- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-	- **keep_banner_decor** => bool [default/example = false]
-	- **client_id** => string [default/example = ""]
-	- **flags** => (Array) 
-	- **action_logs** => (Array) Struct ActionLog 
-		- **user_id** => string [default/example = ""]
-		- **bot_id** => string [default/example = ""]
-		- **action** => i32 [default/example = 0]
-		- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
-		- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
 
 
 
-	- **vpm** => (Optional) (Array) Struct VotesPerMonth 
-		- **votes** => i64 [default/example = 0]
-		- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
-
-
-
-	- **uptime_checks_total** => (Optional) i32 [default/example = 30]
-	- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
-	- **commands** => (Array) Struct BotCommand 
-		- **cmd_type** => i32 [default/example = 0]
-		- **groups** => (Array) 
-		- **name** => string [default/example = ""]
-		- **vote_locked** => bool [default/example = false]
-		- **description** => string [default/example = ""]
-		- **args** => (Array) 
-		- **examples** => (Array) 
-		- **premium_only** => bool [default/example = false]
-		- **notes** => (Array) 
-		- **doc_link** => None (unknown value type)
-		- **id** => None (unknown value type)
-		- **nsfw** => bool [default/example = false]
-
-
-
-	- **resources** => (Array) Struct Resource 
-		- **id** => None (unknown value type)
-		- **resource_title** => string [default/example = ""]
-		- **resource_link** => string [default/example = ""]
-		- **resource_description** => string [default/example = ""]
-
-
-
-	- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-	- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
-	- **webhook_type** => None (unknown value type)
-	- **webhook_hmac_only** => None (unknown value type)
-	- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-
+- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+- **webhook_type** => None (unknown value type)
+- **webhook_hmac_only** => None (unknown value type)
+- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
 
 
 - **context** => Struct BotSettingsContext 
@@ -2189,16 +2155,12 @@ Due to massive changes, this API cannot be mapped onto any v2 API
         ],
         "state": 0,
         "page_style": 1,
-        "website": "https://example.com",
-        "support": "",
-        "github": "https://github.com/Fates-List/FatesList",
+        "extra_links": {},
         "css": "<style></style>",
         "css_raw": "unsanitized css",
         "votes": 0,
         "total_votes": 0,
         "vanity": "",
-        "donate": "https://paypal.me/example",
-        "privacy_policy": "https://lynx.fateslist.xyz/frostpaw/tos",
         "nsfw": false,
         "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
         "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
@@ -2236,14 +2198,6 @@ Due to massive changes, this API cannot be mapped onto any v2 API
                 "doc_link": null,
                 "id": null,
                 "nsfw": false
-            }
-        ],
-        "resources": [
-            {
-                "id": null,
-                "resource_title": "",
-                "resource_link": "",
-                "resource_description": ""
             }
         ],
         "webhook": "This will be redacted for Get Bot endpoint",
@@ -2335,7 +2289,7 @@ def random_bot():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-09T16:16:38.335233465Z"]
+- **created_at** => string [default/example = "2022-05-10T17:57:38.391284462Z"]
 
 
 
@@ -2358,7 +2312,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-09T16:16:38.335233465Z"
+    "created_at": "2022-05-10T17:57:38.391284462Z"
 }
 ```
 **Authorization Needed** | 
@@ -2447,16 +2401,13 @@ to false.
 
 - **state** => i32 [default/example = 0]
 - **page_style** => i32 [default/example = 1]
-- **website** => (Optional) string [default/example = "https://example.com"]
-- **support** => (Optional) string [default/example = ""]
-- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
+- **extra_links** => 
+
 - **css** => string [default/example = "<style></style>"]
 - **css_raw** => string [default/example = "unsanitized css"]
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
-- **donate** => (Optional) string [default/example = "https://paypal.me/example"]
-- **privacy_policy** => (Optional) string [default/example = "https://lynx.fateslist.xyz/frostpaw/tos"]
 - **nsfw** => bool [default/example = false]
 - **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
 - **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
@@ -2493,14 +2444,6 @@ to false.
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
 	- **nsfw** => bool [default/example = false]
-
-
-
-- **resources** => (Array) Struct Resource 
-	- **id** => None (unknown value type)
-	- **resource_title** => string [default/example = ""]
-	- **resource_link** => string [default/example = ""]
-	- **resource_description** => string [default/example = ""]
 
 
 
@@ -2565,16 +2508,12 @@ to false.
     ],
     "state": 0,
     "page_style": 1,
-    "website": "https://example.com",
-    "support": "",
-    "github": "https://github.com/Fates-List/FatesList",
+    "extra_links": {},
     "css": "<style></style>",
     "css_raw": "unsanitized css",
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
-    "donate": "https://paypal.me/example",
-    "privacy_policy": "https://lynx.fateslist.xyz/frostpaw/tos",
     "nsfw": false,
     "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
     "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
@@ -2612,14 +2551,6 @@ to false.
             "doc_link": null,
             "id": null,
             "nsfw": false
-        }
-    ],
-    "resources": [
-        {
-            "id": null,
-            "resource_title": "",
-            "resource_link": "",
-            "resource_description": ""
         }
     ],
     "webhook": "This will be redacted for Get Bot endpoint",
@@ -2733,16 +2664,13 @@ to false.
 
 - **state** => i32 [default/example = 0]
 - **page_style** => i32 [default/example = 1]
-- **website** => (Optional) string [default/example = "https://example.com"]
-- **support** => (Optional) string [default/example = ""]
-- **github** => (Optional) string [default/example = "https://github.com/Fates-List/FatesList"]
+- **extra_links** => 
+
 - **css** => string [default/example = "<style></style>"]
 - **css_raw** => string [default/example = "unsanitized css"]
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
-- **donate** => (Optional) string [default/example = "https://paypal.me/example"]
-- **privacy_policy** => (Optional) string [default/example = "https://lynx.fateslist.xyz/frostpaw/tos"]
 - **nsfw** => bool [default/example = false]
 - **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
 - **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
@@ -2779,14 +2707,6 @@ to false.
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
 	- **nsfw** => bool [default/example = false]
-
-
-
-- **resources** => (Array) Struct Resource 
-	- **id** => None (unknown value type)
-	- **resource_title** => string [default/example = ""]
-	- **resource_link** => string [default/example = ""]
-	- **resource_description** => string [default/example = ""]
 
 
 
@@ -2851,16 +2771,12 @@ to false.
     ],
     "state": 0,
     "page_style": 1,
-    "website": "https://example.com",
-    "support": "",
-    "github": "https://github.com/Fates-List/FatesList",
+    "extra_links": {},
     "css": "<style></style>",
     "css_raw": "unsanitized css",
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
-    "donate": "https://paypal.me/example",
-    "privacy_policy": "https://lynx.fateslist.xyz/frostpaw/tos",
     "nsfw": false,
     "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
     "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
@@ -2898,14 +2814,6 @@ to false.
             "doc_link": null,
             "id": null,
             "nsfw": false
-        }
-    ],
-    "resources": [
-        {
-            "id": null,
-            "resource_title": "",
-            "resource_link": "",
-            "resource_description": ""
         }
     ],
     "webhook": "This will be redacted for Get Bot endpoint",
@@ -3235,7 +3143,8 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 - **flags** => (Array) 
 - **css** => string [default/example = ""]
 - **css_raw** => string [default/example = "unsanitized css"]
-- **website** => (Optional) string [default/example = "https://frostpaw.com"]
+- **extra_links** => 
+
 - **banner_card** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-card.png"]
 - **banner_page** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-page.png"]
 - **keep_banner_decor** => bool [default/example = false]
@@ -3271,7 +3180,7 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
     "flags": [],
     "css": "",
     "css_raw": "unsanitized css",
-    "website": "https://frostpaw.com",
+    "extra_links": {},
     "banner_card": "https://frostpaw.com/assets/img/banner-card.png",
     "banner_page": "https://frostpaw.com/assets/img/banner-page.png",
     "keep_banner_decor": false,
@@ -3343,7 +3252,7 @@ def random_server():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-09T16:16:38.335470659Z"]
+- **created_at** => string [default/example = "2022-05-10T17:57:38.391532090Z"]
 
 
 
@@ -3366,7 +3275,7 @@ def random_server():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-09T16:16:38.335470659Z"
+    "created_at": "2022-05-10T17:57:38.391532090Z"
 }
 ```
 **Authorization Needed** | 
@@ -4298,7 +4207,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "e195fdc0-9ca1-4d83-bab2-22495fe2193d"]
+- **parent_id** => (Optional) string [default/example = "d4004f67-69bb-4c90-9b83-de7ba0bc5bda"]
 
 
 
@@ -4324,7 +4233,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "e195fdc0-9ca1-4d83-bab2-22495fe2193d"
+    "parent_id": "d4004f67-69bb-4c90-9b83-de7ba0bc5bda"
 }
 ```
 
@@ -4389,7 +4298,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "ce4f0908-94f9-4d02-907c-511559f514b5"]
+- **id** => (Optional) string [default/example = "10bca034-722e-42ac-b94f-c892141f6ce0"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4419,7 +4328,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "ce4f0908-94f9-4d02-907c-511559f514b5",
+    "id": "10bca034-722e-42ac-b94f-c892141f6ce0",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4483,7 +4392,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "449314e5-0140-44a1-8075-52f56d5463b0"]
+- **rid** => string [default/example = "43e2e168-f892-43bc-93e6-ef36b161cf2b"]
 
 
 
@@ -4549,7 +4458,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "22a0cbe0-c005-46ec-988a-3b7ce0cb2f2b"]
+- **rid** => string [default/example = "bfb5de8f-1c3f-4c62-a320-5a5993ae07bb"]
 
 
 
@@ -4651,7 +4560,7 @@ if the list grows and then requires it.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-09T16:16:38.334652494Z"]
+	- **created_at** => string [default/example = "2022-05-10T17:57:38.390754103Z"]
 
 
 
@@ -4695,7 +4604,7 @@ if the list grows and then requires it.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-09T16:16:38.334652494Z"
+            "created_at": "2022-05-10T17:57:38.390754103Z"
         }
     ],
     "servers": [],
@@ -4714,128 +4623,6 @@ if the list grows and then requires it.
 }
 ```
 **Authorization Needed** | 
-
-
-## Resources
-
-### Create Resource
-#### POST /resources/{id}
-
-
-Creates a resource. Both bots and servers support these however only bots 
-support the frontend resource creator in Bot Settings as of right now.
-
-The ``id`` here must be the resource id
-
-``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/enums-ref#targettype)
-
-
-**Path parameters**
-
-- **id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-- **target_type** => i32 [default/example = 0]
-
-
-
-**Request Body Description**
-
-- **id** => None (unknown value type)
-- **resource_title** => string [default/example = ""]
-- **resource_link** => string [default/example = ""]
-- **resource_description** => string [default/example = ""]
-
-
-
-**Request Body Example**
-
-```json
-{
-    "id": null,
-    "resource_title": "",
-    "resource_link": "",
-    "resource_description": ""
-}
-```
-
-**Response Body Description**
-
-- **done** => bool [default/example = true]
-- **reason** => None (unknown value type)
-- **context** => None (unknown value type)
-
-
-
-**Response Body Example**
-
-```json
-{
-    "done": true,
-    "reason": null,
-    "context": null
-}
-```
-**Authorization Needed** | [Bot](https://lynx.fateslist.xyz/docs/endpoints#authorization), [Server](https://lynx.fateslist.xyz/docs/endpoints#authorization)
-
-
-### Delete Resource
-#### DELETE /resources/{id}
-
-
-Deletes a resource. Both bots and servers support these however only bots 
-support the frontend resource creator in Bot Settings as of right now.
-
-The ``id`` here must be the resource id
-
-``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/enums-ref#targettype)
-
-
-**Path parameters**
-
-- **id** => i64 [default/example = 0]
-
-
-
-**Query parameters**
-
-- **id** => string [default/example = "1931ade0-a3f6-47e8-9a10-b36e674b4521"]
-- **target_type** => i32 [default/example = 0]
-
-
-
-**Request Body Description**
-
-
-
-
-**Request Body Example**
-
-```json
-{}
-```
-
-**Response Body Description**
-
-- **done** => bool [default/example = true]
-- **reason** => None (unknown value type)
-- **context** => None (unknown value type)
-
-
-
-**Response Body Example**
-
-```json
-{
-    "done": true,
-    "reason": null,
-    "context": null
-}
-```
-**Authorization Needed** | [Bot](https://lynx.fateslist.xyz/docs/endpoints#authorization), [Server](https://lynx.fateslist.xyz/docs/endpoints#authorization)
 
 
 ## Commands
