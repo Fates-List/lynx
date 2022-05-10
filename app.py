@@ -3239,7 +3239,7 @@ async def metro_api(request: Request, action: str, data: Metro):
             for owner in data.extra_owners:
                 await app.state.db.execute("INSERT INTO bot_owners (bot_id, owner) VALUES ($1, $2)", data.bot_id, int(owner))
 
-            await app.state.db.execute("INSERT INTO vanity (redirect, type, vanity_url) VALUES ($1, 1, $2)", data.bot_id, data.bot_id)
+            await app.state.db.execute("INSERT INTO vanity (redirect, type, vanity_url) VALUES ($1, 1, $2)", data.bot_id, get_token(32))
 
     try:
         action = app.state.bot_actions[action]
