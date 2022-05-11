@@ -3186,6 +3186,7 @@ class Metro(BaseModel):
     library: str | None = None
     prefix: str | None = None
     invite: str | None = None
+    cross_add: bool | None = True
 
 class FakeWsState():
     def __init__(self):
@@ -3210,7 +3211,7 @@ async def metro_api(request: Request, action: str, data: Metro):
 
     data.bot_id = int(data.bot_id)
 
-    if action == "approve":
+    if action == "approve" and data.cross_add:
         bot = await app.state.db.fetchrow("SELECT bot_id FROM bots WHERE bot_id = $1", data.bot_id)
         if not bot:
             # Insert bot

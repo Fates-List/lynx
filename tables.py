@@ -631,6 +631,15 @@ class FrostpawClient(Table, tablename="frostpaw_clients"):
         default=secrets.token_urlsafe
     )
 
+    owner_id = ForeignKey(
+        references=Users,
+        on_delete=OnDelete.cascade,
+        target_column="user_id",
+        on_update=OnUpdate.cascade,
+        null=False,
+    )
+
+
 class UserConnection(Table, tablename="user_connections"):
     user_id = ForeignKey(
         references=Users,

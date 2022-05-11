@@ -92,7 +92,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-10T17:57:38.390754103Z"]
+	- **created_at** => string [default/example = "2022-05-11T08:42:06.128984306Z"]
 
 
 
@@ -114,7 +114,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-10T17:57:38.390754103Z"]
+	- **created_at** => string [default/example = "2022-05-11T08:42:06.128984306Z"]
 
 
 
@@ -136,7 +136,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-10T17:57:38.390754103Z"]
+	- **created_at** => string [default/example = "2022-05-11T08:42:06.128984306Z"]
 
 
 
@@ -180,7 +180,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-10T17:57:38.390754103Z"
+            "created_at": "2022-05-11T08:42:06.128984306Z"
         }
     ],
     "top_voted": [
@@ -200,7 +200,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-10T17:57:38.390754103Z"
+            "created_at": "2022-05-11T08:42:06.128984306Z"
         }
     ],
     "certified": [
@@ -220,7 +220,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-10T17:57:38.390754103Z"
+            "created_at": "2022-05-11T08:42:06.128984306Z"
         }
     ],
     "tags": [
@@ -596,7 +596,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-10T17:57:38.390894191Z"]
+	- **created_at** => string [default/example = "2022-05-11T08:42:06.129134012Z"]
 
 
 
@@ -618,7 +618,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-10T17:57:38.390894413Z"]
+	- **created_at** => string [default/example = "2022-05-11T08:42:06.129134186Z"]
 
 
 
@@ -717,7 +717,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-10T17:57:38.390894191Z"
+            "created_at": "2022-05-11T08:42:06.129134012Z"
         }
     ],
     "servers": [
@@ -737,7 +737,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-10T17:57:38.390894413Z"
+            "created_at": "2022-05-11T08:42:06.129134186Z"
         }
     ],
     "profiles": [
@@ -855,7 +855,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-10T17:57:38.390995408Z"]
+	- **created_at** => string [default/example = "2022-05-11T08:42:06.129208906Z"]
 
 
 
@@ -877,7 +877,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-10T17:57:38.390995651Z"]
+	- **created_at** => string [default/example = "2022-05-11T08:42:06.129209049Z"]
 
 
 
@@ -927,7 +927,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-10T17:57:38.390995408Z"
+            "created_at": "2022-05-11T08:42:06.129208906Z"
         }
     ],
     "servers": [
@@ -947,7 +947,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-10T17:57:38.390995651Z"
+            "created_at": "2022-05-11T08:42:06.129209049Z"
         }
     ],
     "profiles": [],
@@ -1765,7 +1765,11 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 
 - **state** => i32 [default/example = 0]
 - **page_style** => i32 [default/example = 1]
-- **extra_links** => 
+- **extra_links** => Map (key/value)  
+	- **key**
+ => string [default/example = "value"]
+
+
 
 - **css** => string [default/example = "<style></style>"]
 - **css_raw** => string [default/example = "unsanitized css"]
@@ -1872,7 +1876,9 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
     ],
     "state": 0,
     "page_style": 1,
-    "extra_links": {},
+    "extra_links": {
+        "key": "value"
+    },
     "css": "<style></style>",
     "css_raw": "unsanitized css",
     "votes": 0,
@@ -2024,58 +2030,62 @@ Due to massive changes, this API cannot be mapped onto any v2 API
 
 	- **state** => i32 [default/example = 0]
 	- **page_style** => i32 [default/example = 1]
-	- **extra_links** => 
-
-
-- **css** => string [default/example = "<style></style>"]
-- **css_raw** => string [default/example = "unsanitized css"]
-- **votes** => i64 [default/example = 0]
-- **total_votes** => i64 [default/example = 0]
-- **vanity** => string [default/example = ""]
-- **nsfw** => bool [default/example = false]
-- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **keep_banner_decor** => bool [default/example = false]
-- **client_id** => string [default/example = ""]
-- **flags** => (Array) 
-- **action_logs** => (Array) Struct ActionLog 
-	- **user_id** => string [default/example = ""]
-	- **bot_id** => string [default/example = ""]
-	- **action** => i32 [default/example = 0]
-	- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
+	- **extra_links** => Map (key/value)  
+		- **key**
+ => string [default/example = "value"]
 
 
 
-- **vpm** => (Optional) (Array) Struct VotesPerMonth 
+	- **css** => string [default/example = "<style></style>"]
+	- **css_raw** => string [default/example = "unsanitized css"]
 	- **votes** => i64 [default/example = 0]
-	- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
-
-
-
-- **uptime_checks_total** => (Optional) i32 [default/example = 30]
-- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
-- **commands** => (Array) Struct BotCommand 
-	- **cmd_type** => i32 [default/example = 0]
-	- **groups** => (Array) 
-	- **name** => string [default/example = ""]
-	- **vote_locked** => bool [default/example = false]
-	- **description** => string [default/example = ""]
-	- **args** => (Array) 
-	- **examples** => (Array) 
-	- **premium_only** => bool [default/example = false]
-	- **notes** => (Array) 
-	- **doc_link** => None (unknown value type)
-	- **id** => None (unknown value type)
+	- **total_votes** => i64 [default/example = 0]
+	- **vanity** => string [default/example = ""]
 	- **nsfw** => bool [default/example = false]
+	- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
+	- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
+	- **keep_banner_decor** => bool [default/example = false]
+	- **client_id** => string [default/example = ""]
+	- **flags** => (Array) 
+	- **action_logs** => (Array) Struct ActionLog 
+		- **user_id** => string [default/example = ""]
+		- **bot_id** => string [default/example = ""]
+		- **action** => i32 [default/example = 0]
+		- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
+		- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
 
 
 
-- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
-- **webhook_type** => None (unknown value type)
-- **webhook_hmac_only** => None (unknown value type)
-- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+	- **vpm** => (Optional) (Array) Struct VotesPerMonth 
+		- **votes** => i64 [default/example = 0]
+		- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
+
+
+
+	- **uptime_checks_total** => (Optional) i32 [default/example = 30]
+	- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
+	- **commands** => (Array) Struct BotCommand 
+		- **cmd_type** => i32 [default/example = 0]
+		- **groups** => (Array) 
+		- **name** => string [default/example = ""]
+		- **vote_locked** => bool [default/example = false]
+		- **description** => string [default/example = ""]
+		- **args** => (Array) 
+		- **examples** => (Array) 
+		- **premium_only** => bool [default/example = false]
+		- **notes** => (Array) 
+		- **doc_link** => None (unknown value type)
+		- **id** => None (unknown value type)
+		- **nsfw** => bool [default/example = false]
+
+
+
+	- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+	- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+	- **webhook_type** => None (unknown value type)
+	- **webhook_hmac_only** => None (unknown value type)
+	- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+
 
 
 - **context** => Struct BotSettingsContext 
@@ -2155,7 +2165,9 @@ Due to massive changes, this API cannot be mapped onto any v2 API
         ],
         "state": 0,
         "page_style": 1,
-        "extra_links": {},
+        "extra_links": {
+            "key": "value"
+        },
         "css": "<style></style>",
         "css_raw": "unsanitized css",
         "votes": 0,
@@ -2289,7 +2301,7 @@ def random_bot():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-10T17:57:38.391284462Z"]
+- **created_at** => string [default/example = "2022-05-11T08:42:06.129474063Z"]
 
 
 
@@ -2312,7 +2324,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-10T17:57:38.391284462Z"
+    "created_at": "2022-05-11T08:42:06.129474063Z"
 }
 ```
 **Authorization Needed** | 
@@ -2401,7 +2413,11 @@ to false.
 
 - **state** => i32 [default/example = 0]
 - **page_style** => i32 [default/example = 1]
-- **extra_links** => 
+- **extra_links** => Map (key/value)  
+	- **key**
+ => string [default/example = "value"]
+
+
 
 - **css** => string [default/example = "<style></style>"]
 - **css_raw** => string [default/example = "unsanitized css"]
@@ -2508,7 +2524,9 @@ to false.
     ],
     "state": 0,
     "page_style": 1,
-    "extra_links": {},
+    "extra_links": {
+        "key": "value"
+    },
     "css": "<style></style>",
     "css_raw": "unsanitized css",
     "votes": 0,
@@ -2664,7 +2682,11 @@ to false.
 
 - **state** => i32 [default/example = 0]
 - **page_style** => i32 [default/example = 1]
-- **extra_links** => 
+- **extra_links** => Map (key/value)  
+	- **key**
+ => string [default/example = "value"]
+
+
 
 - **css** => string [default/example = "<style></style>"]
 - **css_raw** => string [default/example = "unsanitized css"]
@@ -2771,7 +2793,9 @@ to false.
     ],
     "state": 0,
     "page_style": 1,
-    "extra_links": {},
+    "extra_links": {
+        "key": "value"
+    },
     "css": "<style></style>",
     "css_raw": "unsanitized css",
     "votes": 0,
@@ -3143,7 +3167,11 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 - **flags** => (Array) 
 - **css** => string [default/example = ""]
 - **css_raw** => string [default/example = "unsanitized css"]
-- **extra_links** => 
+- **extra_links** => Map (key/value)  
+	- **key**
+ => string [default/example = "value"]
+
+
 
 - **banner_card** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-card.png"]
 - **banner_page** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-page.png"]
@@ -3180,7 +3208,9 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
     "flags": [],
     "css": "",
     "css_raw": "unsanitized css",
-    "extra_links": {},
+    "extra_links": {
+        "key": "value"
+    },
     "banner_card": "https://frostpaw.com/assets/img/banner-card.png",
     "banner_page": "https://frostpaw.com/assets/img/banner-page.png",
     "keep_banner_decor": false,
@@ -3252,7 +3282,7 @@ def random_server():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-10T17:57:38.391532090Z"]
+- **created_at** => string [default/example = "2022-05-11T08:42:06.129688286Z"]
 
 
 
@@ -3275,7 +3305,7 @@ def random_server():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-10T17:57:38.391532090Z"
+    "created_at": "2022-05-11T08:42:06.129688286Z"
 }
 ```
 **Authorization Needed** | 
@@ -4207,7 +4237,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "d4004f67-69bb-4c90-9b83-de7ba0bc5bda"]
+- **parent_id** => (Optional) string [default/example = "72a5bc94-6f29-4fb7-84e7-a8048f96be49"]
 
 
 
@@ -4233,7 +4263,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "d4004f67-69bb-4c90-9b83-de7ba0bc5bda"
+    "parent_id": "72a5bc94-6f29-4fb7-84e7-a8048f96be49"
 }
 ```
 
@@ -4298,7 +4328,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "10bca034-722e-42ac-b94f-c892141f6ce0"]
+- **id** => (Optional) string [default/example = "4839fc1c-8927-403a-8b4b-0dc95ca146ca"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4328,7 +4358,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "10bca034-722e-42ac-b94f-c892141f6ce0",
+    "id": "4839fc1c-8927-403a-8b4b-0dc95ca146ca",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4392,7 +4422,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "43e2e168-f892-43bc-93e6-ef36b161cf2b"]
+- **rid** => string [default/example = "2aa02190-dcf0-42ab-98a1-ab3c58f7a117"]
 
 
 
@@ -4458,7 +4488,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "bfb5de8f-1c3f-4c62-a320-5a5993ae07bb"]
+- **rid** => string [default/example = "088d6a1a-0d05-46ae-a34d-ea50939aaee1"]
 
 
 
@@ -4560,7 +4590,7 @@ if the list grows and then requires it.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-10T17:57:38.390754103Z"]
+	- **created_at** => string [default/example = "2022-05-11T08:42:06.128984306Z"]
 
 
 
@@ -4604,7 +4634,7 @@ if the list grows and then requires it.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-10T17:57:38.390754103Z"
+            "created_at": "2022-05-11T08:42:06.128984306Z"
         }
     ],
     "servers": [],
