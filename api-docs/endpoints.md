@@ -78,7 +78,6 @@ Returns the index for bots and servers
 	- **guild_count** => i64 [default/example = 30]
 	- **description** => string [default/example = "My description"]
 	- **banner** => string [default/example = "My banner or default banner url"]
-	- **nsfw** => bool [default/example = false]
 	- **votes** => i64 [default/example = 40]
 	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
@@ -92,7 +91,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-11T08:42:06.128984306Z"]
+	- **created_at** => string [default/example = "2022-05-11T16:04:15.701199291Z"]
 
 
 
@@ -100,7 +99,6 @@ Returns the index for bots and servers
 	- **guild_count** => i64 [default/example = 30]
 	- **description** => string [default/example = "My description"]
 	- **banner** => string [default/example = "My banner or default banner url"]
-	- **nsfw** => bool [default/example = false]
 	- **votes** => i64 [default/example = 40]
 	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
@@ -114,7 +112,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-11T08:42:06.128984306Z"]
+	- **created_at** => string [default/example = "2022-05-11T16:04:15.701199291Z"]
 
 
 
@@ -122,7 +120,6 @@ Returns the index for bots and servers
 	- **guild_count** => i64 [default/example = 30]
 	- **description** => string [default/example = "My description"]
 	- **banner** => string [default/example = "My banner or default banner url"]
-	- **nsfw** => bool [default/example = false]
 	- **votes** => i64 [default/example = 40]
 	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
@@ -136,7 +133,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-11T08:42:06.128984306Z"]
+	- **created_at** => string [default/example = "2022-05-11T16:04:15.701199291Z"]
 
 
 
@@ -168,7 +165,6 @@ Returns the index for bots and servers
             "guild_count": 30,
             "description": "My description",
             "banner": "My banner or default banner url",
-            "nsfw": false,
             "votes": 40,
             "state": 3,
             "user": {
@@ -180,7 +176,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-11T08:42:06.128984306Z"
+            "created_at": "2022-05-11T16:04:15.701199291Z"
         }
     ],
     "top_voted": [
@@ -188,7 +184,6 @@ Returns the index for bots and servers
             "guild_count": 30,
             "description": "My description",
             "banner": "My banner or default banner url",
-            "nsfw": false,
             "votes": 40,
             "state": 3,
             "user": {
@@ -200,7 +195,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-11T08:42:06.128984306Z"
+            "created_at": "2022-05-11T16:04:15.701199291Z"
         }
     ],
     "certified": [
@@ -208,7 +203,6 @@ Returns the index for bots and servers
             "guild_count": 30,
             "description": "My description",
             "banner": "My banner or default banner url",
-            "nsfw": false,
             "votes": 40,
             "state": 3,
             "user": {
@@ -220,7 +214,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-11T08:42:06.128984306Z"
+            "created_at": "2022-05-11T16:04:15.701199291Z"
         }
     ],
     "tags": [
@@ -582,7 +576,6 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 	- **guild_count** => i64 [default/example = 30]
 	- **description** => string [default/example = "My description"]
 	- **banner** => string [default/example = "My banner or default banner url"]
-	- **nsfw** => bool [default/example = false]
 	- **votes** => i64 [default/example = 40]
 	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
@@ -596,7 +589,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-11T08:42:06.129134012Z"]
+	- **created_at** => string [default/example = "2022-05-11T16:04:15.701344828Z"]
 
 
 
@@ -604,7 +597,6 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 	- **guild_count** => i64 [default/example = 30]
 	- **description** => string [default/example = "My description"]
 	- **banner** => string [default/example = "My banner or default banner url"]
-	- **nsfw** => bool [default/example = false]
 	- **votes** => i64 [default/example = 40]
 	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
@@ -618,7 +610,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-11T08:42:06.129134186Z"]
+	- **created_at** => string [default/example = "2022-05-11T16:04:15.701344987Z"]
 
 
 
@@ -705,7 +697,6 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
             "guild_count": 30,
             "description": "My description",
             "banner": "My banner or default banner url",
-            "nsfw": false,
             "votes": 40,
             "state": 3,
             "user": {
@@ -717,7 +708,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-11T08:42:06.129134012Z"
+            "created_at": "2022-05-11T16:04:15.701344828Z"
         }
     ],
     "servers": [
@@ -725,7 +716,6 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
             "guild_count": 30,
             "description": "My description",
             "banner": "My banner or default banner url",
-            "nsfw": false,
             "votes": 40,
             "state": 3,
             "user": {
@@ -737,7 +727,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-11T08:42:06.129134186Z"
+            "created_at": "2022-05-11T16:04:15.701344987Z"
         }
     ],
     "profiles": [
@@ -841,7 +831,6 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 	- **guild_count** => i64 [default/example = 30]
 	- **description** => string [default/example = "My description"]
 	- **banner** => string [default/example = "My banner or default banner url"]
-	- **nsfw** => bool [default/example = false]
 	- **votes** => i64 [default/example = 40]
 	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
@@ -855,7 +844,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-11T08:42:06.129208906Z"]
+	- **created_at** => string [default/example = "2022-05-11T16:04:15.701424906Z"]
 
 
 
@@ -863,7 +852,6 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 	- **guild_count** => i64 [default/example = 30]
 	- **description** => string [default/example = "My description"]
 	- **banner** => string [default/example = "My banner or default banner url"]
-	- **nsfw** => bool [default/example = false]
 	- **votes** => i64 [default/example = 40]
 	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
@@ -877,7 +865,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-11T08:42:06.129209049Z"]
+	- **created_at** => string [default/example = "2022-05-11T16:04:15.701425041Z"]
 
 
 
@@ -915,7 +903,6 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
             "guild_count": 30,
             "description": "My description",
             "banner": "My banner or default banner url",
-            "nsfw": false,
             "votes": 40,
             "state": 3,
             "user": {
@@ -927,7 +914,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-11T08:42:06.129208906Z"
+            "created_at": "2022-05-11T16:04:15.701424906Z"
         }
     ],
     "servers": [
@@ -935,7 +922,6 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
             "guild_count": 30,
             "description": "My description",
             "banner": "My banner or default banner url",
-            "nsfw": false,
             "votes": 40,
             "state": 3,
             "user": {
@@ -947,7 +933,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-11T08:42:06.129209049Z"
+            "created_at": "2022-05-11T16:04:15.701425041Z"
         }
     ],
     "profiles": [],
@@ -1754,7 +1740,6 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 
 
 
-- **owners_html** => string [default/example = ""]
 - **features** => (Array) Struct Feature 
 	- **id** => string [default/example = ""]
 	- **name** => string [default/example = ""]
@@ -1776,10 +1761,8 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
-- **nsfw** => bool [default/example = false]
 - **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
 - **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **keep_banner_decor** => bool [default/example = false]
 - **client_id** => string [default/example = ""]
 - **flags** => (Array) 
 - **action_logs** => (Array) Struct ActionLog 
@@ -1865,7 +1848,6 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
             "main": false
         }
     ],
-    "owners_html": "",
     "features": [
         {
             "id": "",
@@ -1884,10 +1866,8 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
-    "nsfw": false,
     "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
     "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
-    "keep_banner_decor": false,
     "client_id": "",
     "flags": [],
     "action_logs": [
@@ -2019,7 +1999,6 @@ Due to massive changes, this API cannot be mapped onto any v2 API
 
 
 
-	- **owners_html** => string [default/example = ""]
 	- **features** => (Array) Struct Feature 
 		- **id** => string [default/example = ""]
 		- **name** => string [default/example = ""]
@@ -2041,10 +2020,8 @@ Due to massive changes, this API cannot be mapped onto any v2 API
 	- **votes** => i64 [default/example = 0]
 	- **total_votes** => i64 [default/example = 0]
 	- **vanity** => string [default/example = ""]
-	- **nsfw** => bool [default/example = false]
 	- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
 	- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-	- **keep_banner_decor** => bool [default/example = false]
 	- **client_id** => string [default/example = ""]
 	- **flags** => (Array) 
 	- **action_logs** => (Array) Struct ActionLog 
@@ -2154,7 +2131,6 @@ Due to massive changes, this API cannot be mapped onto any v2 API
                 "main": false
             }
         ],
-        "owners_html": "",
         "features": [
             {
                 "id": "",
@@ -2173,10 +2149,8 @@ Due to massive changes, this API cannot be mapped onto any v2 API
         "votes": 0,
         "total_votes": 0,
         "vanity": "",
-        "nsfw": false,
         "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
         "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
-        "keep_banner_decor": false,
         "client_id": "",
         "flags": [],
         "action_logs": [
@@ -2287,7 +2261,6 @@ def random_bot():
 - **guild_count** => i64 [default/example = 30]
 - **description** => string [default/example = "My description"]
 - **banner** => string [default/example = "My banner or default banner url"]
-- **nsfw** => bool [default/example = false]
 - **votes** => i64 [default/example = 40]
 - **state** => i32 [default/example = 3]
 - **user** => Struct User 
@@ -2301,7 +2274,7 @@ def random_bot():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-11T08:42:06.129474063Z"]
+- **created_at** => string [default/example = "2022-05-11T16:04:15.701688999Z"]
 
 
 
@@ -2312,7 +2285,6 @@ def random_bot():
     "guild_count": 30,
     "description": "My description",
     "banner": "My banner or default banner url",
-    "nsfw": false,
     "votes": 40,
     "state": 3,
     "user": {
@@ -2324,7 +2296,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-11T08:42:06.129474063Z"
+    "created_at": "2022-05-11T16:04:15.701688999Z"
 }
 ```
 **Authorization Needed** | 
@@ -2402,7 +2374,6 @@ to false.
 
 
 
-- **owners_html** => string [default/example = ""]
 - **features** => (Array) Struct Feature 
 	- **id** => string [default/example = ""]
 	- **name** => string [default/example = ""]
@@ -2424,10 +2395,8 @@ to false.
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
-- **nsfw** => bool [default/example = false]
 - **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
 - **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **keep_banner_decor** => bool [default/example = false]
 - **client_id** => string [default/example = ""]
 - **flags** => (Array) 
 - **action_logs** => (Array) Struct ActionLog 
@@ -2513,7 +2482,6 @@ to false.
             "main": false
         }
     ],
-    "owners_html": "",
     "features": [
         {
             "id": "",
@@ -2532,10 +2500,8 @@ to false.
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
-    "nsfw": false,
     "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
     "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
-    "keep_banner_decor": false,
     "client_id": "",
     "flags": [],
     "action_logs": [
@@ -2671,7 +2637,6 @@ to false.
 
 
 
-- **owners_html** => string [default/example = ""]
 - **features** => (Array) Struct Feature 
 	- **id** => string [default/example = ""]
 	- **name** => string [default/example = ""]
@@ -2693,10 +2658,8 @@ to false.
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 - **vanity** => string [default/example = ""]
-- **nsfw** => bool [default/example = false]
 - **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
 - **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **keep_banner_decor** => bool [default/example = false]
 - **client_id** => string [default/example = ""]
 - **flags** => (Array) 
 - **action_logs** => (Array) Struct ActionLog 
@@ -2782,7 +2745,6 @@ to false.
             "main": false
         }
     ],
-    "owners_html": "",
     "features": [
         {
             "id": "",
@@ -2801,10 +2763,8 @@ to false.
     "votes": 0,
     "total_votes": 0,
     "vanity": "",
-    "nsfw": false,
     "banner_card": "https://api.fateslist.xyz/static/botlisticon.webp",
     "banner_page": "https://api.fateslist.xyz/static/botlisticon.webp",
-    "keep_banner_decor": false,
     "client_id": "",
     "flags": [],
     "action_logs": [
@@ -3153,6 +3113,16 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 
 
 
+- **owner** => Struct User 
+	- **id** => string [default/example = ""]
+	- **username** => string [default/example = ""]
+	- **disc** => string [default/example = ""]
+	- **avatar** => string [default/example = ""]
+	- **bot** => bool [default/example = false]
+	- **status** => string [default/example = "Unknown"]
+
+
+
 - **description** => string [default/example = ""]
 - **tags** => (Array) 
 - **long_description_type** => i32 [default/example = 1]
@@ -3175,8 +3145,6 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 
 - **banner_card** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-card.png"]
 - **banner_page** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-page.png"]
-- **keep_banner_decor** => bool [default/example = false]
-- **nsfw** => bool [default/example = false]
 - **votes** => i64 [default/example = 0]
 - **total_votes** => i64 [default/example = 0]
 
@@ -3187,6 +3155,14 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 ```json
 {
     "user": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "owner": {
         "id": "",
         "username": "",
         "disc": "",
@@ -3213,8 +3189,6 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
     },
     "banner_card": "https://frostpaw.com/assets/img/banner-card.png",
     "banner_page": "https://frostpaw.com/assets/img/banner-page.png",
-    "keep_banner_decor": false,
-    "nsfw": false,
     "votes": 0,
     "total_votes": 0
 }
@@ -3268,7 +3242,6 @@ def random_server():
 - **guild_count** => i64 [default/example = 30]
 - **description** => string [default/example = "My description"]
 - **banner** => string [default/example = "My banner or default banner url"]
-- **nsfw** => bool [default/example = false]
 - **votes** => i64 [default/example = 40]
 - **state** => i32 [default/example = 3]
 - **user** => Struct User 
@@ -3282,7 +3255,7 @@ def random_server():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-11T08:42:06.129688286Z"]
+- **created_at** => string [default/example = "2022-05-11T16:04:15.701884798Z"]
 
 
 
@@ -3293,7 +3266,6 @@ def random_server():
     "guild_count": 30,
     "description": "My description",
     "banner": "My banner or default banner url",
-    "nsfw": false,
     "votes": 40,
     "state": 3,
     "user": {
@@ -3305,7 +3277,7 @@ def random_server():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-11T08:42:06.129688286Z"
+    "created_at": "2022-05-11T16:04:15.701884798Z"
 }
 ```
 **Authorization Needed** | 
@@ -4237,7 +4209,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "72a5bc94-6f29-4fb7-84e7-a8048f96be49"]
+- **parent_id** => (Optional) string [default/example = "69399363-a333-4702-ab90-b65ae1ce457e"]
 
 
 
@@ -4263,7 +4235,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "72a5bc94-6f29-4fb7-84e7-a8048f96be49"
+    "parent_id": "69399363-a333-4702-ab90-b65ae1ce457e"
 }
 ```
 
@@ -4328,7 +4300,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "4839fc1c-8927-403a-8b4b-0dc95ca146ca"]
+- **id** => (Optional) string [default/example = "a0e58f99-c1ad-4b76-a98b-84c348ff87de"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4358,7 +4330,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "4839fc1c-8927-403a-8b4b-0dc95ca146ca",
+    "id": "a0e58f99-c1ad-4b76-a98b-84c348ff87de",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4422,7 +4394,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "2aa02190-dcf0-42ab-98a1-ab3c58f7a117"]
+- **rid** => string [default/example = "e90b9be4-5e8e-4f26-9bc7-b851a8c0eb5d"]
 
 
 
@@ -4488,7 +4460,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "088d6a1a-0d05-46ae-a34d-ea50939aaee1"]
+- **rid** => string [default/example = "4dfa0d92-0784-45b7-8b1d-4a70b22cad0f"]
 
 
 
@@ -4576,7 +4548,6 @@ if the list grows and then requires it.
 	- **guild_count** => i64 [default/example = 30]
 	- **description** => string [default/example = "My description"]
 	- **banner** => string [default/example = "My banner or default banner url"]
-	- **nsfw** => bool [default/example = false]
 	- **votes** => i64 [default/example = 40]
 	- **state** => i32 [default/example = 3]
 	- **user** => Struct User 
@@ -4590,7 +4561,7 @@ if the list grows and then requires it.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-11T08:42:06.128984306Z"]
+	- **created_at** => string [default/example = "2022-05-11T16:04:15.701199291Z"]
 
 
 
@@ -4622,7 +4593,6 @@ if the list grows and then requires it.
             "guild_count": 30,
             "description": "My description",
             "banner": "My banner or default banner url",
-            "nsfw": false,
             "votes": 40,
             "state": 3,
             "user": {
@@ -4634,7 +4604,7 @@ if the list grows and then requires it.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-11T08:42:06.128984306Z"
+            "created_at": "2022-05-11T16:04:15.701199291Z"
         }
     ],
     "servers": [],

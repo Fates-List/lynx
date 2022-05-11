@@ -85,6 +85,9 @@ The flags of the bot or server (system bot etc)
 | **StatsLocked** | 3 |
 | **VoteLocked** | 4 |
 | **System** | 5 |
+| **WhitelistOnly** | 6 |
+| **KeepBannerDecor** | 7 |
+| **NSFW** | 8 |
 
 
     
