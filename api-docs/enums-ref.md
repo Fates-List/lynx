@@ -88,6 +88,7 @@ The flags of the bot or server (system bot etc)
 | **WhitelistOnly** | 6 |
 | **KeepBannerDecor** | 7 |
 | **NSFW** | 8 |
+| **LoginRequired** | 9 |
 
 
     

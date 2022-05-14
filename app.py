@@ -3215,8 +3215,14 @@ async def metro_api(request: Request, action: str, data: Metro):
         bot = await app.state.db.fetchrow("SELECT bot_id FROM bots WHERE bot_id = $1", data.bot_id)
         if not bot:
             # Insert bot
+            extra_links = {}
+            if data.website:
+                extra_links["Website"] = data.website
+            if data.support:
+                extra_links["Support"] = data.support
+
             await app.state.db.execute(
-                "INSERT INTO bots (id, bot_id, bot_library, description, long_description, long_description_type, api_token, invite, website, discord, prefix, state) VALUES ($1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)", 
+                "INSERT INTO bots (id, bot_id, bot_library, description, long_description, long_description_type, api_token, invite, prefix, state, extra_links) VALUES ($1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", 
                 data.bot_id,
                 data.library or "custom",
                 data.description,
@@ -3224,10 +3230,9 @@ async def metro_api(request: Request, action: str, data: Metro):
                 enums.LongDescType.markdown_serverside,
                 get_token(128),
                 data.invite or '',
-                data.website,
-                data.support,
                 data.prefix,
-                enums.BotState.under_review
+                enums.BotState.under_review,
+                orjson.dumps(extra_links).decode(),
             )
             for tag in data.tags:
                 try:
