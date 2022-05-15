@@ -1854,3 +1854,29 @@ class ServerAuditLogs(Table, tablename="server_audit_logs"):
         unique=False,
         secret=False,
     )
+
+class PushNotifications(Table, tablename="push_notifications"):
+    id = UUID(
+        default=UUID4(),
+        null=False,
+        primary_key=True,
+    )
+
+    user_id = ForeignKey(
+        references=Users,
+        on_delete=OnDelete.cascade,
+        on_update=OnUpdate.cascade,
+        null=False,
+    )
+
+    endpoint = Text(
+        null=False,
+    )
+
+    p256dh = Text(
+        null=False,
+    )
+
+    auth = Text(
+        null=False,
+    )

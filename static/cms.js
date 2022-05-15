@@ -211,7 +211,7 @@ function waitForWsAndLoad(data, f) {
 async function linkMod() {
     links = document.querySelectorAll("a")
     links.forEach(link => {
-        console.debug("[Sparkpelt]", link, link.href, link.hasPatched, link.hasPatched == undefined)
+        debug("[Sparkpelt]", link, link.href, link.hasPatched, link.hasPatched == undefined)
         if(link.href.startsWith("https://lynx.fateslist.xyz/") && link.hasPatched == undefined) {
             if(link.href == "https://lynx.fateslist.xyz/#") {
                 return // Don't patch # elements
@@ -221,7 +221,7 @@ async function linkMod() {
             }
 
             link.hasPatched = true
-            console.debug("[Sparkpelt] Add patch")
+            debug("[Sparkpelt]",  "Add patch")
             link.addEventListener('click', event => {
                 if ( event.preventDefault ) event.preventDefault();
                 // Now add some special code
