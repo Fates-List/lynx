@@ -91,7 +91,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-14T12:34:42.518605711Z"]
+	- **created_at** => string [default/example = "2022-05-16T11:57:19.989421604Z"]
 
 
 
@@ -112,7 +112,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-14T12:34:42.518605711Z"]
+	- **created_at** => string [default/example = "2022-05-16T11:57:19.989421604Z"]
 
 
 
@@ -133,7 +133,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-14T12:34:42.518605711Z"]
+	- **created_at** => string [default/example = "2022-05-16T11:57:19.989421604Z"]
 
 
 
@@ -176,7 +176,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-14T12:34:42.518605711Z"
+            "created_at": "2022-05-16T11:57:19.989421604Z"
         }
     ],
     "top_voted": [
@@ -195,7 +195,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-14T12:34:42.518605711Z"
+            "created_at": "2022-05-16T11:57:19.989421604Z"
         }
     ],
     "certified": [
@@ -214,7 +214,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-14T12:34:42.518605711Z"
+            "created_at": "2022-05-16T11:57:19.989421604Z"
         }
     ],
     "tags": [
@@ -589,7 +589,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-14T12:34:42.518816483Z"]
+	- **created_at** => string [default/example = "2022-05-16T11:57:19.989678674Z"]
 
 
 
@@ -610,7 +610,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-14T12:34:42.518816802Z"]
+	- **created_at** => string [default/example = "2022-05-16T11:57:19.989678898Z"]
 
 
 
@@ -708,7 +708,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-14T12:34:42.518816483Z"
+            "created_at": "2022-05-16T11:57:19.989678674Z"
         }
     ],
     "servers": [
@@ -727,7 +727,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-14T12:34:42.518816802Z"
+            "created_at": "2022-05-16T11:57:19.989678898Z"
         }
     ],
     "profiles": [
@@ -844,7 +844,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-14T12:34:42.518901185Z"]
+	- **created_at** => string [default/example = "2022-05-16T11:57:19.989782323Z"]
 
 
 
@@ -865,7 +865,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-14T12:34:42.518901353Z"]
+	- **created_at** => string [default/example = "2022-05-16T11:57:19.989782520Z"]
 
 
 
@@ -914,7 +914,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-14T12:34:42.518901185Z"
+            "created_at": "2022-05-16T11:57:19.989782323Z"
         }
     ],
     "servers": [
@@ -933,7 +933,7 @@ Searches the list for all bots/servers with tag *exactly* specified ``q``
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-14T12:34:42.518901353Z"
+            "created_at": "2022-05-16T11:57:19.989782520Z"
         }
     ],
     "profiles": [],
@@ -2274,7 +2274,7 @@ def random_bot():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-14T12:34:42.519195626Z"]
+- **created_at** => string [default/example = "2022-05-16T11:57:19.990136969Z"]
 
 
 
@@ -2296,7 +2296,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-14T12:34:42.519195626Z"
+    "created_at": "2022-05-16T11:57:19.990136969Z"
 }
 ```
 **Authorization Needed** | 
@@ -3255,7 +3255,7 @@ def random_server():
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-14T12:34:42.519412574Z"]
+- **created_at** => string [default/example = "2022-05-16T11:57:19.990398665Z"]
 
 
 
@@ -3277,7 +3277,7 @@ def random_server():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-14T12:34:42.519412574Z"
+    "created_at": "2022-05-16T11:57:19.990398665Z"
 }
 ```
 **Authorization Needed** | 
@@ -4278,7 +4278,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [default/example = "c18366ec-abff-4369-a7bd-8dac1f002cc5"]
+- **parent_id** => (Optional) string [default/example = "ce973eff-db59-455f-aca4-8769566b317b"]
 
 
 
@@ -4304,7 +4304,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "c18366ec-abff-4369-a7bd-8dac1f002cc5"
+    "parent_id": "ce973eff-db59-455f-aca4-8769566b317b"
 }
 ```
 
@@ -4369,7 +4369,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body Description**
 
-- **id** => (Optional) string [default/example = "d35b73e5-f86c-4512-a90f-b56ee60e28e5"]
+- **id** => (Optional) string [default/example = "35291add-3a31-4f12-8fec-2b584f3cc75d"]
 - **star_rating** => string [default/example = "0"]
 - **review_text** => string [default/example = ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -4399,7 +4399,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "d35b73e5-f86c-4512-a90f-b56ee60e28e5",
+    "id": "35291add-3a31-4f12-8fec-2b584f3cc75d",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -4463,7 +4463,7 @@ set this anyways so you might as well set it correctly.
 
 **Path parameters**
 
-- **rid** => string [default/example = "2946ba26-dd57-4dfd-b189-46caa8d48215"]
+- **rid** => string [default/example = "3f4a614c-324d-4df9-a5ff-9b62f8940551"]
 
 
 
@@ -4529,7 +4529,7 @@ in the future.
 
 **Path parameters**
 
-- **rid** => string [default/example = "b438b372-e3c8-4910-bbcd-cea911e5a8ea"]
+- **rid** => string [default/example = "47304116-8b47-4c1a-bf29-f6b3903582b3"]
 
 
 
@@ -4630,7 +4630,7 @@ if the list grows and then requires it.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-14T12:34:42.518605711Z"]
+	- **created_at** => string [default/example = "2022-05-16T11:57:19.989421604Z"]
 
 
 
@@ -4673,7 +4673,7 @@ if the list grows and then requires it.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-14T12:34:42.518605711Z"
+            "created_at": "2022-05-16T11:57:19.989421604Z"
         }
     ],
     "servers": [],
@@ -4845,5 +4845,151 @@ UUIDs in the case of ids. Bad names/ids will be ignored
 }
 ```
 **Authorization Needed** | [Bot](https://lynx.fateslist.xyz/docs/endpoints#authorization)
+
+
+## Notifications
+
+### Get Notification Public Info
+#### GET /notifications/info
+
+
+Get the public information required for creating a push notification
+
+
+**Path parameters**
+
+- **id** => i64 [default/example = 0]
+
+
+
+**Query parameters**
+
+- **endpoint** => string [default/example = ""]
+- **p256dh** => string [default/example = ""]
+- **auth** => string [default/example = ""]
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **public_key** => string [default/example = ""]
+
+
+
+**Response Body Example**
+
+```json
+{
+    "public_key": ""
+}
+```
+**Authorization Needed** | 
+
+
+### Create Push Notification Subscription
+#### POST /notifications/{id}/sub
+
+
+Subscribes a user to a push notification.
+
+
+**Path parameters**
+
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **done** => bool [default/example = true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
+
+
+### Create Test Push Notification
+#### GET /notifications/{id}/test
+
+
+Creates a test push notification
+
+
+**Path parameters**
+
+
+
+
+**Query parameters**
+
+
+
+
+**Request Body Description**
+
+
+
+
+**Request Body Example**
+
+```json
+{}
+```
+
+**Response Body Description**
+
+- **done** => bool [default/example = true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+**Authorization Needed** | [User](https://lynx.fateslist.xyz/docs/endpoints#authorization)
 
 
