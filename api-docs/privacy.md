@@ -52,7 +52,7 @@ These are some requirements we test for and require. Note that this list is **no
 2. DMing staff to ask for your bot to be approved/reviewed is strictly prohibited. Your bot will be denied or banned if you do so. You may however ask staff politely to review/show off your bot on your support server if it needs to be verified.
 3. Your bot must not have a copyrighted avatar or username. All assets used in your bot must be either owned by you or with permission from the copyright owner.
 4. Abusing Discord (mass creating or deleting channels, mass DM/spam/nuke bots) is strictly prohibited and doing so will get you and/or your bot banned from the list and server.
-5. Your bot may not be hosted on Glitch/Repl Free Plan and use a software to ping your project. This is also against Repl/Glitch ToS.
+5. Your bot may not be hosted on a Glitch Free Plan and use a software to ping your project. This is against the Glitch ToS.
 6. Your bot must be online during testing
 
 
