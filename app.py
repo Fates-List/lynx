@@ -301,12 +301,15 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         if request.url.path in ("/widgets", "/widgets"):
             return RedirectResponse("/widgets/docs")
-
-        if request.url.path == "/_ws" or request.url.path.startswith("/widgets"):
-            return await call_next(request)
         
-        if (not request.headers.get("X-Lynx-Site") and request.url.path not in ("/_admin", "/_admin/")) and not request.url.path.endswith((".css", ".js", ".js.map")):
-            return ORJSONResponse({"detail": "Not in lynx site"}, status_code=401)
+        if request.url.path.startswith("/_admin") and (request.url.path not in ("/_admin", "/_admin/") and not request.url.path.endswith((".css", ".js", ".js.map"))):
+            if not request.headers.get("X-Lynx-Site"):
+                return ORJSONResponse({"detail": "Not in lynx site"}, status_code=401)
+        else:
+            response = await call_next(request)
+            if request.headers.get("Origin") in ["https://fateslist.xyz", "https://sunbeam.fateslist.xyz"]:
+                response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
+            return response
 
         print("[LYNX] Admin request. Middleware started")
 
@@ -2878,6 +2881,57 @@ def handle_kill(*args, **kwargs):
     print("Broadcasting maintenance")
     task = asyncio.create_task(_close())
     task.add_done_callback(_gohome)
+
+# Quailfeather API
+@app.get("/_quailfeather/doctree")
+def doctree():
+    docs = []
+
+    for path in pathlib.Path("api-docs").rglob("*.md"):
+        proper_path = str(path).replace("api-docs/", "")
+        
+        docs.append(proper_path.split("/"))
+    
+    # We are forced to inject a script to the end to force hljs render
+    return docs
+
+@app.get("/_quailfeather/docs/{page:path}")
+def docs(page: str):
+    if page.endswith(".md"):
+        page = f"/docs/{page[:-3]}"
+
+    elif not page or page == "/docs":
+        page = "/index"
+
+    if not page.replace("-", "").replace("_", "").replace("/", "").replace("!", "").isalnum():
+        return ORJSONResponse({"detail": "Invalid page"}, status_code=404)
+
+    try:
+        with open(f"api-docs/{page}.md", "r") as f:
+            md_data = f.read()
+    except FileNotFoundError as exc:
+        return ORJSONResponse({"detail": f"api-docs/{page}.md not found -> {exc}"}, status_code=404)
+    
+    # Workaround svelte bug and force our stuff to load
+    return md_data + """
+<script src="https://cdn.jsdelivr.net/gh/RickStrahl/highlightjs-badge@master/highlightjs-badge.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js"></script>
+<script>
+window.rerender = () => {
+    console.log("Called render")
+    hljs.configure({ignoreUnescapedHTML: true})
+    hljs.highlightAll()
+    window.highlightJsBadge({
+        onBeforeCodeCopied: (text) => {
+            alert("Copied snippet!")
+            return text
+        }
+    }) 
+}
+
+setTimeout(window.rerender, 400) // 400 seconds should be plenty of time
+</script>
+"""
 
 # Widget Server
 
