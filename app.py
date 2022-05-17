@@ -2933,6 +2933,65 @@ setTimeout(window.rerender, 400) // 400 seconds should be plenty of time
 </script>
 """
 
+class BotData(BaseModel):
+    id: str
+    user_id: str
+    action: str
+    reason: str
+
+class FakeWsState():
+    def __init__(self):
+        self.plat = "SQUIRREL"
+        self.user = None
+        self.memebr = None
+
+class FakeWsKitty():
+    def __init__(self, reviewer: str, member: StaffMember):
+        self.state = FakeWsState()
+        self.state.user = {"id": reviewer, "username": "Unknown User"}
+        self.state.member = member
+
+@app.get("/_quailfeather/kitty")
+async def do_action(request: Request, data: BotData):
+    try:
+        bot_id = int(data.id)
+        user_id = int(data.user_id)
+    except:
+        return ORJSONResponse({"detail": "bot_id or user_id invalid"}, status_code=401)
+
+    check = await app.state.db.fetchval(
+        "SELECT user_id FROM users WHERE user_id = $1 AND api_token = $2",
+        user_id,
+        request.headers.get("Authorization", "INVALID_AUTH")
+    )
+    if not check:
+        return ORJSONResponse({"detail": "Unauthorized"}, status_code=401)
+
+    _, _, member = await is_staff(user_id, 2)
+
+    if member.perm >= 2:
+        staff_verify_code = await app.state.db.fetchval(
+            "SELECT staff_verify_code FROM users WHERE user_id = $1",
+            user_id
+        )
+
+        if not staff_verify_code or not code_check(staff_verify_code, user_id):
+            return ORJSONResponse({"detail": "Staff verification is required before performing this action"}, status_code=401)
+    else:
+        return ORJSONResponse({"detail": "You are not staff"}, status_code=401)
+
+    try:
+        action = app.state.bot_actions[action]
+    except:
+        return {"detail": "Action does not exist!"}
+    try:
+        action_data = ActionWithReason(bot_id=bot_id, reason=data.reason)
+    except Exception as exc:
+        return {"detail": f"{type(exc)}: {str(exc)}"}
+    return await action(FakeWs(str(user_id), member), action_data)
+
+
+
 # Widget Server
 
 # Load in static assets for bot widgets
@@ -3241,12 +3300,6 @@ class Metro(BaseModel):
     prefix: str | None = None
     invite: str | None = None
     cross_add: bool | None = True
-
-class FakeWsState():
-    def __init__(self):
-        self.plat = "SQUIRREL"
-        self.user = None
-        self.memebr = None
 
 class FakeWs():
     def __init__(self, reviewer: str):
