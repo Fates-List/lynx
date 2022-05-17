@@ -32,7 +32,7 @@ import orjson
 from discord import Embed
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request, Response
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import StreamingResponse, ORJSONResponse
+from fastapi.responses import StreamingResponse, ORJSONResponse, PlainTextResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exceptions import HTTPException
 from piccolo.apps.user.tables import BaseUser
@@ -302,6 +302,15 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
         if request.url.path in ("/widgets", "/widgets"):
             return RedirectResponse("/widgets/docs")
         
+        if request.method == "OPTIONS":
+            if request.headers.get("Origin") in ["https://fateslist.xyz", "https://sunbeam.fateslist.xyz"]:
+                return PlainTextResponse("", headers={
+                    "Access-Control-Allow-Origin": request.headers.get("Origin"),
+                    "Access-Control-Allow-Headers": "Authorization, Content-Type",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+                })
+
         if request.url.path.startswith("/_admin") and (request.url.path not in ("/_admin", "/_admin/") and not request.url.path.endswith((".css", ".js", ".js.map"))):
             if not request.headers.get("X-Lynx-Site"):
                 return ORJSONResponse({"detail": "Not in lynx site"}, status_code=401)
@@ -2951,7 +2960,7 @@ class FakeWsKitty():
         self.state.user = {"id": reviewer, "username": "Unknown User"}
         self.state.member = member
 
-@app.get("/_quailfeather/kitty")
+@app.post("/_quailfeather/kitty")
 async def do_action(request: Request, data: BotData):
     try:
         bot_id = int(data.id)
@@ -2981,14 +2990,14 @@ async def do_action(request: Request, data: BotData):
         return ORJSONResponse({"detail": "You are not staff"}, status_code=401)
 
     try:
-        action = app.state.bot_actions[action]
+        action = app.state.bot_actions[data.action]
     except:
-        return {"detail": "Action does not exist!"}
+        return ORJSONResponse({"detail": "Action does not exist!"}, status_code=401)
     try:
         action_data = ActionWithReason(bot_id=bot_id, reason=data.reason)
     except Exception as exc:
         return {"detail": f"{type(exc)}: {str(exc)}"}
-    return await action(FakeWs(str(user_id), member), action_data)
+    return await action(FakeWsKitty(str(user_id), member), action_data)
 
 
 
