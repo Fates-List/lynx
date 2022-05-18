@@ -106,17 +106,6 @@ async def send_message(msg: dict):
         async with sess.post(f"http://localhost:1234/messages", json=msg) as res:
             return res
 
-docs_template = requests.get("https://api.fateslist.xyz/_docs_template").text
-
-with open("api-docs/endpoints.md", "w") as f:
-    f.write(docs_template)
-
-enums_docs_template = requests.get("https://api.fateslist.xyz/_enum_docs_template").text
-
-with open("api-docs/enums-ref.md", "w") as f:
-    f.write(enums_docs_template)
-
-
 # Experiment sanity check
 exps_in_api = requests.get("https://api.fateslist.xyz/experiments").json()
 

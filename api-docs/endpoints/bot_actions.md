@@ -643,7 +643,7 @@ A default API Response will be of the below format:
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-18T13:24:20.403294809Z"]
+- **created_at** => string [default/example = "2022-05-18T14:16:28.895264844Z"]
 
 
 
@@ -665,7 +665,7 @@ A default API Response will be of the below format:
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-18T13:24:20.403294809Z"
+    "created_at": "2022-05-18T14:16:28.895264844Z"
 }
 ```
 
@@ -1225,6 +1225,149 @@ A default API Response will be of the below format:
         "status": "Unknown"
     },
     "main": true
+}
+```
+
+
+
+
+**Response Body**
+
+- **done** => bool [default/example = true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
+
+
+## Delete Bot
+### DELETE `https://api.fateslist.xyz`/users/{user_id}/bots/{bot_id}
+
+
+
+**Path Parameters**
+
+- **user_id** => i64 [default/example = 0]
+- **bot_id** => i64 [default/example = 0]
+
+
+
+
+
+
+
+**Response Body**
+
+- **done** => bool [default/example = true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
+
+
+## Get Import Sources
+### GET `https://api.fateslist.xyz`/import-sources
+
+
+
+
+
+**Response Body**
+
+- **sources** => (Array) Struct ImportSourceListItem 
+	- **id** => string [default/example = "Rdl"]
+	- **name** => string [default/example = "Rovel Bot List"]
+
+
+
+
+
+
+**Response Body Example**
+
+```json
+{
+    "sources": [
+        {
+            "id": "Rdl",
+            "name": "Rovel Bot List"
+        }
+    ]
+}
+```
+
+
+**Authorization Needed** | None
+
+
+## Import Bot
+### POST `https://api.fateslist.xyz`/users/{user_id}/bots/{bot_id}/import?src={source}
+
+
+**Query Parameters**
+
+- **src** => string [default/example = "Rdl"]
+- **custom_source** => (Optional) string [default/example = ""]
+
+
+
+
+
+
+**Path Parameters**
+
+- **user_id** => i64 [default/example = 0]
+- **bot_id** => i64 [default/example = 0]
+
+
+
+
+
+
+**Request Body**
+
+- **ext_data** => (Optional) Map (key/value)  
+	- **key**
+ => string [default/example = "value"]
+
+
+
+
+
+
+**Request Body Example**
+
+```json
+{
+    "ext_data": {
+        "key": "value"
+    }
 }
 ```
 

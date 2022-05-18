@@ -77,7 +77,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T13:24:20.402898826Z"]
+	- **created_at** => string [default/example = "2022-05-18T14:16:28.894907879Z"]
 
 
 
@@ -98,7 +98,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T13:24:20.402898826Z"]
+	- **created_at** => string [default/example = "2022-05-18T14:16:28.894907879Z"]
 
 
 
@@ -119,7 +119,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T13:24:20.402898826Z"]
+	- **created_at** => string [default/example = "2022-05-18T14:16:28.894907879Z"]
 
 
 
@@ -162,7 +162,7 @@ A default API Response will be of the below format:
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-18T13:24:20.402898826Z"
+            "created_at": "2022-05-18T14:16:28.894907879Z"
         }
     ],
     "top_voted": [
@@ -181,7 +181,7 @@ A default API Response will be of the below format:
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-18T13:24:20.402898826Z"
+            "created_at": "2022-05-18T14:16:28.894907879Z"
         }
     ],
     "certified": [
@@ -200,7 +200,7 @@ A default API Response will be of the below format:
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-18T13:24:20.402898826Z"
+            "created_at": "2022-05-18T14:16:28.894907879Z"
         }
     ],
     "tags": [
@@ -436,7 +436,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T13:24:20.403041743Z"]
+	- **created_at** => string [default/example = "2022-05-18T14:16:28.895035989Z"]
 
 
 
@@ -457,7 +457,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T13:24:20.403044644Z"]
+	- **created_at** => string [default/example = "2022-05-18T14:16:28.895036194Z"]
 
 
 
