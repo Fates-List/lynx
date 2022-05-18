@@ -2922,25 +2922,7 @@ def docs(page: str):
         return ORJSONResponse({"detail": f"api-docs/{page}.md not found -> {exc}"}, status_code=404)
     
     # Workaround svelte bug and force our stuff to load
-    return md_data + """
-<script src="https://cdn.jsdelivr.net/gh/RickStrahl/highlightjs-badge@master/highlightjs-badge.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js"></script>
-<script>
-window.rerender = () => {
-    console.log("Called render")
-    hljs.configure({ignoreUnescapedHTML: true})
-    hljs.highlightAll()
-    window.highlightJsBadge({
-        onBeforeCodeCopied: (text) => {
-            alert("Copied snippet!")
-            return text
-        }
-    }) 
-}
-
-setTimeout(window.rerender, 400) // 400 seconds should be plenty of time
-</script>
-"""
+    return md_data
 
 class BotData(BaseModel):
     id: str
@@ -2998,7 +2980,6 @@ async def do_action(request: Request, data: BotData):
     except Exception as exc:
         return {"detail": f"{type(exc)}: {str(exc)}"}
     return await action(FakeWsKitty(str(user_id), member), action_data)
-
 
 
 # Widget Server
