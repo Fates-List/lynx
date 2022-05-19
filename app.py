@@ -2946,6 +2946,7 @@ async def do_action(request: Request, data: BotData):
     except:
         return ORJSONResponse({"detail": "bot_id or user_id invalid"}, status_code=401)
 
+    # If moved to official api-v3, ensure a check for starts_with Frostpaw. is made to block custom clients
     check = await app.state.db.fetchval(
         "SELECT user_id FROM users WHERE user_id = $1 AND api_token = $2",
         user_id,
