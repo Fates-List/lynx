@@ -2977,7 +2977,14 @@ async def do_action(request: Request, data: BotData):
         return {"detail": f"{type(exc)}: {str(exc)}"}
     res = await action(FakeWsKitty(str(user_id), member), action_data)
 
+    try:
+        res["reason"] = res["detail"]
+        del res["detail"]
+    except:
+        pass
+
     if res.get("ok"):
+        del res["ok"]
         return res
     else:
         return ORJSONResponse(res, status_code=400)
