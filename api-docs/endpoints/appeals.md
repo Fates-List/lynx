@@ -43,56 +43,37 @@ A default API Response will be of the below format:
 }
 ```
 
-## New Bot Token
-### DELETE `https://api.fateslist.xyz`/bots/{id}/token
+## Create Bot Appeal
+### POST `https://api.fateslist.xyz`/users/{user_id}/bots/{bot_id}/appeal
 
-'Deletes' a bot token and reissues a new bot token. Use this if your bots
-token ever gets leaked! Also used by the official client
+Creates a appeal for a bot.
 
-**Path Parameters**
-
-- **id** => i64 [default/example = 0]
-
-
-
-
-
-**Response Body**
-
-- **done** => bool [default/example = true]
-- **reason** => None (unknown value type)
-- **context** => None (unknown value type)
-
-
-
-**Response Body Example**
-
-```json
-{
-    "done": true,
-    "reason": null,
-    "context": null
-}
-```
-
-
-**Authorization Needed** | [Bot](#authorization)
-
-
-## Revoke Frostpaw Client Auth
-### DELETE `https://api.fateslist.xyz`/users/{id}/frostpaw/clients/{client_id}
-
-'Deletes' a user token and reissues a new user token. Use this if your user
-token ever gets leaked.
+``request_type`` is a [AppealType](./enums#appealtype)
                 
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
-- **client_id** => string [default/example = "client_id"]
+- **user_id** => i64 [default/example = 0]
+- **bot_id** => i64 [default/example = 0]
 
 
 
+
+**Request Body**
+
+- **request_type** => i32 [default/example = 0]
+- **appeal** => string [default/example = "This bot deserves to be unbanned because..."]
+
+
+
+**Request Body Example**
+
+```json
+{
+    "request_type": 0,
+    "appeal": "This bot deserves to be unbanned because..."
+}
+```
 
 
 **Response Body**
@@ -117,18 +98,39 @@ token ever gets leaked.
 **Authorization Needed** | [User](#authorization)
 
 
-## New Server Token
-### DELETE `https://api.fateslist.xyz`/servers/{id}/token
+## Create Server Appeal
+### POST `https://api.fateslist.xyz`/users/{user_id}/servers/{server_id}/appeal
 
-'Deletes' a server token and reissues a new server token. Use this if your server
-token ever gets leaked.
+Creates a appeal for a server.
+
+**Currently only `report` is supported by this endpoint**
+
+``request_type`` is a [AppealType](./enums#appealtype)
+                
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **user_id** => i64 [default/example = 0]
+- **server_id** => i64 [default/example = 0]
 
 
 
+
+**Request Body**
+
+- **request_type** => i32 [default/example = 0]
+- **appeal** => string [default/example = "This server deserves to be unbanned because..."]
+
+
+
+**Request Body Example**
+
+```json
+{
+    "request_type": 0,
+    "appeal": "This server deserves to be unbanned because..."
+}
+```
 
 
 **Response Body**
@@ -150,6 +152,6 @@ token ever gets leaked.
 ```
 
 
-**Authorization Needed** | [Server](#authorization)
+**Authorization Needed** | [User](#authorization)
 
 

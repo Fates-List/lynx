@@ -45,13 +45,10 @@ A default API Response will be of the below format:
 
 ## Index
 ### GET `https://api.fateslist.xyz`/index
-
-
+Returns the index for bots and servers
 **Query Parameters**
 
 - **target_type** => i32 [default/example = 1]
-
-
 
 
 
@@ -77,7 +74,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T14:16:28.894907879Z"]
+	- **created_at** => string [default/example = "2022-05-19T14:32:40.373688658Z"]
 
 
 
@@ -98,7 +95,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T14:16:28.894907879Z"]
+	- **created_at** => string [default/example = "2022-05-19T14:32:40.373688658Z"]
 
 
 
@@ -119,7 +116,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T14:16:28.894907879Z"]
+	- **created_at** => string [default/example = "2022-05-19T14:32:40.373688658Z"]
 
 
 
@@ -162,7 +159,7 @@ A default API Response will be of the below format:
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-18T14:16:28.894907879Z"
+            "created_at": "2022-05-19T14:32:40.373688658Z"
         }
     ],
     "top_voted": [
@@ -181,7 +178,7 @@ A default API Response will be of the below format:
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-18T14:16:28.894907879Z"
+            "created_at": "2022-05-19T14:32:40.373688658Z"
         }
     ],
     "certified": [
@@ -200,7 +197,7 @@ A default API Response will be of the below format:
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-18T14:16:28.894907879Z"
+            "created_at": "2022-05-19T14:32:40.373688658Z"
         }
     ],
     "tags": [
@@ -228,8 +225,7 @@ A default API Response will be of the below format:
 
 ## Experiment List
 ### GET `https://api.fateslist.xyz`/experiments
-
-
+Returns all currently available experiments
 
 
 
@@ -263,14 +259,11 @@ A default API Response will be of the below format:
 
 ## Resolve Vanity
 ### GET `https://api.fateslist.xyz`/code/{code}
-
-
+Resolves the vanity for a bot/server in the list
 
 **Path Parameters**
 
 - **code** => string [default/example = "my-vanity"]
-
-
 
 
 
@@ -298,8 +291,7 @@ A default API Response will be of the below format:
 
 ## Get Partners
 ### GET `https://api.fateslist.xyz`/partners
-
-
+Get current partnership list
 
 
 
@@ -359,8 +351,7 @@ A default API Response will be of the below format:
 
 ## Preview Description
 ### WS `https://api.fateslist.xyz`/ws/_preview
-
-
+Given the preview and long description, parse it and give the sanitized output. You must first connect over websocket!
 
 
 **Request Body**
@@ -378,8 +369,6 @@ A default API Response will be of the below format:
     "long_description_type": 1
 }
 ```
-
-
 
 
 **Response Body**
@@ -403,7 +392,9 @@ A default API Response will be of the below format:
 ## Search List
 ### GET `https://api.fateslist.xyz`/search?q={query}
 
-
+Searches the list based on a query named ``q``. 
+        
+Using -1 for ``gc_to`` will disable ``gc_to`` field
 **Query Parameters**
 
 - **q** => string [default/example = "mew"]
@@ -415,9 +406,7 @@ A default API Response will be of the below format:
 
 
 
-
-
-**Query Parameters**
+**Response Body**
 
 - **bots** => (Array) Struct IndexBot 
 	- **guild_count** => i64 [default/example = 30]
@@ -436,7 +425,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T14:16:28.895035989Z"]
+	- **created_at** => string [default/example = "2022-05-19T14:32:40.373855958Z"]
 
 
 
@@ -457,7 +446,7 @@ A default API Response will be of the below format:
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [default/example = "2022-05-18T14:16:28.895036194Z"]
+	- **created_at** => string [default/example = "2022-05-19T14:32:40.373856199Z"]
 
 
 
@@ -535,6 +524,114 @@ A default API Response will be of the below format:
 
 
 
+**Response Body Example**
+
+```json
+{
+    "bots": [
+        {
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
+            "votes": 40,
+            "state": 3,
+            "user": {
+                "id": "",
+                "username": "",
+                "disc": "",
+                "avatar": "",
+                "bot": false,
+                "status": "Unknown"
+            },
+            "flags": [],
+            "created_at": "2022-05-19T14:32:40.373855958Z"
+        }
+    ],
+    "servers": [
+        {
+            "guild_count": 30,
+            "description": "My description",
+            "banner": "My banner or default banner url",
+            "votes": 40,
+            "state": 3,
+            "user": {
+                "id": "",
+                "username": "",
+                "disc": "",
+                "avatar": "",
+                "bot": false,
+                "status": "Unknown"
+            },
+            "flags": [],
+            "created_at": "2022-05-19T14:32:40.373856199Z"
+        }
+    ],
+    "profiles": [
+        {
+            "banner": "",
+            "description": "",
+            "user": {
+                "id": "",
+                "username": "",
+                "disc": "",
+                "avatar": "",
+                "bot": false,
+                "status": "Unknown"
+            }
+        }
+    ],
+    "packs": [
+        {
+            "id": "0",
+            "name": "",
+            "description": "",
+            "icon": "",
+            "banner": "",
+            "resolved_bots": [
+                {
+                    "user": {
+                        "id": "",
+                        "username": "",
+                        "disc": "",
+                        "avatar": "",
+                        "bot": false,
+                        "status": "Unknown"
+                    },
+                    "description": ""
+                }
+            ],
+            "owner": {
+                "id": "",
+                "username": "",
+                "disc": "",
+                "avatar": "",
+                "bot": false,
+                "status": "Unknown"
+            },
+            "created_at": "1970-01-01T00:00:00Z"
+        }
+    ],
+    "tags": {
+        "bots": [
+            {
+                "name": "",
+                "iconify_data": "",
+                "id": "",
+                "owner_guild": null
+            }
+        ],
+        "servers": [
+            {
+                "name": "",
+                "iconify_data": "",
+                "id": "",
+                "owner_guild": null
+            }
+        ]
+    }
+}
+```
+
 
 **Authorization Needed** | None
 
@@ -542,7 +639,12 @@ A default API Response will be of the below format:
 ## Mini Index
 ### GET `https://api.fateslist.xyz`/mini-index
 
+Returns a mini-index which is basically a Index but with only ``tags``
+and ``features`` having any data. Other fields are empty arrays/vectors.
 
+This is used internally by sunbeam for the add bot system where a full bot
+index is too costly and making a new struct is unnecessary.
+                
 
 
 

@@ -46,7 +46,15 @@ A default API Response will be of the below format:
 ## Get OAuth2 Link
 ### GET `https://api.fateslist.xyz`/oauth2
 
+Returns the oauth2 link used to login with. ``reason`` contains the state UUID
 
+- `Frostpaw-Server` header must be set to `https://fateslist.xyz` if you are a custom client
+- If you are a custom client, then ignore the state present here and instead set `state` to `Bayshine.${YOUR CLIENT ID}.${CURRENT TIME}.${HMAC PAYLOAD}` where 
+client ID is the client ID given during whitelisting, CURRENT TIME is the current time in Unix Epoch and HMAC PAYLOAD is that same current time HMAC-SHA256
+signed with your client secret given to you during whitelisting. **You must calculate state server side**
+
+Once login succeeds and is authorized by the user, then the user will be redirected to ${YOUR DOMAIN}/frostpaw?data=${BASE64 encoded OauthUserLogin}
+                
 
 
 
@@ -75,13 +83,12 @@ A default API Response will be of the below format:
 ## Get Frostpaw Client
 ### GET `https://api.fateslist.xyz`/frostpaw/clients/{id}
 
-
+Returns the Frostpaw client with the given ID.
+                        
 
 **Path Parameters**
 
 - **id** => string [default/example = "client id here"]
-
-
 
 
 
@@ -132,13 +139,12 @@ A default API Response will be of the below format:
 ## Refresh Frostpaw Token
 ### POST `https://api.fateslist.xyz`/frostpaw/clients/{client_id}/refresh
 
-
+Refreshes a token for the given client.
+                        
 
 **Path Parameters**
 
 - **id** => string [default/example = "client id here"]
-
-
 
 
 
@@ -169,7 +175,16 @@ A default API Response will be of the below format:
 ## Create OAuth2 Login
 ### POST `https://api.fateslist.xyz`/oauth2
 
+Creates a oauth2 login given a code. 
 
+**This API (as well as the below) is already done for custom clients by the actual site**
+
+- Set `frostpaw` in the JSON if you are a custom client
+- `Frostpaw-Server` header must be set to `https://fateslist.xyz`
+- ``frostpaw_blood`` (client ID), ``frostpaw_claw`` (hmac'd time you sent) and 
+``frostpaw_claw_unseathe_time`` (time you sent in state) are internal fields used 
+by the site to login.
+                
 
 
 **Request Body**
@@ -195,8 +210,6 @@ A default API Response will be of the below format:
     "frostpaw_claw_unseathe_time": null
 }
 ```
-
-
 
 
 **Response Body**
@@ -248,7 +261,10 @@ A default API Response will be of the below format:
 ## Delete OAuth2 Login
 ### DELETE `https://api.fateslist.xyz`/oauth2
 
+'Deletes' (logs out) a oauth2 login. Always call this when logging out 
+even if you do not use cookies as it may perform other logout tasks in future
 
+This API is essentially a logout
 
 
 

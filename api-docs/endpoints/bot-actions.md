@@ -46,13 +46,34 @@ A default API Response will be of the below format:
 ## Post Stats
 ### POST `https://api.fateslist.xyz`/bots/{id}/stats
 
+Post stats to the list
 
+Example:
+```py
+import requests
+
+# On dpy, guild_count is usually the below
+guild_count = len(client.guilds)
+
+# If you are using sharding
+shard_count = len(client.shards)
+shards = client.shards.keys()
+
+# Optional: User count (this is not accurate for larger bots)
+user_count = len(client.users) 
+
+def post_stats(bot_id: int, guild_count: int):
+    res = requests.post(f"{api_url}/bots/{bot_id}/stats", json={"guild_count": guild_count})
+    json = res.json()
+    if res.status != 200:
+        # Handle an error in the api
+        ...
+    return json
+```
 
 **Path Parameters**
 
 - **id** => i64 [default/example = 0]
-
-
 
 
 
@@ -81,8 +102,6 @@ A default API Response will be of the below format:
 ```
 
 
-
-
 **Response Body**
 
 - **done** => bool [default/example = false]
@@ -108,13 +127,23 @@ A default API Response will be of the below format:
 ## Get Bot
 ### GET `https://api.fateslist.xyz`/bots/{id}
 
+Fetches bot information given a bot ID. If not found, 404 will be returned. 
 
+This endpoint handles both bot IDs and client IDs
+
+- ``long_description/css`` is sanitized with ammonia by default, use `long_description_raw` if you want the unsanitized version
+- All responses are cached for a short period of time. There is *no* way to opt out at this time
+- Some fields have been renamed or removed from API v2 (such as ``promos`` which may be readded at a later date)
+
+This API returns some empty fields such as ``webhook``, ``webhook_secret``, ``api_token`` and more. 
+This is to allow reuse of the Bot struct in Get Bot Settings which *does* contain this sensitive data. 
+
+**Set the Frostpaw header if you are a custom client. Send Frostpaw-Invite header on invites**
+                
 
 **Path Parameters**
 
 - **id** => i64 [default/example = 0]
-
-
 
 
 
@@ -342,14 +371,21 @@ A default API Response will be of the below format:
 ## Gets Bot Settings
 ### GET `https://api.fateslist.xyz`/users/{user_id}/bots/{bot_id}/settings
 
+Returns the bot settings.
 
+The ``bot`` here is equivalent to a Get Bot response with the following
+differences:
+
+- Sensitive fields (see examples) like ``webhook``, ``api_token``, 
+``webhook_secret`` and others are filled out here
+- This API only allows bot owners (not even staff) to use it, otherwise it will 400!
+
+Staff members *must* instead use Lynx.
 
 **Path Parameters**
 
 - **user_id** => i64 [default/example = 0]
 - **bot_id** => i64 [default/example = 0]
-
-
 
 
 
@@ -621,7 +657,20 @@ A default API Response will be of the below format:
 ## Random Bot
 ### GET `https://api.fateslist.xyz`/random-bot
 
+Fetches a random bot on the list
 
+Example:
+```py
+import requests
+
+def random_bot():
+    res = requests.get(api_url"/random-bot")
+    json = res.json()
+    if res.status != 200:
+        # Handle an error in the api
+        ...
+    return json
+```
 
 
 
@@ -643,7 +692,7 @@ A default API Response will be of the below format:
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-18T14:16:28.895264844Z"]
+- **created_at** => string [default/example = "2022-05-19T14:32:40.374251617Z"]
 
 
 
@@ -665,7 +714,7 @@ A default API Response will be of the below format:
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-18T14:16:28.895264844Z"
+    "created_at": "2022-05-19T14:32:40.374251617Z"
 }
 ```
 
@@ -676,13 +725,21 @@ A default API Response will be of the below format:
 ## New Bot
 ### POST `https://api.fateslist.xyz`/users/{id}/bots
 
+Creates a new bot. 
 
+Set ``created_at``, ``last_stats_post`` to sometime in the past
+
+Set ``api_token``, ``guild_count`` etc (unknown/not editable fields) to any 
+random value of the same type.
+
+With regards to ``extra_owners``, put all of them as a ``BotOwner`` object
+containing ``main`` set to ``false`` and ``user`` as a dummy ``user`` object 
+containing ``id`` filled in and the rest of a ``user``empty strings. Set ``bot``
+to false.
 
 **Path Parameters**
 
 - **id** => i64 [default/example = 0]
-
-
 
 
 
@@ -901,8 +958,6 @@ A default API Response will be of the below format:
     "api_token": "This will be redacted for Get Bot endpoint"
 }
 ```
-
-
 
 
 **Response Body**
@@ -930,13 +985,21 @@ A default API Response will be of the below format:
 ## Edit Bot
 ### PATCH `https://api.fateslist.xyz`/users/{id}/bots
 
+Edits a existing bot. 
 
+Set ``created_at``, ``last_stats_post`` to sometime in the past
+
+Set ``api_token``, ``guild_count`` etc (unknown/not editable fields) to any 
+random value of the same type
+
+With regards to ``extra_owners``, put all of them as a ``BotOwner`` object
+containing ``main`` set to ``false`` and ``user`` as a dummy ``user`` object 
+containing ``id`` filled in and the rest of a ``user``empty strings. Set ``bot`` 
+to false.
 
 **Path Parameters**
 
 - **id** => i64 [default/example = 0]
-
-
 
 
 
@@ -1157,8 +1220,6 @@ A default API Response will be of the below format:
 ```
 
 
-
-
 **Response Body**
 
 - **done** => bool [default/example = true]
@@ -1184,14 +1245,15 @@ A default API Response will be of the below format:
 ## Transfer Ownership
 ### PATCH `https://api.fateslist.xyz`/users/{user_id}/bots/{bot_id}/main-owner
 
+Transfers bot ownership.
 
+You **must** be main owner of the bot to use this endpoint.
+                
 
 **Path Parameters**
 
 - **user_id** => i64 [default/example = 0]
 - **bot_id** => i64 [default/example = 0]
-
-
 
 
 
@@ -1229,8 +1291,6 @@ A default API Response will be of the below format:
 ```
 
 
-
-
 **Response Body**
 
 - **done** => bool [default/example = true]
@@ -1256,14 +1316,14 @@ A default API Response will be of the below format:
 ## Delete Bot
 ### DELETE `https://api.fateslist.xyz`/users/{user_id}/bots/{bot_id}
 
+Deletes a bot.
 
+You **must** be main owner of the bot to use this endpoint.
 
 **Path Parameters**
 
 - **user_id** => i64 [default/example = 0]
 - **bot_id** => i64 [default/example = 0]
-
-
 
 
 
@@ -1293,8 +1353,7 @@ A default API Response will be of the below format:
 
 ## Get Import Sources
 ### GET `https://api.fateslist.xyz`/import-sources
-
-
+Returns a array of sources that a bot can be imported from.
 
 
 
@@ -1328,8 +1387,7 @@ A default API Response will be of the below format:
 
 ## Import Bot
 ### POST `https://api.fateslist.xyz`/users/{user_id}/bots/{bot_id}/import?src={source}
-
-
+Imports a bot from a source listed in ``Get Import Sources``
 **Query Parameters**
 
 - **src** => string [default/example = "Rdl"]
@@ -1338,14 +1396,10 @@ A default API Response will be of the below format:
 
 
 
-
-
 **Path Parameters**
 
 - **user_id** => i64 [default/example = 0]
 - **bot_id** => i64 [default/example = 0]
-
-
 
 
 
@@ -1370,8 +1424,6 @@ A default API Response will be of the below format:
     }
 }
 ```
-
-
 
 
 **Response Body**

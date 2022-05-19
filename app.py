@@ -2864,6 +2864,13 @@ async def startup():
     asyncio.create_task(app.state.discord.start(main_bot_token))
     await engine.start_connection_pool()
 
+    # Do db sanity check
+    bots = await app.state.db.fetch("SELECT bot_id FROM bots")
+    for bot in bots:
+        owner = await app.state.db.fetch("SELECT bot_id FROM bot_owner WHERE bot_id = $1 AND main = true", bot["bot_id"])
+        if not owner:
+            print(f"DB ERROR: {bot}")
+
 
 def handle_kill(*args, **kwargs):
     async def _close():
@@ -3296,9 +3303,21 @@ async def metro_api(request: Request, action: str, data: Metro):
         return {"detail": "Action does not exist!"}
 
     data.bot_id = int(data.bot_id)
+    data.owner = int(data.owner)
+
+    print(data.owner)
 
     if action == "approve" and data.cross_add:
+        await app.state.db.execute("UPDATE bots SET state = $1 WHERE bot_id = $2", enums.BotState.under_review, data.bot_id)
+        
+        # Owner check fix patch
         bot = await app.state.db.fetchrow("SELECT bot_id FROM bots WHERE bot_id = $1", data.bot_id)
+        
+        if bot:
+            owners = await app.state.db.fetch("SELECT owner FROM bot_owner WHERE bot_id = $1", data.owner)
+            if not owners:
+                await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, data.owner)
+
         if not bot:
             # Insert bot
             extra_links = {}
@@ -3328,10 +3347,10 @@ async def metro_api(request: Request, action: str, data: Metro):
             await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, "utility")
 
             # Insert bot owner
-            await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, int(data.owner))
+            await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, data.owner)
 
             for owner in data.extra_owners:
-                await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner) VALUES ($1, $2)", data.bot_id, int(owner))
+                await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, $3)", data.bot_id, int(owner), False)
 
             await app.state.db.execute("INSERT INTO vanity (redirect, type, vanity_url) VALUES ($1, 1, $2)", data.bot_id, get_token(32))
 

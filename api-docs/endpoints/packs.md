@@ -43,11 +43,15 @@ A default API Response will be of the below format:
 }
 ```
 
-## New Bot Token
-### DELETE `https://api.fateslist.xyz`/bots/{id}/token
+## Add Pack
+### POST `https://api.fateslist.xyz`/users/{id}/packs
 
-'Deletes' a bot token and reissues a new bot token. Use this if your bots
-token ever gets leaked! Also used by the official client
+Creates a bot pack. 
+
+- Set ``id`` to empty string, 
+- Set ``created_at`` to any datetime
+- In user and bot, only ``id`` must be filled, all others can be left empty string
+but must exist in the object
 
 **Path Parameters**
 
@@ -56,43 +60,75 @@ token ever gets leaked! Also used by the official client
 
 
 
+**Request Body**
 
-**Response Body**
+- **id** => string [default/example = "0"]
+- **name** => string [default/example = ""]
+- **description** => string [default/example = ""]
+- **icon** => string [default/example = ""]
+- **banner** => string [default/example = ""]
+- **resolved_bots** => (Array) Struct ResolvedPackBot 
+	- **user** => Struct User 
+		- **id** => string [default/example = ""]
+		- **username** => string [default/example = ""]
+		- **disc** => string [default/example = ""]
+		- **avatar** => string [default/example = ""]
+		- **bot** => bool [default/example = false]
+		- **status** => string [default/example = "Unknown"]
 
-- **done** => bool [default/example = true]
-- **reason** => None (unknown value type)
-- **context** => None (unknown value type)
+
+
+	- **description** => string [default/example = ""]
 
 
 
-**Response Body Example**
+- **owner** => Struct User 
+	- **id** => string [default/example = ""]
+	- **username** => string [default/example = ""]
+	- **disc** => string [default/example = ""]
+	- **avatar** => string [default/example = ""]
+	- **bot** => bool [default/example = false]
+	- **status** => string [default/example = "Unknown"]
+
+
+
+- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
+
+
+
+**Request Body Example**
 
 ```json
 {
-    "done": true,
-    "reason": null,
-    "context": null
+    "id": "0",
+    "name": "",
+    "description": "",
+    "icon": "",
+    "banner": "",
+    "resolved_bots": [
+        {
+            "user": {
+                "id": "",
+                "username": "",
+                "disc": "",
+                "avatar": "",
+                "bot": false,
+                "status": "Unknown"
+            },
+            "description": ""
+        }
+    ],
+    "owner": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "created_at": "1970-01-01T00:00:00Z"
 }
 ```
-
-
-**Authorization Needed** | [Bot](#authorization)
-
-
-## Revoke Frostpaw Client Auth
-### DELETE `https://api.fateslist.xyz`/users/{id}/frostpaw/clients/{client_id}
-
-'Deletes' a user token and reissues a new user token. Use this if your user
-token ever gets leaked.
-                
-
-**Path Parameters**
-
-- **id** => i64 [default/example = 0]
-- **client_id** => string [default/example = "client_id"]
-
-
-
 
 
 **Response Body**
@@ -115,41 +151,5 @@ token ever gets leaked.
 
 
 **Authorization Needed** | [User](#authorization)
-
-
-## New Server Token
-### DELETE `https://api.fateslist.xyz`/servers/{id}/token
-
-'Deletes' a server token and reissues a new server token. Use this if your server
-token ever gets leaked.
-
-**Path Parameters**
-
-- **id** => i64 [default/example = 0]
-
-
-
-
-
-**Response Body**
-
-- **done** => bool [default/example = true]
-- **reason** => None (unknown value type)
-- **context** => None (unknown value type)
-
-
-
-**Response Body Example**
-
-```json
-{
-    "done": true,
-    "reason": null,
-    "context": null
-}
-```
-
-
-**Authorization Needed** | [Server](#authorization)
 
 
