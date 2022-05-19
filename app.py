@@ -2888,7 +2888,7 @@ def handle_kill(*args, **kwargs):
     task.add_done_callback(_gohome)
 
 # Quailfeather API
-@app.get("/_quailfeather/doctree")
+@app.get("/_quailfeather/doctree", tags=["Internal"])
 def doctree():
     docs = []
 
@@ -2900,7 +2900,7 @@ def doctree():
     # We are forced to inject a script to the end to force hljs render
     return docs
 
-@app.get("/_quailfeather/docs/{page:path}")
+@app.get("/_quailfeather/docs/{page:path}", tags=["Internal"])
 def docs(page: str):
     if page.endswith(".md"):
         page = f"/docs/{page[:-3]}"
@@ -2938,7 +2938,7 @@ class FakeWsKitty():
         self.state.user = {"id": reviewer, "username": "Unknown User"}
         self.state.member = member
 
-@app.post("/_quailfeather/kitty")
+@app.post("/_quailfeather/kitty", tags=["Internal"])
 async def do_action(request: Request, data: BotData):
     try:
         bot_id = int(data.id)
@@ -3046,7 +3046,7 @@ env = Environment(
     enable_async=True,
 ).get_template("widgets.html", globals={"human_format": human_format})
 
-@app.get("/widgets/{target_id}", operation_id="get_widget")
+@app.get("/widgets/{target_id}", operation_id="get_widget", tags=["Widgets"])
 async def get_widget(
     request: Request, 
     response: Response,
