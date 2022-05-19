@@ -2888,7 +2888,7 @@ def handle_kill(*args, **kwargs):
     task.add_done_callback(_gohome)
 
 # Quailfeather API
-@app.get("/_quailfeather/doctree", tags=["Internal"])
+@app.get("/_quailfeather/doctree", tags=["Internal"], deprecated=True, include_in_schema=False)
 def doctree():
     docs = []
 
@@ -2900,7 +2900,7 @@ def doctree():
     # We are forced to inject a script to the end to force hljs render
     return docs
 
-@app.get("/_quailfeather/docs/{page:path}", tags=["Internal"])
+@app.get("/_quailfeather/docs/{page:path}", tags=["Internal"], deprecated=True, include_in_schema=False)
 def docs(page: str):
     if page.endswith(".md"):
         page = f"/docs/{page[:-3]}"
@@ -2938,7 +2938,7 @@ class FakeWsKitty():
         self.state.user = {"id": reviewer, "username": "Unknown User"}
         self.state.member = member
 
-@app.post("/_quailfeather/kitty", tags=["Internal"])
+@app.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True, include_in_schema=False)
 async def do_action(request: Request, data: BotData):
     try:
         bot_id = int(data.id)
@@ -3306,7 +3306,7 @@ class FakeWs():
         self.state.member = StaffMember(name="Reviewer (Metro)", id="0", perm=2, staff_id="0")
 
 # We use widgets here because its already proxied to the client
-@app.post("/widgets/_admin/metro", include_in_schema=False)
+@app.post("/widgets/_admin/metro", tags={"Internal"}, deprecated=True, include_in_schema=False)
 async def metro_api(request: Request, action: str, data: Metro):
     if request.headers.get("Authorization") != metro_key:
         return {"detail": "Invalid key"}
