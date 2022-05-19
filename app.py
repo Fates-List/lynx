@@ -578,7 +578,7 @@ async def claim(request: Request, data: ActionWithReason):
     )
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
-    return {"detail": "Successfully claimed bot!"}
+    return {"detail": "Successfully claimed bot!", "ok": True}
 
 
 @action("unclaim", [enums.BotState.under_review], action_log=enums.UserBotAction.unclaim)
@@ -595,7 +595,7 @@ async def unclaim(request: Request, data: ActionWithReason):
     embed.add_field(name="Reason", value=data.reason)
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
-    return {"detail": "Successfully unclaimed bot"}
+    return {"detail": "Successfully unclaimed bot", "ok": True}
 
 
 @action("approve", [enums.BotState.under_review], action_log=enums.UserBotAction.approve)
@@ -628,7 +628,7 @@ async def approve(request: Request, data: ActionWithReason):
     for owner in data.owners:
         asyncio.create_task(add_role(main_server, owner["owner"], bot_developer, "Bot Approved"))
 
-    return {"detail": "Successfully approved bot", "guild_id": str(main_server), "bot_id": str(data.bot_id)}
+    return {"detail": "Successfully approved bot", "guild_id": str(main_server), "bot_id": str(data.bot_id), "ok": True}
 
 
 @action("deny", [enums.BotState.under_review], action_log=enums.UserBotAction.deny)
@@ -647,7 +647,7 @@ async def deny(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully denied bot"}
+    return {"detail": "Successfully denied bot", "ok": True}
 
 
 @action("ban", [enums.BotState.approved], min_perm=4, action_log=enums.UserBotAction.ban)
@@ -668,7 +668,7 @@ async def ban(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully banned bot"}
+    return {"detail": "Successfully banned bot", "ok": True}
 
 
 @action("unban", [enums.BotState.banned], min_perm=4, action_log=enums.UserBotAction.unban)
@@ -689,7 +689,7 @@ async def unban(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully unbanned bot"}
+    return {"detail": "Successfully unbanned bot", "ok": True}
 
 
 @action("certify", [enums.BotState.approved], min_perm=5, action_log=enums.UserBotAction.certify)
@@ -715,7 +715,7 @@ async def certify(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully certified bot"}
+    return {"detail": "Successfully certified bot", "ok": True}
 
 
 @action("uncertify", [enums.BotState.certified], min_perm=5, action_log=enums.UserBotAction.uncertify)
@@ -740,7 +740,7 @@ async def uncertify(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully uncertified bot"}
+    return {"detail": "Successfully uncertified bot", "ok": True}
 
 
 @action("unverify", [enums.BotState.approved], min_perm=3, action_log=enums.UserBotAction.unverify)
@@ -759,7 +759,7 @@ async def unverify(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully unverified bot"}
+    return {"detail": "Successfully unverified bot", "ok": True}
 
 
 @action("requeue", [enums.BotState.banned, enums.BotState.denied], min_perm=3, action_log=enums.UserBotAction.requeue)
@@ -778,7 +778,7 @@ async def requeue(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully requeued bot"}
+    return {"detail": "Successfully requeued bot", "ok": True}
 
 
 @action("reset-votes", [], min_perm=3)
@@ -796,7 +796,7 @@ async def reset_votes(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully reset bot votes"}
+    return {"detail": "Successfully reset bot votes", "ok": True}
 
 
 @action("reset-all-votes", [], min_perm=5)
@@ -838,7 +838,7 @@ async def reset_all_votes(request: Request, data: ActionWithReason):
 
     await send_message({"content": "", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully reset all bot votes"}
+    return {"detail": "Successfully reset all bot votes", "ok": True}
 
 
 @action("set-flag", [], min_perm=3)
@@ -875,7 +875,7 @@ async def set_flag(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully set flag"}
+    return {"detail": "Successfully set flag", "ok": True}
 
 
 @action("unset-flag", [], min_perm=3)
@@ -915,7 +915,7 @@ async def unset_flag(request: Request, data: ActionWithReason):
 
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
-    return {"detail": "Successfully unset flag"}
+    return {"detail": "Successfully unset flag", "ok": True}
 
 # Lynx base websocket
 class ConnectionManager:
@@ -2975,8 +2975,12 @@ async def do_action(request: Request, data: BotData):
         action_data = ActionWithReason(bot_id=bot_id, reason=data.reason)
     except Exception as exc:
         return {"detail": f"{type(exc)}: {str(exc)}"}
-    return await action(FakeWsKitty(str(user_id), member), action_data)
+    res = await action(FakeWsKitty(str(user_id), member), action_data)
 
+    if res.get("ok"):
+        return res
+    else:
+        return ORJSONResponse(res, status_code=400)
 
 # Widget Server
 
