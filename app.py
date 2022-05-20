@@ -292,7 +292,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
             return RedirectResponse("/widgets/docs")
         
         if request.method == "OPTIONS":
-            if request.headers.get("Origin") in ["https://fateslist.xyz", "https://sunbeam.fateslist.xyz"]:
+            if request.headers.get("Origin", "").endswith("fateslist.xyz"):
                 return PlainTextResponse("", headers={
                     "Access-Control-Allow-Origin": request.headers.get("Origin"),
                     "Access-Control-Allow-Headers": "Authorization, Content-Type",
@@ -305,7 +305,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
                 return ORJSONResponse({"detail": "Not in lynx site"}, status_code=401)
         else:
             response = await call_next(request)
-            if request.headers.get("Origin") in ["https://fateslist.xyz", "https://sunbeam.fateslist.xyz"]:
+            if request.headers.get("Origin", "").endswith("fateslist.xyz"):
                 response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
             return response
 
