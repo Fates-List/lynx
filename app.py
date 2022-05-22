@@ -293,7 +293,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
             return RedirectResponse("/widgets/docs")
         
         if request.method == "OPTIONS":
-            if request.headers.get("Origin", "").endswith("fateslist.xyz"):
+            if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
                 return PlainTextResponse("", headers={
                     "Access-Control-Allow-Origin": request.headers.get("Origin"),
                     "Access-Control-Allow-Headers": "Authorization, Content-Type",
@@ -306,7 +306,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
                 return ORJSONResponse({"detail": "Not in lynx site"}, status_code=401)
         else:
             response = await call_next(request)
-            if request.headers.get("Origin", "").endswith("fateslist.xyz"):
+            if request.headers.get("Origin", "").endswith("fateslist.xyz") or or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
                 response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
             return response
 
@@ -2911,6 +2911,8 @@ async def long_running(id: uuid.UUID):
     print(f"Long running task {long_running_tasks.keys()}")
     id = long_running_tasks.get(id)
     if id:
+        if isinstance(id, dict) and id.get("detail") == "still_running":
+            return ORJSONResponse({"detail": "Task still running"}, status_code=404)
         long_running_tasks.pop(id)
         return id
     return ORJSONResponse({"detail": "Task not found"}, status_code=404)
