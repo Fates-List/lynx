@@ -15,6 +15,7 @@ import enum
 import secrets
 import string
 import math
+import uuid
 
 import asyncpg
 import bleach
@@ -2163,90 +2164,6 @@ async def request_logs(ws: WebSocket, _):
         """
     }
 
-@ws_action("data_request")
-async def data_request(ws: WebSocket, data: dict):
-    user_id = data.get("user", None)
-
-    if not ws.state.user:
-        return {
-            "detail": "You must be logged in first!"
-        }
-
-    if ws.state.member.perm < 7 and ws.state.user["id"] != user_id:
-        return {
-            "detail": "You must either have permission level 7 or greater or the user id requested must be the same as your logged in user id."
-        }
-
-    try:
-        user_id = int(user_id)
-    except:
-        return {
-            "detail": "Invalid User ID"
-        }
-
-    user = await app.state.db.fetchrow("select * from users where user_id = $1", user_id)
-    owners = await app.state.db.fetch("SELECT * FROM bot_owner WHERE owner = $1", user_id)
-
-    # handle all fk key cases
-    fk_keys = await app.state.db.fetch("""
-SELECT sh.nspname AS table_schema,
-  tbl.relname AS table_name,
-  col.attname AS column_name,
-  referenced_sh.nspname AS foreign_table_schema,
-  referenced_tbl.relname AS foreign_table_name,
-  referenced_field.attname AS foreign_column_name
-FROM pg_constraint c
-    INNER JOIN pg_namespace AS sh ON sh.oid = c.connamespace
-    INNER JOIN (SELECT oid, unnest(conkey) as conkey FROM pg_constraint) con ON c.oid = con.oid
-    INNER JOIN pg_class tbl ON tbl.oid = c.conrelid
-    INNER JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = con.conkey)
-    INNER JOIN pg_class referenced_tbl ON c.confrelid = referenced_tbl.oid
-    INNER JOIN pg_namespace AS referenced_sh ON referenced_sh.oid = referenced_tbl.relnamespace
-    INNER JOIN (SELECT oid, unnest(confkey) as confkey FROM pg_constraint) conf ON c.oid = conf.oid
-    INNER JOIN pg_attribute referenced_field ON (referenced_field.attrelid = c.confrelid AND referenced_field.attnum = conf.confkey)
-WHERE c.contype = 'f'""")
-
-    related_data = {}
-
-    for fk in fk_keys:
-        if fk["foreign_table_name"] == "users":
-            related_data[fk["table_name"]] = await app.state.db.fetch(f"SELECT * FROM {fk['table_name']} WHERE {fk['column_name']} = $1", user_id)
-
-
-    lynx_notifications = await app.state.db.fetch("SELECT * FROM lynx_notifications, unnest(acked_users) AS "
-                                                    "user_id WHERE user_id = $1", user_id)
-
-    data = {"user": user, 
-            "owners": owners, 
-            "lynx_notifications": lynx_notifications,
-            "owned_bots": [],
-            "fk_keys": fk_keys,
-            "related_data": related_data,
-            "privacy": "Fates list does not profile users or use third party cookies for tracking other than what "
-                        "is used by cloudflare for its required DDOS protection"}
-
-    for bot in data["owners"]:
-        data["owned_bots"].append(await app.state.db.fetch("SELECT * FROM bots WHERE bot_id = $1", bot["bot_id"]))
-
-    def ddr_parse(d: dict | object):
-        if isinstance(d, int):
-            if d > 9007199254740991:
-                return str(d)
-            return d
-        elif isinstance(d, list):
-            return [ddr_parse(i) for i in d]
-        elif isinstance(d, dict):
-            nd = {} # New dict
-            for k, v in d.items():
-                nd[k] = ddr_parse(v)
-            return nd
-        else:
-            return d        
-
-    return {
-        "user": str(user_id),
-        "data": orjson.dumps(ddr_parse(jsonable_encoder(data)))
-    }
 
 @ws_action("dev_portal")
 async def dev_portal(ws: WebSocket, data: dict):
@@ -2934,6 +2851,132 @@ async def _auth(request: Request, user_id: int | str) -> ORJSONResponse:
     if not check:
         return ORJSONResponse({"detail": "Unauthorized"}, status_code=401)
     
+async def _code_check(user_id: int):
+    _, _, member = await is_staff(user_id, 2)
+
+    if member.perm >= 2:
+        staff_verify_code = await app.state.db.fetchval(
+            "SELECT staff_verify_code FROM users WHERE user_id = $1",
+            user_id
+        )
+
+        if not staff_verify_code or not code_check(staff_verify_code, user_id):
+            return ORJSONResponse({"detail": "Staff verification is required before performing this action"}, status_code=401)
+    else:
+        return ORJSONResponse({"detail": "You are not staff"}, status_code=401)
+    
+    return member
+
+@app.get("/_quailfeather/data", tags=["Internal"], deprecated=True)
+async def data_request_delete(request: Request, requested_id: int, origin_user_id: int):
+    if auth := await _auth(request, origin_user_id):
+        return auth
+
+    if origin_user_id != requested_id:
+        member = await _code_check(origin_user_id)
+
+        if isinstance(member, ORJSONResponse):
+            return member
+
+        if member.perm < 7:
+            return ORJSONResponse({
+                "reason": "You must either have permission level 7 or greater or the user id requested must be the same as your logged in user id."
+            }, status_code=400)
+    
+    try:
+        user_id = int(requested_id)
+    except:
+        return ORJSONResponse({
+            "reason": "Invalid User ID"
+        }, status_code=400)
+
+    id = str(uuid.uuid4())
+
+    long_running_tasks[id] = {"detail": "still_running"}
+
+    async def _task_run():
+        long_running_tasks[id] = await request_data_task(user_id)
+    
+    asyncio.create_task(_task_run())
+
+    return {
+        "task_id": id,
+    }
+
+long_running_tasks = {}
+
+@app.get("/_quailfeather/long-running/{id}", tags=["Internal"], deprecated=True)
+async def long_running(id: uuid.UUID):
+    id = str(id)
+    print(f"Long running task {long_running_tasks.keys()}")
+    id = long_running_tasks.get(id)
+    if id:
+        long_running_tasks.pop(id)
+        return id
+    return ORJSONResponse({"detail": "Task not found"}, status_code=404)
+
+async def request_data_task(user_id: int):
+    user = await app.state.db.fetchrow("select * from users where user_id = $1", user_id)
+    owners = await app.state.db.fetch("SELECT * FROM bot_owner WHERE owner = $1", user_id)
+
+    # handle all fk key cases
+    fk_keys = await app.state.db.fetch("""
+SELECT sh.nspname AS table_schema,
+  tbl.relname AS table_name,
+  col.attname AS column_name,
+  referenced_sh.nspname AS foreign_table_schema,
+  referenced_tbl.relname AS foreign_table_name,
+  referenced_field.attname AS foreign_column_name
+FROM pg_constraint c
+    INNER JOIN pg_namespace AS sh ON sh.oid = c.connamespace
+    INNER JOIN (SELECT oid, unnest(conkey) as conkey FROM pg_constraint) con ON c.oid = con.oid
+    INNER JOIN pg_class tbl ON tbl.oid = c.conrelid
+    INNER JOIN pg_attribute col ON (col.attrelid = tbl.oid AND col.attnum = con.conkey)
+    INNER JOIN pg_class referenced_tbl ON c.confrelid = referenced_tbl.oid
+    INNER JOIN pg_namespace AS referenced_sh ON referenced_sh.oid = referenced_tbl.relnamespace
+    INNER JOIN (SELECT oid, unnest(confkey) as confkey FROM pg_constraint) conf ON c.oid = conf.oid
+    INNER JOIN pg_attribute referenced_field ON (referenced_field.attrelid = c.confrelid AND referenced_field.attnum = conf.confkey)
+WHERE c.contype = 'f'""")
+
+    related_data = {}
+
+    for fk in fk_keys:
+        if fk["foreign_table_name"] == "users":
+            related_data[fk["table_name"]] = await app.state.db.fetch(f"SELECT * FROM {fk['table_name']} WHERE {fk['column_name']} = $1", user_id)
+
+
+    lynx_notifications = await app.state.db.fetch("SELECT * FROM lynx_notifications, unnest(acked_users) AS "
+                                                    "user_id WHERE user_id = $1", user_id)
+
+    data = {"user": user, 
+            "owners": owners, 
+            "lynx_notifications": lynx_notifications,
+            "owned_bots": [],
+            "fk_keys": fk_keys,
+            "related_data": related_data,
+            "privacy": "Fates list does not profile users or use third party cookies for tracking other than what "
+                        "is used by cloudflare for its required DDOS protection"}
+
+    for bot in data["owners"]:
+        data["owned_bots"].append(await app.state.db.fetch("SELECT * FROM bots WHERE bot_id = $1", bot["bot_id"]))
+
+    def ddr_parse(d: dict | object):
+        if isinstance(d, int):
+            if d > 9007199254740991:
+                return str(d)
+            return d
+        elif isinstance(d, list):
+            return [ddr_parse(i) for i in d]
+        elif isinstance(d, dict):
+            nd = {} # New dict
+            for k, v in d.items():
+                nd[k] = ddr_parse(v)
+            return nd
+        else:
+            return d        
+
+    return ddr_parse(jsonable_encoder(data))
+
 @app.post("/_quailfeather/eternatus", tags=["Internal"], deprecated=True)
 async def post_feedback(request: Request, data: Feedback):
     if data.user_id:
@@ -2948,11 +2991,10 @@ async def post_feedback(request: Request, data: Feedback):
 
 
     if len(data.feedback) < 5:
-        return {"detail": "Feedback must be greater than 10 characters long!"}
-    
+        return ORJSONResponse({"reason": "Feedback must be greater than 10 characters long!"}, status_code=400)
 
     if not data.page.startswith("/"):
-        return {"detail": "Unexpected page!"}
+        return ORJSONResponse({"reason": "Unexpected page!"}, status_code=400)
 
     await app.state.db.execute(
         "INSERT INTO lynx_ratings (feedback, page, username_cached, user_id) VALUES ($1, $2, $3, $4)",
@@ -2962,7 +3004,7 @@ async def post_feedback(request: Request, data: Feedback):
         user_id
     )
 
-    return {"detail": "Successfully rated"}
+    return ORJSONResponse({"reason": "Successfully rated"}, status_code=400)
 
 @app.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
 async def do_action(request: Request, data: BotData):
@@ -2976,18 +3018,10 @@ async def do_action(request: Request, data: BotData):
     
     user_id = int(data.user_id)
 
-    _, _, member = await is_staff(user_id, 2)
+    member = await _code_check(user_id)
 
-    if member.perm >= 2:
-        staff_verify_code = await app.state.db.fetchval(
-            "SELECT staff_verify_code FROM users WHERE user_id = $1",
-            user_id
-        )
-
-        if not staff_verify_code or not code_check(staff_verify_code, user_id):
-            return ORJSONResponse({"detail": "Staff verification is required before performing this action"}, status_code=401)
-    else:
-        return ORJSONResponse({"detail": "You are not staff"}, status_code=401)
+    if isinstance(member, ORJSONResponse):
+        return member
 
     try:
         action = app.state.bot_actions[data.action]
@@ -2996,7 +3030,7 @@ async def do_action(request: Request, data: BotData):
     try:
         action_data = ActionWithReason(bot_id=bot_id, reason=data.reason)
     except Exception as exc:
-        return {"detail": f"{type(exc)}: {str(exc)}"}
+        return ORJSONResponse({"reason": f"{type(exc)}: {str(exc)}"}, status_code=400)
     res = await action(FakeWsKitty(str(user_id), member), action_data)
 
     try:
@@ -3004,6 +3038,8 @@ async def do_action(request: Request, data: BotData):
         del res["detail"]
     except:
         pass
+
+    res["reason"] = res["reason"].replace("<", "&lt").replace(">", "&gt")
 
     if res.get("ok"):
         del res["ok"]
