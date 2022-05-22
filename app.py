@@ -1202,92 +1202,6 @@ async def get_sa_questions(ws: WebSocket, _):
     """Get staff app questions"""
     return {"questions": jsonable_encoder(staffapps.questions)}
 
-
-@ws_action("loa")
-async def loa(ws: WebSocket, _):
-    if ws.state.member.perm < 2:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms}
-    elif not ws.state.verified:
-        return {"resp": "spld", "e": SPLDEvent.verify_needed}
-
-    return {
-        "title": "Leave Of Absense",
-        "pre": "/links",
-        "data": f"""
-::: warning
-
-Please don't abuse this by spamming LOA's non-stop or you **will** be demoted!
-
-:::
-
-There are *two* ways of creating a LOA.
-
-### Simple Form
-
-<form class="needs-validation" novalidate>
-    <div class="form-group">
-        <label for="reason">Reason</label>
-        <textarea class="form-control question" id="reason" name="reason" placeholder="Reason for LOA" required aria-required="true"></textarea>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-        <div class="invalid-feedback">
-            Reason is either missing or too long!
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="duration">Duration</label>
-        <input type="datetime-local" class="form-control question" id="duration" name="duration" placeholder="Duration of LOA" required aria-required="true"/>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-        <div class="invalid-feedback">
-            Duration is either missing or too long!
-        </div>
-    </div>
-    <button type="submit" id="loa-btn">Submit</button>
-</form>
-
-### Piccolo Admin
-
-<ol>
-    <li>Login to Lynx Admin</li>
-    <li>Click Leave Of Absense</li>
-    <li>Click 'Add Row'</li>
-    <li>Fill out the nessesary fields</li>
-    <li>Click 'Save'</li>
-</ol>
-    """,
-    "ext_script": "apply",    
-    }
-
-@ws_action("send_loa")
-async def send_loa(ws: WebSocket, data: dict):
-    if ws.state.member.perm < 2:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms}
-    if not data.get("answers"):
-        return {"detail": "You did not fill out the form correctly"}
-    if not data["answers"]["reason"]:
-        return {"detail": "You did not fill out the form correctly"}
-    if not data["answers"]["duration"]:
-        return {"detail": "You did not fill out the form correctly"}
-    try:
-        date = parser.parse(data["answers"]["duration"])
-    except:
-        return {"detail": "You did not fill out the form correctly"}
-    if date.year - datetime.datetime.now().year not in (0, 1):
-        return {"detail": "Duration must be in within this year"}
-
-    await app.state.db.execute(
-        "INSERT INTO leave_of_absence (user_id, reason, estimated_time, start_date) VALUES ($1, $2, $3, $4)",
-        int(ws.state.user["id"]),
-        data["answers"]["reason"],
-        date - datetime.datetime.now(),
-        datetime.datetime.now(),
-    )
-
-    return {"detail": "Submitted LOA successfully"}
-
 @ws_action("staff_apps")
 async def staff_apps(ws: WebSocket, data: dict):
     # Get staff application list
@@ -1906,7 +1820,36 @@ async def startup():
             print(f"DB ERROR: {bot}")
 
 # Quailfeather API
-@app.post("/_quailfeather/staff-verify")
+class Loa(BaseModel):
+    reason: str
+    duration: str
+
+@app.post("/_quailfeather/loa", tags=["Internal"])
+async def send_loa(request: Request, user_id: int, loa: Loa):
+    if auth := await _auth(request, user_id):
+        return auth
+
+    if request.state.member.perm < 2:
+        return {"resp": "spld", "e": SPLDEvent.missing_perms}
+    try:
+        date = parser.parse(loa.duration)
+    except:
+        return {"detail": "You did not fill out the form correctly"}
+    if date.year - datetime.datetime.now().year not in (0, 1):
+        return {"detail": "Duration must be in within this year"}
+
+    await app.state.db.execute(
+        "INSERT INTO leave_of_absence (user_id, reason, estimated_time, start_date) VALUES ($1, $2, $3, $4)",
+        user_id,
+        loa.reason,
+        date - datetime.datetime.now(),
+        datetime.datetime.now(),
+    )
+
+    return {"detail": "Submitted LOA successfully"}
+
+
+@app.post("/_quailfeather/staff-verify", tags=["Internal"])
 async def staff_verify(request: Request, user_id: int, code: str):
     if auth := await _auth(request, user_id):
         return auth
