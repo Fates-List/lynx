@@ -306,7 +306,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
                 return ORJSONResponse({"detail": "Not in lynx site"}, status_code=401)
         else:
             response = await call_next(request)
-            if request.headers.get("Origin", "").endswith("fateslist.xyz") or or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
+            if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
                 response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
             return response
 
