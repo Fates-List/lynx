@@ -2910,15 +2910,15 @@ async def data_request_delete(request: Request, requested_id: int, origin_user_i
 
 long_running_tasks = {}
 
-@app.get("/_quailfeather/long-running/{id}", tags=["Internal"], deprecated=True)
-async def long_running(id: uuid.UUID):
-    id = str(id)
+@app.get("/_quailfeather/long-running/{tid}", tags=["Internal"], deprecated=True)
+async def long_running(tid: uuid.UUID):
+    tid = str(tid)
     print(f"Long running task {long_running_tasks.keys()}")
-    id = long_running_tasks.get(id)
+    id = long_running_tasks.get(tid)
     if id:
         if isinstance(id, dict) and id.get("detail") == "still_running":
             return ORJSONResponse({"detail": "Task still running"}, status_code=404)
-        long_running_tasks.pop(id)
+        long_running_tasks.pop(tid)
         return id
     return ORJSONResponse({"detail": "Task not found"}, status_code=404)
 
@@ -2997,7 +2997,7 @@ async def post_feedback(request: Request, data: Feedback):
         username = "Anonymous"
 
 
-    if len(data.feedback.replace(" ", "")) < 5:
+    if len(data.feedback.replace(" ", "").replace("\n", "").replace("\r", "")) < 5:
         return ORJSONResponse({"reason": "Feedback must be greater than 10 characters long!"}, status_code=400)
 
     if not data.page.startswith("/"):
@@ -3011,7 +3011,7 @@ async def post_feedback(request: Request, data: Feedback):
         user_id
     )
 
-    return {"reason": "Successfully rated"}
+    return {}
 
 @app.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
 async def do_action(request: Request, data: BotData):

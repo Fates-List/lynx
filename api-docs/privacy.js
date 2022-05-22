@@ -37,6 +37,6 @@ const dataRequest = async () => {
         }
     }
     let taskJson = await task.json()
-    downloadTextFile(task, `data-request-${userData.id}.json`)
+    downloadTextFile(taskJson, `data-request-${requestId}.json`)
 
 }
