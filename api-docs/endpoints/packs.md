@@ -55,44 +55,44 @@ but must exist in the object
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **id** => i64 [ex 0]
 
 
 
 
 **Request Body**
 
-- **id** => string [default/example = "0"]
-- **name** => string [default/example = ""]
-- **description** => string [default/example = ""]
-- **icon** => string [default/example = ""]
-- **banner** => string [default/example = ""]
+- **id** => string [ex "0"]
+- **name** => string [ex ""]
+- **description** => string [ex ""]
+- **icon** => string [ex ""]
+- **banner** => string [ex ""]
 - **resolved_bots** => (Array) Struct ResolvedPackBot 
 	- **user** => Struct User 
-		- **id** => string [default/example = ""]
-		- **username** => string [default/example = ""]
-		- **disc** => string [default/example = ""]
-		- **avatar** => string [default/example = ""]
-		- **bot** => bool [default/example = false]
-		- **status** => string [default/example = "Unknown"]
+		- **id** => string [ex ""]
+		- **username** => string [ex ""]
+		- **disc** => string [ex ""]
+		- **avatar** => string [ex ""]
+		- **bot** => bool [ex false]
+		- **status** => string [ex "Unknown"]
 
 
 
-	- **description** => string [default/example = ""]
+	- **description** => string [ex ""]
 
 
 
 - **owner** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
-- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
+- **created_at** => string [ex "1970-01-01T00:00:00Z"]
 
 
 
@@ -133,7 +133,156 @@ but must exist in the object
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
+
+
+## Edit Pack
+### PATCH `https://api.fateslist.xyz`/users/{id}/packs
+
+Edits a bot pack. 
+
+- Set ``id`` to the pack id that is to be editted, 
+- Set ``created_at`` to any datetime
+- In user and bot, only ``id`` must be filled, all others can be left empty string
+but must exist in the object
+
+**Path Parameters**
+
+- **id** => i64 [ex 0]
+
+
+
+
+**Request Body**
+
+- **id** => string [ex "e89ca0af-54ac-489b-81d8-292007d68cf4"]
+- **name** => string [ex ""]
+- **description** => string [ex ""]
+- **icon** => string [ex ""]
+- **banner** => string [ex ""]
+- **resolved_bots** => (Array) Struct ResolvedPackBot 
+	- **user** => Struct User 
+		- **id** => string [ex ""]
+		- **username** => string [ex ""]
+		- **disc** => string [ex ""]
+		- **avatar** => string [ex ""]
+		- **bot** => bool [ex false]
+		- **status** => string [ex "Unknown"]
+
+
+
+	- **description** => string [ex ""]
+
+
+
+- **owner** => Struct User 
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
+
+
+
+- **created_at** => string [ex "1970-01-01T00:00:00Z"]
+
+
+
+**Request Body Example**
+
+```json
+{
+    "id": "e89ca0af-54ac-489b-81d8-292007d68cf4",
+    "name": "",
+    "description": "",
+    "icon": "",
+    "banner": "",
+    "resolved_bots": [
+        {
+            "user": {
+                "id": "",
+                "username": "",
+                "disc": "",
+                "avatar": "",
+                "bot": false,
+                "status": "Unknown"
+            },
+            "description": ""
+        }
+    ],
+    "owner": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "created_at": "1970-01-01T00:00:00Z"
+}
+```
+
+
+**Response Body**
+
+- **done** => bool [ex true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
+
+
+## Delete Pack
+### DELETE `https://api.fateslist.xyz`/users/{user_id}/packs/{pack_id}
+
+Deletes a bot pack. 
+
+- Set ``pack_id`` to the pack id that is to be editted
+- This endpoint may not always delete the pack in question in certain cases (pack not existant)
+
+**Path Parameters**
+
+- **user_id** => i64 [ex 0]
+- **pack_id** => string [ex "63ff0659-30b9-4695-a866-9954ef66797b"]
+
+
+
+
+
+**Response Body**
+
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 

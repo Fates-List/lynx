@@ -1969,31 +1969,6 @@ async def docs(ws: WebSocket, data: dict):
         "page": page
     }
 
-@ws_action("eternatus")
-async def docs_feedback(ws: WebSocket, data: dict):
-    if len(data.get("feedback", "")) < 5:
-        return {"detail": "Feedback must be greater than 10 characters long!"}
-
-    if ws.state.user:
-        user_id = int(ws.state.user["id"])
-        username = ws.state.user["username"]
-    else:
-        user_id = None
-        username = "Anonymous"
-
-    if not data.get("page", "").startswith("/"):
-        return {"detail": "Unexpected page!"}
-
-    await app.state.db.execute(
-        "INSERT INTO lynx_ratings (feedback, page, username_cached, user_id) VALUES ($1, $2, $3, $4)",
-        data["feedback"],
-        data["page"],
-        username,
-        user_id
-    )
-
-    return {"detail": "Successfully rated"}
-
 @ws_action("cosmog")
 async def verify_code(ws: WebSocket, data: dict):
     code = data.get("code", "")
@@ -2926,6 +2901,12 @@ class BotData(BaseModel):
     action: str
     reason: str
 
+class Feedback(BaseModel):
+    feedback: str
+    user_id: str
+    page: str
+
+# To remove (one day)
 class FakeWsState():
     def __init__(self):
         self.plat = "SQUIRREL"
@@ -2938,13 +2919,11 @@ class FakeWsKitty():
         self.state.user = {"id": reviewer, "username": "Unknown User"}
         self.state.member = member
 
-@app.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
-async def do_action(request: Request, data: BotData):
+async def _auth(request: Request, user_id: int | str) -> ORJSONResponse:
     try:
-        bot_id = int(data.id)
-        user_id = int(data.user_id)
+        user_id = int(user_id)
     except:
-        return ORJSONResponse({"detail": "bot_id or user_id invalid"}, status_code=401)
+        return ORJSONResponse({"detail": "user_id invalid"}, status_code=401)
 
     # If moved to official api-v3, ensure a check for starts_with Frostpaw. is made to block custom clients
     check = await app.state.db.fetchval(
@@ -2954,6 +2933,43 @@ async def do_action(request: Request, data: BotData):
     )
     if not check:
         return ORJSONResponse({"detail": "Unauthorized"}, status_code=401)
+    
+@app.post("/_quailfeather/eternatus", tags=["Internal"], deprecated=True)
+async def post_feedback(request: Request, data: Feedback):
+    if auth := await _auth(request, data.user_id):
+        return auth
+    
+    user_id = int(data.user_id)
+
+    if len(data.feedback) < 5:
+        return {"detail": "Feedback must be greater than 10 characters long!"}
+    
+    username = (await fetch_user(user_id))["username"]
+
+    if not data.page.startswith("/"):
+        return {"detail": "Unexpected page!"}
+
+    await app.state.db.execute(
+        "INSERT INTO lynx_ratings (feedback, page, username_cached, user_id) VALUES ($1, $2, $3, $4)",
+        data.feedback,
+        data.page,
+        username,
+        user_id
+    )
+
+    return {"detail": "Successfully rated"}
+
+@app.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
+async def do_action(request: Request, data: BotData):
+    try:
+        bot_id = int(data.id)
+    except:
+        return ORJSONResponse({"detail": "bot_id invalid"}, status_code=401)
+
+    if auth := await _auth(request, data.user_id):
+        return auth
+    
+    user_id = int(data.user_id)
 
     _, _, member = await is_staff(user_id, 2)
 

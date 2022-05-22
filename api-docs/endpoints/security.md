@@ -51,7 +51,7 @@ token ever gets leaked! Also used by the official client
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **id** => i64 [ex 0]
 
 
 
@@ -59,7 +59,7 @@ token ever gets leaked! Also used by the official client
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 
@@ -79,17 +79,15 @@ token ever gets leaked! Also used by the official client
 **Authorization Needed** | [Bot](#authorization)
 
 
-## Revoke Frostpaw Client Auth
-### DELETE `https://api.fateslist.xyz`/users/{id}/frostpaw/clients/{client_id}
+## New User Token
+### DELETE `https://api.fateslist.xyz`/users/{id}/token
 
-'Deletes' a user token and reissues a new user token. Use this if your user
-token ever gets leaked.
-                
+'Deletes' a user token and reissues a new user token. Use this if your bots
+token ever gets leaked! Also used by the official client
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
-- **client_id** => string [default/example = "client_id"]
+- **id** => i64 [ex 0]
 
 
 
@@ -97,7 +95,7 @@ token ever gets leaked.
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 
@@ -125,7 +123,7 @@ token ever gets leaked.
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **id** => i64 [ex 0]
 
 
 
@@ -133,7 +131,7 @@ token ever gets leaked.
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 
@@ -151,5 +149,43 @@ token ever gets leaked.
 
 
 **Authorization Needed** | [Server](#authorization)
+
+
+## Revoke Frostpaw Client Auth
+### DELETE `https://api.fateslist.xyz`/users/{id}/frostpaw/clients/{client_id}
+
+'Deletes' a user token and reissues a new user token. Use this if your user
+token ever gets leaked.
+                
+
+**Path Parameters**
+
+- **id** => i64 [ex 0]
+- **client_id** => string [ex "client_id"]
+
+
+
+
+
+**Response Body**
+
+- **done** => bool [ex true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
 
 

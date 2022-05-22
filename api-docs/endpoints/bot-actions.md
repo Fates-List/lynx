@@ -73,17 +73,17 @@ def post_stats(bot_id: int, guild_count: int):
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **id** => i64 [ex 0]
 
 
 
 
 **Request Body**
 
-- **guild_count** => i64 [default/example = 3939]
-- **shard_count** => (Optional) i64 [default/example = 48484]
-- **shards** => (Optional) (Array) i32 [default/example = 149]i32 [default/example = 22020]
-- **user_count** => (Optional) i64 [default/example = 39393]
+- **guild_count** => i64 [ex 3939]
+- **shard_count** => (Optional) i64 [ex 48484]
+- **shards** => (Optional) (Array) i32 [ex 149], i32 [ex 22020]
+- **user_count** => (Optional) i64 [ex 39393]
 
 
 
@@ -104,7 +104,7 @@ def post_stats(bot_id: int, guild_count: int):
 
 **Response Body**
 
-- **done** => bool [default/example = false]
+- **done** => bool [ex false]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 
@@ -143,7 +143,7 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **id** => i64 [ex 0]
 
 
 
@@ -152,110 +152,110 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 **Response Body**
 
 - **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
-- **description** => string [default/example = ""]
+- **description** => string [ex ""]
 - **tags** => (Array) 
-- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **last_updated_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **last_stats_post** => string [default/example = "1970-01-01T00:00:00Z"]
-- **long_description** => string [default/example = "blah blah blah"]
-- **long_description_raw** => string [default/example = "blah blah blah unsanitized"]
-- **long_description_type** => i32 [default/example = 1]
-- **guild_count** => i64 [default/example = 0]
-- **shard_count** => i64 [default/example = 493]
-- **user_count** => i64 [default/example = 0]
+- **created_at** => string [ex "1970-01-01T00:00:00Z"]
+- **last_updated_at** => string [ex "1970-01-01T00:00:00Z"]
+- **last_stats_post** => string [ex "1970-01-01T00:00:00Z"]
+- **long_description** => string [ex "blah blah blah"]
+- **long_description_raw** => string [ex "blah blah blah unsanitized"]
+- **long_description_type** => i32 [ex 1]
+- **guild_count** => i64 [ex 0]
+- **shard_count** => i64 [ex 493]
+- **user_count** => i64 [ex 0]
 - **shards** => (Array) 
-- **prefix** => (Optional) string [default/example = "Some prefix, null = slash command"]
-- **library** => string [default/example = ""]
-- **invite** => (Optional) string [default/example = "Raw invite, null = auto-generated. Use invite_link instead"]
-- **invite_link** => string [default/example = "https://discord.com/api/oauth2/authorize...."]
-- **invite_amount** => i32 [default/example = 48]
+- **prefix** => (Optional) string [ex "Some prefix, null = slash command"]
+- **library** => string [ex ""]
+- **invite** => (Optional) string [ex "Raw invite, null = auto-generated. Use invite_link instead"]
+- **invite_link** => string [ex "https://discord.com/api/oauth2/authorize...."]
+- **invite_amount** => i32 [ex 48]
 - **owners** => (Array) Struct BotOwner 
 	- **user** => Struct User 
-		- **id** => string [default/example = ""]
-		- **username** => string [default/example = ""]
-		- **disc** => string [default/example = ""]
-		- **avatar** => string [default/example = ""]
-		- **bot** => bool [default/example = false]
-		- **status** => string [default/example = "Unknown"]
+		- **id** => string [ex ""]
+		- **username** => string [ex ""]
+		- **disc** => string [ex ""]
+		- **avatar** => string [ex ""]
+		- **bot** => bool [ex false]
+		- **status** => string [ex "Unknown"]
 
 
 
-	- **main** => bool [default/example = false]
+	- **main** => bool [ex false]
 
 
 
 - **features** => (Array) Struct Feature 
-	- **id** => string [default/example = ""]
-	- **name** => string [default/example = ""]
-	- **viewed_as** => string [default/example = ""]
-	- **description** => string [default/example = ""]
+	- **id** => string [ex ""]
+	- **name** => string [ex ""]
+	- **viewed_as** => string [ex ""]
+	- **description** => string [ex ""]
 
 
 
-- **state** => i32 [default/example = 0]
-- **page_style** => i32 [default/example = 1]
+- **state** => i32 [ex 0]
+- **page_style** => i32 [ex 1]
 - **extra_links** => Map (key/value)  
 	- **key**
- => string [default/example = "value"]
+ => string [ex "value"]
 
 
 
-- **css** => string [default/example = "<style></style>"]
-- **css_raw** => string [default/example = "unsanitized css"]
-- **votes** => i64 [default/example = 0]
-- **total_votes** => i64 [default/example = 0]
-- **vanity** => string [default/example = ""]
-- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **client_id** => string [default/example = ""]
+- **css** => string [ex "<style></style>"]
+- **css_raw** => string [ex "unsanitized css"]
+- **votes** => i64 [ex 0]
+- **total_votes** => i64 [ex 0]
+- **vanity** => string [ex ""]
+- **banner_card** => (Optional) string [ex "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **banner_page** => (Optional) string [ex "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **client_id** => string [ex ""]
 - **flags** => (Array) 
 - **action_logs** => (Array) Struct ActionLog 
-	- **user_id** => string [default/example = ""]
-	- **bot_id** => string [default/example = ""]
-	- **action** => i32 [default/example = 0]
-	- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
+	- **user_id** => string [ex ""]
+	- **bot_id** => string [ex ""]
+	- **action** => i32 [ex 0]
+	- **action_time** => string [ex "1970-01-01T00:00:00Z"]
+	- **context** => (Optional) string [ex "Some context as to why the action happened"]
 
 
 
 - **vpm** => (Optional) (Array) Struct VotesPerMonth 
-	- **votes** => i64 [default/example = 0]
-	- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
+	- **votes** => i64 [ex 0]
+	- **ts** => string [ex "1970-01-01T00:00:00Z"]
 
 
 
-- **uptime_checks_total** => (Optional) i32 [default/example = 30]
-- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
+- **uptime_checks_total** => (Optional) i32 [ex 30]
+- **uptime_checks_failed** => (Optional) i32 [ex 19]
 - **commands** => (Array) Struct BotCommand 
-	- **cmd_type** => i32 [default/example = 0]
+	- **cmd_type** => i32 [ex 0]
 	- **groups** => (Array) 
-	- **name** => string [default/example = ""]
-	- **vote_locked** => bool [default/example = false]
-	- **description** => string [default/example = ""]
+	- **name** => string [ex ""]
+	- **vote_locked** => bool [ex false]
+	- **description** => string [ex ""]
 	- **args** => (Array) 
 	- **examples** => (Array) 
-	- **premium_only** => bool [default/example = false]
+	- **premium_only** => bool [ex false]
 	- **notes** => (Array) 
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
-	- **nsfw** => bool [default/example = false]
+	- **nsfw** => bool [ex false]
 
 
 
-- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+- **webhook** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
+- **webhook_secret** => (Optional) string [ex "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
 - **webhook_type** => None (unknown value type)
 - **webhook_hmac_only** => None (unknown value type)
-- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+- **api_token** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
 
 
 
@@ -368,7 +368,7 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 **Authorization Needed** | None
 
 
-## Gets Bot Settings
+## Get Bot Settings
 ### GET `https://api.fateslist.xyz`/users/{user_id}/bots/{bot_id}/settings
 
 Returns the bot settings.
@@ -384,8 +384,8 @@ Staff members *must* instead use Lynx.
 
 **Path Parameters**
 
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
+- **user_id** => i64 [ex 0]
+- **bot_id** => i64 [ex 0]
 
 
 
@@ -395,127 +395,127 @@ Staff members *must* instead use Lynx.
 
 - **bot** => Struct Bot 
 	- **user** => Struct User 
-		- **id** => string [default/example = ""]
-		- **username** => string [default/example = ""]
-		- **disc** => string [default/example = ""]
-		- **avatar** => string [default/example = ""]
-		- **bot** => bool [default/example = false]
-		- **status** => string [default/example = "Unknown"]
+		- **id** => string [ex ""]
+		- **username** => string [ex ""]
+		- **disc** => string [ex ""]
+		- **avatar** => string [ex ""]
+		- **bot** => bool [ex false]
+		- **status** => string [ex "Unknown"]
 
 
 
-	- **description** => string [default/example = ""]
+	- **description** => string [ex ""]
 	- **tags** => (Array) 
-	- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **last_updated_at** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **last_stats_post** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **long_description** => string [default/example = "blah blah blah"]
-	- **long_description_raw** => string [default/example = "blah blah blah unsanitized"]
-	- **long_description_type** => i32 [default/example = 1]
-	- **guild_count** => i64 [default/example = 0]
-	- **shard_count** => i64 [default/example = 493]
-	- **user_count** => i64 [default/example = 0]
+	- **created_at** => string [ex "1970-01-01T00:00:00Z"]
+	- **last_updated_at** => string [ex "1970-01-01T00:00:00Z"]
+	- **last_stats_post** => string [ex "1970-01-01T00:00:00Z"]
+	- **long_description** => string [ex "blah blah blah"]
+	- **long_description_raw** => string [ex "blah blah blah unsanitized"]
+	- **long_description_type** => i32 [ex 1]
+	- **guild_count** => i64 [ex 0]
+	- **shard_count** => i64 [ex 493]
+	- **user_count** => i64 [ex 0]
 	- **shards** => (Array) 
-	- **prefix** => (Optional) string [default/example = "Some prefix, null = slash command"]
-	- **library** => string [default/example = ""]
-	- **invite** => (Optional) string [default/example = "Raw invite, null = auto-generated. Use invite_link instead"]
-	- **invite_link** => string [default/example = "https://discord.com/api/oauth2/authorize...."]
-	- **invite_amount** => i32 [default/example = 48]
+	- **prefix** => (Optional) string [ex "Some prefix, null = slash command"]
+	- **library** => string [ex ""]
+	- **invite** => (Optional) string [ex "Raw invite, null = auto-generated. Use invite_link instead"]
+	- **invite_link** => string [ex "https://discord.com/api/oauth2/authorize...."]
+	- **invite_amount** => i32 [ex 48]
 	- **owners** => (Array) Struct BotOwner 
 		- **user** => Struct User 
-			- **id** => string [default/example = ""]
-			- **username** => string [default/example = ""]
-			- **disc** => string [default/example = ""]
-			- **avatar** => string [default/example = ""]
-			- **bot** => bool [default/example = false]
-			- **status** => string [default/example = "Unknown"]
+			- **id** => string [ex ""]
+			- **username** => string [ex ""]
+			- **disc** => string [ex ""]
+			- **avatar** => string [ex ""]
+			- **bot** => bool [ex false]
+			- **status** => string [ex "Unknown"]
 
 
 
-		- **main** => bool [default/example = false]
+		- **main** => bool [ex false]
 
 
 
 	- **features** => (Array) Struct Feature 
-		- **id** => string [default/example = ""]
-		- **name** => string [default/example = ""]
-		- **viewed_as** => string [default/example = ""]
-		- **description** => string [default/example = ""]
+		- **id** => string [ex ""]
+		- **name** => string [ex ""]
+		- **viewed_as** => string [ex ""]
+		- **description** => string [ex ""]
 
 
 
-	- **state** => i32 [default/example = 0]
-	- **page_style** => i32 [default/example = 1]
+	- **state** => i32 [ex 0]
+	- **page_style** => i32 [ex 1]
 	- **extra_links** => Map (key/value)  
 		- **key**
- => string [default/example = "value"]
+ => string [ex "value"]
 
 
 
-	- **css** => string [default/example = "<style></style>"]
-	- **css_raw** => string [default/example = "unsanitized css"]
-	- **votes** => i64 [default/example = 0]
-	- **total_votes** => i64 [default/example = 0]
-	- **vanity** => string [default/example = ""]
-	- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-	- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-	- **client_id** => string [default/example = ""]
+	- **css** => string [ex "<style></style>"]
+	- **css_raw** => string [ex "unsanitized css"]
+	- **votes** => i64 [ex 0]
+	- **total_votes** => i64 [ex 0]
+	- **vanity** => string [ex ""]
+	- **banner_card** => (Optional) string [ex "https://api.fateslist.xyz/static/botlisticon.webp"]
+	- **banner_page** => (Optional) string [ex "https://api.fateslist.xyz/static/botlisticon.webp"]
+	- **client_id** => string [ex ""]
 	- **flags** => (Array) 
 	- **action_logs** => (Array) Struct ActionLog 
-		- **user_id** => string [default/example = ""]
-		- **bot_id** => string [default/example = ""]
-		- **action** => i32 [default/example = 0]
-		- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
-		- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
+		- **user_id** => string [ex ""]
+		- **bot_id** => string [ex ""]
+		- **action** => i32 [ex 0]
+		- **action_time** => string [ex "1970-01-01T00:00:00Z"]
+		- **context** => (Optional) string [ex "Some context as to why the action happened"]
 
 
 
 	- **vpm** => (Optional) (Array) Struct VotesPerMonth 
-		- **votes** => i64 [default/example = 0]
-		- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
+		- **votes** => i64 [ex 0]
+		- **ts** => string [ex "1970-01-01T00:00:00Z"]
 
 
 
-	- **uptime_checks_total** => (Optional) i32 [default/example = 30]
-	- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
+	- **uptime_checks_total** => (Optional) i32 [ex 30]
+	- **uptime_checks_failed** => (Optional) i32 [ex 19]
 	- **commands** => (Array) Struct BotCommand 
-		- **cmd_type** => i32 [default/example = 0]
+		- **cmd_type** => i32 [ex 0]
 		- **groups** => (Array) 
-		- **name** => string [default/example = ""]
-		- **vote_locked** => bool [default/example = false]
-		- **description** => string [default/example = ""]
+		- **name** => string [ex ""]
+		- **vote_locked** => bool [ex false]
+		- **description** => string [ex ""]
 		- **args** => (Array) 
 		- **examples** => (Array) 
-		- **premium_only** => bool [default/example = false]
+		- **premium_only** => bool [ex false]
 		- **notes** => (Array) 
 		- **doc_link** => None (unknown value type)
 		- **id** => None (unknown value type)
-		- **nsfw** => bool [default/example = false]
+		- **nsfw** => bool [ex false]
 
 
 
-	- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-	- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+	- **webhook** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
+	- **webhook_secret** => (Optional) string [ex "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
 	- **webhook_type** => None (unknown value type)
 	- **webhook_hmac_only** => None (unknown value type)
-	- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+	- **api_token** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
 
 
 
 - **context** => Struct BotSettingsContext 
 	- **tags** => (Array) Struct Tag 
-		- **name** => string [default/example = ""]
-		- **iconify_data** => string [default/example = ""]
-		- **id** => string [default/example = ""]
+		- **name** => string [ex ""]
+		- **iconify_data** => string [ex ""]
+		- **id** => string [ex ""]
 		- **owner_guild** => None (unknown value type)
 
 
 
 	- **features** => (Array) Struct Feature 
-		- **id** => string [default/example = ""]
-		- **name** => string [default/example = ""]
-		- **viewed_as** => string [default/example = ""]
-		- **description** => string [default/example = ""]
+		- **id** => string [ex ""]
+		- **name** => string [ex ""]
+		- **viewed_as** => string [ex ""]
+		- **description** => string [ex ""]
 
 
 
@@ -676,23 +676,23 @@ def random_bot():
 
 **Response Body**
 
-- **guild_count** => i64 [default/example = 30]
-- **description** => string [default/example = "My description"]
-- **banner** => string [default/example = "My banner or default banner url"]
-- **votes** => i64 [default/example = 40]
-- **state** => i32 [default/example = 3]
+- **guild_count** => i64 [ex 30]
+- **description** => string [ex "My description"]
+- **banner** => string [ex "My banner or default banner url"]
+- **votes** => i64 [ex 40]
+- **state** => i32 [ex 3]
 - **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-19T14:32:40.374251617Z"]
+- **created_at** => string [ex "2022-05-22T07:59:21.931631434Z"]
 
 
 
@@ -714,7 +714,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-19T14:32:40.374251617Z"
+    "created_at": "2022-05-22T07:59:21.931631434Z"
 }
 ```
 
@@ -722,7 +722,7 @@ def random_bot():
 **Authorization Needed** | None
 
 
-## New Bot
+## Add Bot
 ### POST `https://api.fateslist.xyz`/users/{id}/bots
 
 Creates a new bot. 
@@ -739,7 +739,7 @@ to false.
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **id** => i64 [ex 0]
 
 
 
@@ -747,110 +747,110 @@ to false.
 **Request Body**
 
 - **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
-- **description** => string [default/example = ""]
+- **description** => string [ex ""]
 - **tags** => (Array) 
-- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **last_updated_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **last_stats_post** => string [default/example = "1970-01-01T00:00:00Z"]
-- **long_description** => string [default/example = "blah blah blah"]
-- **long_description_raw** => string [default/example = "blah blah blah unsanitized"]
-- **long_description_type** => i32 [default/example = 1]
-- **guild_count** => i64 [default/example = 0]
-- **shard_count** => i64 [default/example = 493]
-- **user_count** => i64 [default/example = 0]
+- **created_at** => string [ex "1970-01-01T00:00:00Z"]
+- **last_updated_at** => string [ex "1970-01-01T00:00:00Z"]
+- **last_stats_post** => string [ex "1970-01-01T00:00:00Z"]
+- **long_description** => string [ex "blah blah blah"]
+- **long_description_raw** => string [ex "blah blah blah unsanitized"]
+- **long_description_type** => i32 [ex 1]
+- **guild_count** => i64 [ex 0]
+- **shard_count** => i64 [ex 493]
+- **user_count** => i64 [ex 0]
 - **shards** => (Array) 
-- **prefix** => (Optional) string [default/example = "Some prefix, null = slash command"]
-- **library** => string [default/example = ""]
-- **invite** => (Optional) string [default/example = "Raw invite, null = auto-generated. Use invite_link instead"]
-- **invite_link** => string [default/example = "https://discord.com/api/oauth2/authorize...."]
-- **invite_amount** => i32 [default/example = 48]
+- **prefix** => (Optional) string [ex "Some prefix, null = slash command"]
+- **library** => string [ex ""]
+- **invite** => (Optional) string [ex "Raw invite, null = auto-generated. Use invite_link instead"]
+- **invite_link** => string [ex "https://discord.com/api/oauth2/authorize...."]
+- **invite_amount** => i32 [ex 48]
 - **owners** => (Array) Struct BotOwner 
 	- **user** => Struct User 
-		- **id** => string [default/example = ""]
-		- **username** => string [default/example = ""]
-		- **disc** => string [default/example = ""]
-		- **avatar** => string [default/example = ""]
-		- **bot** => bool [default/example = false]
-		- **status** => string [default/example = "Unknown"]
+		- **id** => string [ex ""]
+		- **username** => string [ex ""]
+		- **disc** => string [ex ""]
+		- **avatar** => string [ex ""]
+		- **bot** => bool [ex false]
+		- **status** => string [ex "Unknown"]
 
 
 
-	- **main** => bool [default/example = false]
+	- **main** => bool [ex false]
 
 
 
 - **features** => (Array) Struct Feature 
-	- **id** => string [default/example = ""]
-	- **name** => string [default/example = ""]
-	- **viewed_as** => string [default/example = ""]
-	- **description** => string [default/example = ""]
+	- **id** => string [ex ""]
+	- **name** => string [ex ""]
+	- **viewed_as** => string [ex ""]
+	- **description** => string [ex ""]
 
 
 
-- **state** => i32 [default/example = 0]
-- **page_style** => i32 [default/example = 1]
+- **state** => i32 [ex 0]
+- **page_style** => i32 [ex 1]
 - **extra_links** => Map (key/value)  
 	- **key**
- => string [default/example = "value"]
+ => string [ex "value"]
 
 
 
-- **css** => string [default/example = "<style></style>"]
-- **css_raw** => string [default/example = "unsanitized css"]
-- **votes** => i64 [default/example = 0]
-- **total_votes** => i64 [default/example = 0]
-- **vanity** => string [default/example = ""]
-- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **client_id** => string [default/example = ""]
+- **css** => string [ex "<style></style>"]
+- **css_raw** => string [ex "unsanitized css"]
+- **votes** => i64 [ex 0]
+- **total_votes** => i64 [ex 0]
+- **vanity** => string [ex ""]
+- **banner_card** => (Optional) string [ex "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **banner_page** => (Optional) string [ex "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **client_id** => string [ex ""]
 - **flags** => (Array) 
 - **action_logs** => (Array) Struct ActionLog 
-	- **user_id** => string [default/example = ""]
-	- **bot_id** => string [default/example = ""]
-	- **action** => i32 [default/example = 0]
-	- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
+	- **user_id** => string [ex ""]
+	- **bot_id** => string [ex ""]
+	- **action** => i32 [ex 0]
+	- **action_time** => string [ex "1970-01-01T00:00:00Z"]
+	- **context** => (Optional) string [ex "Some context as to why the action happened"]
 
 
 
 - **vpm** => (Optional) (Array) Struct VotesPerMonth 
-	- **votes** => i64 [default/example = 0]
-	- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
+	- **votes** => i64 [ex 0]
+	- **ts** => string [ex "1970-01-01T00:00:00Z"]
 
 
 
-- **uptime_checks_total** => (Optional) i32 [default/example = 30]
-- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
+- **uptime_checks_total** => (Optional) i32 [ex 30]
+- **uptime_checks_failed** => (Optional) i32 [ex 19]
 - **commands** => (Array) Struct BotCommand 
-	- **cmd_type** => i32 [default/example = 0]
+	- **cmd_type** => i32 [ex 0]
 	- **groups** => (Array) 
-	- **name** => string [default/example = ""]
-	- **vote_locked** => bool [default/example = false]
-	- **description** => string [default/example = ""]
+	- **name** => string [ex ""]
+	- **vote_locked** => bool [ex false]
+	- **description** => string [ex ""]
 	- **args** => (Array) 
 	- **examples** => (Array) 
-	- **premium_only** => bool [default/example = false]
+	- **premium_only** => bool [ex false]
 	- **notes** => (Array) 
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
-	- **nsfw** => bool [default/example = false]
+	- **nsfw** => bool [ex false]
 
 
 
-- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+- **webhook** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
+- **webhook_secret** => (Optional) string [ex "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
 - **webhook_type** => None (unknown value type)
 - **webhook_hmac_only** => None (unknown value type)
-- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+- **api_token** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
 
 
 
@@ -962,7 +962,7 @@ to false.
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 
@@ -999,7 +999,7 @@ to false.
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **id** => i64 [ex 0]
 
 
 
@@ -1007,110 +1007,110 @@ to false.
 **Request Body**
 
 - **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
-- **description** => string [default/example = ""]
+- **description** => string [ex ""]
 - **tags** => (Array) 
-- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **last_updated_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **last_stats_post** => string [default/example = "1970-01-01T00:00:00Z"]
-- **long_description** => string [default/example = "blah blah blah"]
-- **long_description_raw** => string [default/example = "blah blah blah unsanitized"]
-- **long_description_type** => i32 [default/example = 1]
-- **guild_count** => i64 [default/example = 0]
-- **shard_count** => i64 [default/example = 493]
-- **user_count** => i64 [default/example = 0]
+- **created_at** => string [ex "1970-01-01T00:00:00Z"]
+- **last_updated_at** => string [ex "1970-01-01T00:00:00Z"]
+- **last_stats_post** => string [ex "1970-01-01T00:00:00Z"]
+- **long_description** => string [ex "blah blah blah"]
+- **long_description_raw** => string [ex "blah blah blah unsanitized"]
+- **long_description_type** => i32 [ex 1]
+- **guild_count** => i64 [ex 0]
+- **shard_count** => i64 [ex 493]
+- **user_count** => i64 [ex 0]
 - **shards** => (Array) 
-- **prefix** => (Optional) string [default/example = "Some prefix, null = slash command"]
-- **library** => string [default/example = ""]
-- **invite** => (Optional) string [default/example = "Raw invite, null = auto-generated. Use invite_link instead"]
-- **invite_link** => string [default/example = "https://discord.com/api/oauth2/authorize...."]
-- **invite_amount** => i32 [default/example = 48]
+- **prefix** => (Optional) string [ex "Some prefix, null = slash command"]
+- **library** => string [ex ""]
+- **invite** => (Optional) string [ex "Raw invite, null = auto-generated. Use invite_link instead"]
+- **invite_link** => string [ex "https://discord.com/api/oauth2/authorize...."]
+- **invite_amount** => i32 [ex 48]
 - **owners** => (Array) Struct BotOwner 
 	- **user** => Struct User 
-		- **id** => string [default/example = ""]
-		- **username** => string [default/example = ""]
-		- **disc** => string [default/example = ""]
-		- **avatar** => string [default/example = ""]
-		- **bot** => bool [default/example = false]
-		- **status** => string [default/example = "Unknown"]
+		- **id** => string [ex ""]
+		- **username** => string [ex ""]
+		- **disc** => string [ex ""]
+		- **avatar** => string [ex ""]
+		- **bot** => bool [ex false]
+		- **status** => string [ex "Unknown"]
 
 
 
-	- **main** => bool [default/example = false]
+	- **main** => bool [ex false]
 
 
 
 - **features** => (Array) Struct Feature 
-	- **id** => string [default/example = ""]
-	- **name** => string [default/example = ""]
-	- **viewed_as** => string [default/example = ""]
-	- **description** => string [default/example = ""]
+	- **id** => string [ex ""]
+	- **name** => string [ex ""]
+	- **viewed_as** => string [ex ""]
+	- **description** => string [ex ""]
 
 
 
-- **state** => i32 [default/example = 0]
-- **page_style** => i32 [default/example = 1]
+- **state** => i32 [ex 0]
+- **page_style** => i32 [ex 1]
 - **extra_links** => Map (key/value)  
 	- **key**
- => string [default/example = "value"]
+ => string [ex "value"]
 
 
 
-- **css** => string [default/example = "<style></style>"]
-- **css_raw** => string [default/example = "unsanitized css"]
-- **votes** => i64 [default/example = 0]
-- **total_votes** => i64 [default/example = 0]
-- **vanity** => string [default/example = ""]
-- **banner_card** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **banner_page** => (Optional) string [default/example = "https://api.fateslist.xyz/static/botlisticon.webp"]
-- **client_id** => string [default/example = ""]
+- **css** => string [ex "<style></style>"]
+- **css_raw** => string [ex "unsanitized css"]
+- **votes** => i64 [ex 0]
+- **total_votes** => i64 [ex 0]
+- **vanity** => string [ex ""]
+- **banner_card** => (Optional) string [ex "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **banner_page** => (Optional) string [ex "https://api.fateslist.xyz/static/botlisticon.webp"]
+- **client_id** => string [ex ""]
 - **flags** => (Array) 
 - **action_logs** => (Array) Struct ActionLog 
-	- **user_id** => string [default/example = ""]
-	- **bot_id** => string [default/example = ""]
-	- **action** => i32 [default/example = 0]
-	- **action_time** => string [default/example = "1970-01-01T00:00:00Z"]
-	- **context** => (Optional) string [default/example = "Some context as to why the action happened"]
+	- **user_id** => string [ex ""]
+	- **bot_id** => string [ex ""]
+	- **action** => i32 [ex 0]
+	- **action_time** => string [ex "1970-01-01T00:00:00Z"]
+	- **context** => (Optional) string [ex "Some context as to why the action happened"]
 
 
 
 - **vpm** => (Optional) (Array) Struct VotesPerMonth 
-	- **votes** => i64 [default/example = 0]
-	- **ts** => string [default/example = "1970-01-01T00:00:00Z"]
+	- **votes** => i64 [ex 0]
+	- **ts** => string [ex "1970-01-01T00:00:00Z"]
 
 
 
-- **uptime_checks_total** => (Optional) i32 [default/example = 30]
-- **uptime_checks_failed** => (Optional) i32 [default/example = 19]
+- **uptime_checks_total** => (Optional) i32 [ex 30]
+- **uptime_checks_failed** => (Optional) i32 [ex 19]
 - **commands** => (Array) Struct BotCommand 
-	- **cmd_type** => i32 [default/example = 0]
+	- **cmd_type** => i32 [ex 0]
 	- **groups** => (Array) 
-	- **name** => string [default/example = ""]
-	- **vote_locked** => bool [default/example = false]
-	- **description** => string [default/example = ""]
+	- **name** => string [ex ""]
+	- **vote_locked** => bool [ex false]
+	- **description** => string [ex ""]
 	- **args** => (Array) 
 	- **examples** => (Array) 
-	- **premium_only** => bool [default/example = false]
+	- **premium_only** => bool [ex false]
 	- **notes** => (Array) 
 	- **doc_link** => None (unknown value type)
 	- **id** => None (unknown value type)
-	- **nsfw** => bool [default/example = false]
+	- **nsfw** => bool [ex false]
 
 
 
-- **webhook** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
-- **webhook_secret** => (Optional) string [default/example = "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
+- **webhook** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
+- **webhook_secret** => (Optional) string [ex "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
 - **webhook_type** => None (unknown value type)
 - **webhook_hmac_only** => None (unknown value type)
-- **api_token** => (Optional) string [default/example = "This will be redacted for Get Bot endpoint"]
+- **api_token** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
 
 
 
@@ -1222,7 +1222,7 @@ to false.
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 
@@ -1252,8 +1252,8 @@ You **must** be main owner of the bot to use this endpoint.
 
 **Path Parameters**
 
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
+- **user_id** => i64 [ex 0]
+- **bot_id** => i64 [ex 0]
 
 
 
@@ -1261,16 +1261,16 @@ You **must** be main owner of the bot to use this endpoint.
 **Request Body**
 
 - **user** => Struct User 
-	- **id** => string [default/example = "id here"]
-	- **username** => string [default/example = "Leave blank"]
-	- **disc** => string [default/example = "Leave blank"]
-	- **avatar** => string [default/example = "Leave blank"]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex "id here"]
+	- **username** => string [ex "Leave blank"]
+	- **disc** => string [ex "Leave blank"]
+	- **avatar** => string [ex "Leave blank"]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
-- **main** => bool [default/example = true]
+- **main** => bool [ex true]
 
 
 
@@ -1293,7 +1293,7 @@ You **must** be main owner of the bot to use this endpoint.
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 
@@ -1322,8 +1322,8 @@ You **must** be main owner of the bot to use this endpoint.
 
 **Path Parameters**
 
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
+- **user_id** => i64 [ex 0]
+- **bot_id** => i64 [ex 0]
 
 
 
@@ -1331,7 +1331,7 @@ You **must** be main owner of the bot to use this endpoint.
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 
@@ -1360,8 +1360,8 @@ Returns a array of sources that a bot can be imported from.
 **Response Body**
 
 - **sources** => (Array) Struct ImportSourceListItem 
-	- **id** => string [default/example = "Rdl"]
-	- **name** => string [default/example = "Rovel Bot List"]
+	- **id** => string [ex "Rdl"]
+	- **name** => string [ex "Rovel Bot List"]
 
 
 
@@ -1390,16 +1390,16 @@ Returns a array of sources that a bot can be imported from.
 Imports a bot from a source listed in ``Get Import Sources``
 **Query Parameters**
 
-- **src** => string [default/example = "Rdl"]
-- **custom_source** => (Optional) string [default/example = ""]
+- **src** => string [ex "Rdl"]
+- **custom_source** => (Optional) string [ex ""]
 
 
 
 
 **Path Parameters**
 
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
+- **user_id** => i64 [ex 0]
+- **bot_id** => i64 [ex 0]
 
 
 
@@ -1408,7 +1408,7 @@ Imports a bot from a source listed in ``Get Import Sources``
 
 - **ext_data** => (Optional) Map (key/value)  
 	- **key**
- => string [default/example = "value"]
+ => string [ex "value"]
 
 
 
@@ -1428,7 +1428,7 @@ Imports a bot from a source listed in ``Get Import Sources``
 
 **Response Body**
 
-- **done** => bool [default/example = true]
+- **done** => bool [ex true]
 - **reason** => None (unknown value type)
 - **context** => None (unknown value type)
 

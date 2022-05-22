@@ -48,15 +48,15 @@ A default API Response will be of the below format:
 This endpoint creates a vote for a bot which can only be done *once* every 8 hours.
 **Query Parameters**
 
-- **test** => bool [default/example = true]
+- **test** => bool [ex true]
 
 
 
 
 **Path Parameters**
 
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
+- **user_id** => i64 [ex 0]
+- **bot_id** => i64 [ex 0]
 
 
 
@@ -64,9 +64,9 @@ This endpoint creates a vote for a bot which can only be done *once* every 8 hou
 
 **Response Body**
 
-- **done** => bool [default/example = false]
-- **reason** => (Optional) string [default/example = "Error code"]
-- **context** => (Optional) string [default/example = "Some context on the error"]
+- **done** => bool [ex false]
+- **reason** => (Optional) string [ex "Error code"]
+- **context** => (Optional) string [ex "Some context on the error"]
 
 
 
@@ -92,15 +92,15 @@ and is independent from a bot vote.
                     
 **Query Parameters**
 
-- **test** => bool [default/example = true]
+- **test** => bool [ex true]
 
 
 
 
 **Path Parameters**
 
-- **user_id** => i64 [default/example = 0]
-- **server_id** => i64 [default/example = 0]
+- **user_id** => i64 [ex 0]
+- **server_id** => i64 [ex 0]
 
 
 
@@ -108,9 +108,9 @@ and is independent from a bot vote.
 
 **Response Body**
 
-- **done** => bool [default/example = false]
-- **reason** => (Optional) string [default/example = "Why the vote failed or any extra info to send to client if the vote succeeded"]
-- **context** => (Optional) string [default/example = "Some context on the vote"]
+- **done** => bool [ex false]
+- **reason** => (Optional) string [ex "Why the vote failed or any extra info to send to client if the vote succeeded"]
+- **context** => (Optional) string [ex "Some context on the vote"]
 
 
 
@@ -148,8 +148,8 @@ this however, it is prone to change *anytime* in the future and may return bogus
 
 **Path Parameters**
 
-- **user_id** => i64 [default/example = 0]
-- **bot_id** => i64 [default/example = 0]
+- **user_id** => i64 [ex 0]
+- **bot_id** => i64 [ex 0]
 
 
 
@@ -157,11 +157,11 @@ this however, it is prone to change *anytime* in the future and may return bogus
 
 **Response Body**
 
-- **votes** => i64 [default/example = 10]
-- **voted** => bool [default/example = true]
-- **vote_right_now** => bool [default/example = false]
-- **expiry** => u64 [default/example = 101]
-- **timestamps** => (Array) string [default/example = "1970-01-01T00:00:00Z"]
+- **votes** => i64 [ex 10]
+- **voted** => bool [ex true]
+- **vote_right_now** => bool [ex false]
+- **expiry** => u64 [ex 101]
+- **timestamps** => (Array) string [ex "1970-01-01T00:00:00Z"]
 
 
 
@@ -203,8 +203,8 @@ this however, it is prone to change *anytime* in the future and may return bogus
 
 **Path Parameters**
 
-- **user_id** => i64 [default/example = 0]
-- **server_id** => i64 [default/example = 0]
+- **user_id** => i64 [ex 0]
+- **server_id** => i64 [ex 0]
 
 
 
@@ -212,11 +212,11 @@ this however, it is prone to change *anytime* in the future and may return bogus
 
 **Response Body**
 
-- **votes** => i64 [default/example = 10]
-- **voted** => bool [default/example = true]
-- **vote_right_now** => bool [default/example = false]
-- **expiry** => u64 [default/example = 101]
-- **timestamps** => (Array) string [default/example = "1970-01-01T00:00:00Z"]
+- **votes** => i64 [ex 10]
+- **voted** => bool [ex true]
+- **vote_right_now** => bool [ex false]
+- **expiry** => u64 [ex 101]
+- **timestamps** => (Array) string [ex "1970-01-01T00:00:00Z"]
 
 
 

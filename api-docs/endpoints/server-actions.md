@@ -58,7 +58,7 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 
 **Path Parameters**
 
-- **id** => i64 [default/example = 0]
+- **id** => i64 [ex 0]
 
 
 
@@ -67,49 +67,49 @@ server privacy restrictions. **Note that when fetching invite links, requires lo
 **Response Body**
 
 - **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
 - **owner** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
-- **description** => string [default/example = ""]
+- **description** => string [ex ""]
 - **tags** => (Array) 
-- **long_description_type** => i32 [default/example = 1]
-- **long_description** => string [default/example = ""]
-- **long_description_raw** => string [default/example = ""]
-- **vanity** => (Optional) string [default/example = "server-vanity"]
-- **guild_count** => i64 [default/example = 0]
-- **invite_amount** => i32 [default/example = 0]
-- **invite_link** => (Optional) string [default/example = "Only present if ``Frostpaw-Invite`` header is set"]
-- **created_at** => string [default/example = "1970-01-01T00:00:00Z"]
-- **state** => i32 [default/example = 0]
+- **long_description_type** => i32 [ex 1]
+- **long_description** => string [ex ""]
+- **long_description_raw** => string [ex ""]
+- **vanity** => (Optional) string [ex "server-vanity"]
+- **guild_count** => i64 [ex 0]
+- **invite_amount** => i32 [ex 0]
+- **invite_link** => (Optional) string [ex "Only present if ``Frostpaw-Invite`` header is set"]
+- **created_at** => string [ex "1970-01-01T00:00:00Z"]
+- **state** => i32 [ex 0]
 - **flags** => (Array) 
-- **css** => string [default/example = ""]
-- **css_raw** => string [default/example = "unsanitized css"]
+- **css** => string [ex ""]
+- **css_raw** => string [ex "unsanitized css"]
 - **extra_links** => Map (key/value)  
 	- **key**
- => string [default/example = "value"]
+ => string [ex "value"]
 
 
 
-- **banner_card** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-card.png"]
-- **banner_page** => (Optional) string [default/example = "https://frostpaw.com/assets/img/banner-page.png"]
-- **votes** => i64 [default/example = 0]
-- **total_votes** => i64 [default/example = 0]
+- **banner_card** => (Optional) string [ex "https://frostpaw.com/assets/img/banner-card.png"]
+- **banner_page** => (Optional) string [ex "https://frostpaw.com/assets/img/banner-page.png"]
+- **votes** => i64 [ex 0]
+- **total_votes** => i64 [ex 0]
 
 
 
@@ -183,23 +183,23 @@ def random_server():
 
 **Response Body**
 
-- **guild_count** => i64 [default/example = 30]
-- **description** => string [default/example = "My description"]
-- **banner** => string [default/example = "My banner or default banner url"]
-- **votes** => i64 [default/example = 40]
-- **state** => i32 [default/example = 3]
+- **guild_count** => i64 [ex 30]
+- **description** => string [ex "My description"]
+- **banner** => string [ex "My banner or default banner url"]
+- **votes** => i64 [ex 40]
+- **state** => i32 [ex 3]
 - **user** => Struct User 
-	- **id** => string [default/example = ""]
-	- **username** => string [default/example = ""]
-	- **disc** => string [default/example = ""]
-	- **avatar** => string [default/example = ""]
-	- **bot** => bool [default/example = false]
-	- **status** => string [default/example = "Unknown"]
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
 
 
 
 - **flags** => (Array) 
-- **created_at** => string [default/example = "2022-05-19T14:32:40.374532841Z"]
+- **created_at** => string [ex "2022-05-22T07:59:21.931836952Z"]
 
 
 
@@ -221,7 +221,7 @@ def random_server():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-19T14:32:40.374532841Z"
+    "created_at": "2022-05-22T07:59:21.931836952Z"
 }
 ```
 
