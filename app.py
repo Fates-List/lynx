@@ -2936,15 +2936,20 @@ async def _auth(request: Request, user_id: int | str) -> ORJSONResponse:
     
 @app.post("/_quailfeather/eternatus", tags=["Internal"], deprecated=True)
 async def post_feedback(request: Request, data: Feedback):
-    if auth := await _auth(request, data.user_id):
-        return auth
-    
-    user_id = int(data.user_id)
+    if data.user_id:
+        if auth := await _auth(request, data.user_id):
+            return auth
+        
+        user_id = int(data.user_id)
+        username = (await fetch_user(user_id))["username"]
+    else:
+        user_id = None
+        username = "Anonymous"
+
 
     if len(data.feedback) < 5:
         return {"detail": "Feedback must be greater than 10 characters long!"}
     
-    username = (await fetch_user(user_id))["username"]
 
     if not data.page.startswith("/"):
         return {"detail": "Unexpected page!"}
