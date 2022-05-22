@@ -1509,43 +1509,6 @@ placeholder="Reason for resetting all votes. Defaults to 'Monthly Votes Reset'"
 async def perms(ws: WebSocket, _):
     return {"data": ws.state.member.dict()}
 
-@ws_action("reset")
-async def reset(ws: WebSocket, _):
-    # Remove from db
-    if ws.state.user:
-        await app.state.db.execute(
-            "UPDATE users SET api_token = $1, staff_verify_code = NULL WHERE user_id = $2",
-            get_token(132),
-            int(ws.state.user["id"])
-        )
-        await app.state.db.execute(
-            "DELETE FROM piccolo_user WHERE username = $1",
-            ws.state.user["username"]
-        )
-        return {}
-
-@ws_action("reset_page")
-async def reset_page(_, __):
-    return {
-        "title": "Lynx Credentials Reset",
-        "pre": "/links",
-        "data": f"""
-<p>If you're locked out of your discord account or otherwise need to reset your credentials, just click the 'Reset' button. It will do the same
-thing as <strong>/lynxreset</strong> used to</p>
-
-<div id="verify-parent">
-    <button id="verify-btn" onclick="reset()">Reset</button>
-</div>
-        """,
-        "script": """
-            async function reset() {
-                document.querySelector("#verify-btn").innerText = "Resetting...";
-
-                wsSend({request: "reset"})
-            }
-        """
-    }
-
 @ws_action("user_action")
 async def user_action(ws: WebSocket, data: dict):
     try:
@@ -1825,6 +1788,22 @@ async def startup():
 class Loa(BaseModel):
     reason: str
     duration: str
+
+@app.post("/_quailfeather/reset", tags=["Internal"])
+async def reset_creds(request: Request, user_id: int):
+    if auth := await _auth(request, user_id):
+        return auth
+
+    await app.state.db.execute(
+        "UPDATE users SET api_token = $1, staff_verify_code = NULL WHERE user_id = $2",
+        get_token(132),
+        user_id
+    )
+    await app.state.db.execute(
+        "DELETE FROM piccolo_user WHERE username = $1",
+        (await fetch_user(user_id))["username"]
+    )
+    return {}
 
 @app.post("/_quailfeather/loa", tags=["Internal"])
 async def send_loa(request: Request, user_id: int, loa: Loa):
