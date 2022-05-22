@@ -1841,7 +1841,7 @@ async def staff_verify(request: Request, user_id: int, code: str):
         }, status_code=400)
 
     if not code_check(code, user_id):
-        return {"reason": "Invalid code"}
+        return ORJSONResponse({"reason": "Invalid code"}, status_code=400)
     else:
         username = (await fetch_user(user_id))["username"]
         password = get_token(96)
@@ -1856,7 +1856,7 @@ async def staff_verify(request: Request, user_id: int, code: str):
                 admin=True
             )
         except:
-            return {"reason": "Failed to create user on lynx. Please contact Rootspring#6701"}
+            return ORJSONResponse({"reason": "Failed to create user on lynx. Please contact Rootspring#6701"}, status_code=400)
 
         await app.state.db.execute(
             "UPDATE users SET staff_verify_code = $1 WHERE user_id = $2",
