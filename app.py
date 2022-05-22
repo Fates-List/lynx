@@ -1171,36 +1171,6 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
 
     return {"detail": f"Pushed controlled roll out to {data['limit']} users"}
 
-@ws_action("admin")
-async def admin(ws: WebSocket, _: dict):
-    if ws.state.member.perm < 2:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms}
-    elif not ws.state.verified:
-        return {"resp": "spld", "e": SPLDEvent.verify_needed}
-
-    return {
-        "title": "Admin Console",
-        "data": """
-
-<blockquote class="quote">
-
-### Important Information
-
-All things done on the admin console are logged
-
-**Please don't be stupid**
-
-Username is your discord account username and password is the password given to you when you first verified
-
-Use https://lynx.fateslist.xyz/reset to reset your admin password
-
-</blockquote>
-
-<iframe id="admin-iframe" data-src="https://lynx.fateslist.xyz/_admin" style="min-height: 1000px;" width="100%" height="100%" frameborder="0"></iframe>
-        """,
-        "ext_script": "admin-iframe"
-    }
-
 
 @ws_action("apply_staff")
 async def apply_staff(ws: WebSocket, data: dict):
