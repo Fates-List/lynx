@@ -301,10 +301,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
                     "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
                 })
 
-        if request.url.path.startswith("/_admin") and (request.url.path not in ("/_admin", "/_admin/") and not request.url.path.endswith((".css", ".js", ".js.map"))):
-            if not request.headers.get("X-Lynx-Site"):
-                return ORJSONResponse({"detail": "Not in lynx site"}, status_code=401)
-        else:
+        if not (request.url.path.startswith("/_admin") and (request.url.path not in ("/_admin", "/_admin/") and not request.url.path.endswith((".css", ".js", ".js.map")))):
             response = await call_next(request)
             if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
                 response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
@@ -554,10 +551,6 @@ def action(
 
             res = jsonable_encoder(res)
             res["resp"] = "bot_action"
-
-            if not err:
-                # Tell client that a refresh is needed as a bot action has taken place
-                await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/bot-actions"})
             return res
 
         app.state.bot_actions[name] = wrapper
@@ -918,46 +911,6 @@ async def unset_flag(request: Request, data: ActionWithReason):
 
     return {"detail": "Successfully unset flag", "ok": True}
 
-# Lynx base websocket
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: list[WebSocket] = []
-
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
-
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
-
-    async def send_personal_message(self, message: dict | list, websocket: WebSocket):
-        ## REMOVE WHEN SQUIRREL SUPPORTS SPLD LIKE WEB DOES
-        if websocket.state.plat == "SQUIRREL" and message.get("resp") == "spld":
-            # Not supported by squirrel yet
-            message = {"resp": "index", "detail": f"{message.get('e', 'Unknown SPLD event')}"}
-        
-        try:
-            if websocket.state.debug:
-                print(f"Sending message: {websocket.client.host=}, {message=}")
-                await websocket.send_json(jsonable_encoder(message))
-            else:
-                try:
-                    await websocket.send_bytes(zlib.compress(msgpack.packb(message)))
-                except:
-                    await websocket.send_bytes(zlib.compress(msgpack.packb(jsonable_encoder(message))))
-        except RuntimeError as e:
-            try:
-                await websocket.close(1008)
-            except:
-                return False
-        return True
-
-    async def broadcast(self, message: dict | list):
-        for connection in self.active_connections:
-            await manager.send_personal_message(message, connection)
-    
-manager = ConnectionManager()
-
 ws_action_dict = {
 }
 
@@ -995,19 +948,6 @@ async def ss_check(websocket: WebSocket, _: dict):
         "in_ss": in_ss + len(exc_bots),
         "error_bots": error_bots,
     }
-
-@ws_action("spld")
-async def spld(ws: WebSocket, data: dict):    
-    try:
-        event = SPLDEvent(data.get("e"))
-    except:
-        return await unsupported(ws)
-
-    if event == SPLDEvent.telemetry:
-        # We may collect telemetry logs for errors in the future
-        print(f"[LYNX] Message from JS: {data.get('data')}")
-    else:
-        return await unsupported(ws)
 
 @ws_action("exp_rollout_menu")
 async def exp_rollout_menu(ws: WebSocket, _: dict):
@@ -1138,7 +1078,6 @@ async def exp_rollout_add(ws: WebSocket, data: dict):
     except:
         return {"detail": "Invalid experiment data"}
 
-    await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/exp-rollout"})
     return {"detail": "Added"}
 
 @ws_action("exp_rollout_del")
@@ -1157,7 +1096,6 @@ async def exp_rollout_add(ws: WebSocket, data: dict):
     except:
         return {"detail": "Invalid experiment data"}
 
-    await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/exp-rollout"})
     return {"detail": "Removed"}
 
 @ws_action("exp_rollout_all")
@@ -1182,7 +1120,6 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
     await app.state.db.execute("UPDATE lynx_data SET default_user_experiments = array_append(default_user_experiments, $1)", int(data["exp"]))
 
     await app.state.db.execute("UPDATE users SET experiments = array_remove(experiments, $1)", int(data["exp"]))
-    await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/exp-rollout"})
     return {"detail": "Rolled out"}
 
 @ws_action("exp_rollout_undo")
@@ -1199,7 +1136,6 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
 
     await app.state.db.execute("UPDATE lynx_data SET default_user_experiments = array_remove(default_user_experiments, $1)", int(data["exp"]))
 
-    await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/exp-rollout"})
     return {"detail": "Rolled out undone"}
 
 @ws_action("exp_rollout_controlled")
@@ -1233,7 +1169,6 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
     for fetch in users:
         await app.state.db.execute("UPDATE users SET experiments = array_append(experiments, $1) WHERE user_id = $2", int(data["exp"]), fetch["user_id"])
 
-    await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/exp-rollout"})
     return {"detail": f"Pushed controlled roll out to {data['limit']} users"}
 
 @ws_action("admin")
@@ -1631,167 +1566,7 @@ async def bot_actions(ws: WebSocket, _):
         for owner in owners:
             user = await fetch_user(owner["owner"])
             owners_md += f"""\n     - {user['username']}  ({owner['owner']}) |  main -> {owner["main"]}"""
-
-        queue_md += f"""
-{bot['username_cached']} | [Site Page](https://fateslist.xyz/bot/{bot['bot_id']})
-
-- Prefix: {bot['prefix'] or '/'}
-- Description: {bleach.clean(bot['description'])}
-- Owners: {owners_md}
-- Created At: {bot['created_at']}
-
 """
-
-    return {
-        "title": "Bot Actions",
-        "pre": "/links",
-        "data": f"""
-## For refreshers, the staff guide is here:
-
-{staff_guide_md}
-
-<hr/>
-
-Now that we're all caught up with the staff guide, here are the list of actions you can take:
-
-## Bot Queue
-
-::: info 
-
-Please check site pages before approving/denying. You can save lots of time by doing this!
-
-:::
-
-{queue_md}
-
-## Actions
-
-::: action-claim
-
-### Claim Bot
-
-- Only claim bots you have the *time* to review
-- Please unclaim bots whenever you are no longer actively reviewing them
-- Definition: pending => under_review
-
-{queue_select}
-<button onclick="claim()">Claim</button>
-
-:::
-
-::: action-unclaim
-
-### Unclaim Bot
-
-- Please unclaim bots whenever you are no longer actively reviewing them
-- Definition: under_review => pending
-
-{under_review_select_claim}
-<button onclick="unclaim()">Unclaim</button>
-
-:::
-
-::: action-approve
-
-### Approve Bot 
-
-<span id='approve-invite'></span>
-
-- You must claim this bot before approving and preferrably before testing
-- Definition: under_review => approved
-
-{under_review_select_approved}
-
-<button onclick="approve()">Approve</button>
-
-:::
-
-::: action-deny
-
-### Deny Bot
-
-- You must claim this bot before denying and preferrably before testing
-- Definition: under_review => deny
-
-{under_review_select_denied}
-<button onclick="deny()">Deny</button>
-
-:::
-
-::: action-ban
-
-### Ban Bot 
-
-- Admin+ only
-- Must be approved and *not* certified
-- Definition: approved => banned
-
-{ban_select}
-<button onclick="ban()">Ban</button>
-
-:::
-
-::: action-unban
-
-### Unban Bot
-
-- Admin+ only
-- Must *already* be banned
-- Definition: banned => approved
-
-{unban_select}
-<button onclick="unban()">Unban</button>
-
-:::
-
-::: action-certify
-
-### Certify Bot
-
-- Head Admin+ only
-- Definition: approved => certified
-
-{certify_select}
-<button onclick="certify()">Certify</button>
-
-:::
-
-::: action-uncertify
-
-### Uncertify Bot
-
-- Head Admin+ only
-- Definition: certified => approved
-
-{uncertify_select}
-<button onclick="uncertify()">Uncertify</button>
-
-:::
-
-::: action-unverify
-
-### Unverify Bot
-
-- Moderator+ only
-- Definition: approved => under_review
-
-{unverify_select}
-<button onclick="unverify()">Unverify</button>
-
-:::
-
-::: action-requeue
-
-### Requeue Bot
-
-- Moderator+ only
-- Definition: denied | banned => under_review
-
-{requeue_select}
-<button onclick="requeue()">Requeue</button>
-
-:::
-
 ::: action-reset-votes
 
 ### Reset Bot Votes
@@ -1842,199 +1617,7 @@ placeholder="Reason for resetting all votes. Defaults to 'Monthly Votes Reset'"
 <button onclick="setFlag()">Update</button>
 
 :::
-""",
-        "ext_script": "bot-actions",
-    }
-
-@ws_action("staff_verify")
-async def staff_verify(ws: WebSocket, _):
-    if ws.state.member.perm < 2:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms}
-    return {
-        "title": "Fates List Staff Verification",
-        "data": """
-<h3>In order to continue, you will need to make sure you are up to date with our rules</h3>
-<pre>
-<strong>You can find our staff guide <a href="https://lynx.fateslist.xyz/staff-guide">here</a></strong>
-
-- The code is somewhere in the staff guide so please read the full guide
-- Look up terms you do not understand on Google!
-<strong>Once you complete this, you will automatically recieve your roles in the staff server</strong>
-</pre>
-
-<div style="margin-left: auto; margin-right: auto; text-align: center;">
-<div class="form-group">
-<textarea class="form-control" id="staff-verify-code"
-placeholder="Enter staff verification code here"
-></textarea>
-</div>
-</div>
-<strong>
-By continuing, you agree to:
-<ul>
-<li>Abide by Discord ToS</li>
-<li>Abide by Fates List ToS</li>
-<li>Agree to try and be at least partially active on the list</li>
-<li>Be able to join group chats (group DMs) if required by Fates List Admin+</li>
-</ul>
-If you disagree with any of the above, you should stop now and consider taking a 
-Leave Of Absence or leaving the staff team though we hope it won't come to this...
-<br/><br/>
-
-Please <em>read</em> the staff guide carefully. Do NOT just Ctrl-F. If you ask questions
-already in the staff guide, you will just be told to reread the staff guide!
-</strong>
-<br/>
-<div id="verify-parent">
-<button id="verify-btn" onclick="verify()">Verify</button>
-</div>""",
-        "script": """
-async function verify() {
-    document.querySelector("#verify-btn").innerText = "Verifying...";
-    let code = document.querySelector("#staff-verify-code").value
-
-    wsSend({request: "cosmog", code: code})
-}
 """
-    }
-
-async def notifs(ws: WebSocket):
-    notifs_sent = []
-    notifs_sent_times = 0
-
-    while True:
-        notifs = await app.state.db.fetch("SELECT id, acked_users, message, type, staff_only FROM lynx_notifications")
-        _send_notifs = []
-        for notif in notifs:
-            if notif["id"] in notifs_sent and notifs_sent_times >= 3:
-                # Don't keep sending same message over and over again, give a buffer of 3 times
-                continue
-
-            if notif["staff_only"]:
-                if ws.state.member.perm >= 2:
-                    _send_notifs.append(notif)
-                    notifs_sent.append(notif["id"])
-            elif notif["acked_users"]:
-                if ws.state.user and int(ws.state.user["id"]) in notif["acked_users"]:
-                    _send_notifs.append(notif)
-                    notifs_sent.append(notif["id"])
-            else:
-                _send_notifs.append(notif)
-                notifs_sent.append(notif["id"])
-        
-        if len(_send_notifs) > 0:
-            res = await manager.send_personal_message({"resp": "notifs", "data": _send_notifs}, ws)
-            if not res:
-                return
-
-        res = await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.ping}, ws)
-        notifs_sent_times += 1
-        if not res:
-            return
-
-        await asyncio.sleep(5)
-
-@ws_action("docs")
-async def docs(ws: WebSocket, data: dict):
-    page = data.get("path", "/").split("#")[0]
-    source = data.get("source", False)
-
-    if page.endswith(".md"):
-        page = f"/docs/{page[:-3]}"
-
-    elif not page or page == "/docs":
-        page = "/index"
-
-    if not page.replace("-", "").replace("_", "").replace("/", "").replace("!", "").isalnum():
-        return {"detail": "Invalid page"}
-
-    try:
-        with open(f"api-docs/{page}.md", "r") as f:
-            md_data = f.read()
-    except FileNotFoundError as exc:
-        return {"detail": f"api-docs/{page}.md not found -> {exc}"}
-
-    if source:
-        return {
-            "title": page.split('/')[-1].replace('-', ' ').title() + " (Source)",
-            "data": f"""
-    <pre>{md_data.replace('<', '&lt').replace('>', '&gt')}</pre>
-            """ if ws.state.plat != "DOCREADER" else md_data,
-            "source": True
-        }
-    
-    return {
-        "title": page.split('/')[-1].replace('-', ' ').title(),
-        "data": md_data,
-        "source": False,
-        "page": page
-    }
-
-@ws_action("cosmog")
-async def verify_code(ws: WebSocket, data: dict):
-    code = data.get("code", "")
-
-    if not ws.state.user:
-        return
-
-    if ws.state.verified:
-        return {
-            "detail": "You are already verified"
-        }
-
-    if not code_check(code, int(ws.state.user["id"])):
-        return {"detail": "Invalid code"}
-    else:
-        username = ws.state.user["username"]
-        password = get_token(96)
-
-        try:
-            await app.state.db.execute("DELETE FROM piccolo_user WHERE username = $1", username)
-            await BaseUser.create_user(
-                username=username,
-                password=password,
-                email=username + "@fateslist.xyz",
-                active=True,
-                admin=True
-            )
-        except:
-            return {"detail": "Failed to create user on lynx. Please contact Rootspring#6701"}
-
-        await app.state.db.execute(
-            "UPDATE users SET staff_verify_code = $1 WHERE user_id = $2",
-            code,
-            int(ws.state.user["id"]),
-        )
-
-        await add_role(staff_server, ws.state.user["id"], access_granted_role, "Access granted to server")
-        await add_role(staff_server, ws.state.user["id"], ws.state.member.staff_id, "Gets corresponding staff role")
-
-        return {"detail": "Successfully verified staff member", "pass": password}
-
-@ws_action("index")
-async def index(_, __):
-    return {
-        "title": "Welcome To Lynx", 
-        "data": """
-Welcome to Lynx. This page provides our API documentation, privacy policies, terms of service and is our admin console for staff members!
-
-By continuing, you agree to:
-
-- Abide by Discord ToS</li>
-- Abide by Fates List ToS available [here](/privacy)
-
-### Notes for staff members
-
-- If you are a staff member and you disagree with any of the above, you should stop now and consider taking a Leave Of Absence or leaving the staff team though we hope it won't come to this...
-
-- If you are a staff member at Fates List, you must be able to join group chats (group DMs) if required by Fates List Admin+
-
-- Please <em>read</em> the staff guide carefully. Do NOT just Ctrl-F. If you ask questions already in the staff guide, you will just be told to reread the staff guide!
-
-- In case, you haven't went through staff verification and you somehow didn't get redirected to it, click <a href="/staff-verify">here</a> 
-<br/><br/>
-<a href="/links">Some Useful Links!</a>
-                """}
 
 @ws_action("perms")
 async def perms(ws: WebSocket, _):
@@ -2077,52 +1660,6 @@ thing as <strong>/lynxreset</strong> used to</p>
         """
     }
 
-@ws_action("links")
-async def links(ws: WebSocket, _):
-    if ws.state.member.perm > 2:
-        return {
-            "title": "Some Useful Links",
-            "data": f"""
-<blockquote class="quote">
-    <h5>Some Nice Links</h5>
-    <a href="/my-perms">My Permissions</a><br/>
-    <a href="/reset">Lynx Credentials Reset</a><br/>
-    <a href="/loa">Leave Of Absense</a><br/>
-    <a href="/staff-apps">Staff Applications</a><br/>
-    <a href="/links">Some Useful Links</a><br/>
-    <a href="/staff-verify">Staff Verification</a> (in case you need it)<br/>
-    <a href="/staff-guide">Staff Guide</a><br/>
-    <a href="/docs/roadmap">Our Roadmap</a><br/>
-    <a href="/bot-actions">Bot Actions</a><br/>
-    <a href="/user-actions">User Actions</a><br/>
-    <a href="/requests">Requests</a><br/>
-</blockquote>
-<blockquote class="quote">
-    <h5 id="credits">Credits</h5>
-    <p>Special Thanks to <strong><a href="https://adminlte.io/">AdminLTE</a></strong> for thier awesome contents!
-    </p>
-</blockquote>
-        """}
-    else:
-        return {
-            "title": "Some Useful Links",
-            "data": f"""
-<blockquote class="quote">
-    <h5>Some Nice Links</h5>
-    <strong>Some links hidden as you are not logged in or are not staff</strong>
-    <a href="/my-perms">My Permissions</a><br/>
-    <a href="/links">Some Useful Links</a><br/>
-    <a href="/staff-guide">Staff Guide</a><br/>
-    <a href="/docs/roadmap">Our Roadmap</a><br/>
-    <a href="/requests">Requests</a><br/>
-</blockquote>
-<blockquote class="quote">
-    <h5 id="credits">Credits</h5>
-    <p>Special Thanks to <strong><a href="https://adminlte.io/">AdminLTE</a></strong> for thier awesome contents!
-    </p>
-</blockquote>
-        """}
-
 @ws_action("user_action")
 async def user_action(ws: WebSocket, data: dict):
     try:
@@ -2134,48 +1671,6 @@ async def user_action(ws: WebSocket, data: dict):
     except Exception as exc:
         return {"detail": f"{type(exc)}: {str(exc)}"}
     return await action(ws, action_data)
-
-@ws_action("bot_action")
-async def bot_action(ws: WebSocket, data: dict):
-    try:
-        action = app.state.bot_actions[data["action"]]
-    except:
-        return {"detail": "Action does not exist!"}
-    try:
-        action_data = ActionWithReason(**data["action_data"])
-    except Exception as exc:
-        return {"detail": f"{type(exc)}: {str(exc)}"}
-    return await action(ws, action_data)
-
-@ws_action("request_logs")
-async def request_logs(ws: WebSocket, _):
-    requests = await app.state.db.fetch("SELECT user_id, method, url, status_code, request_time from lynx_logs")
-    requests_html = ""
-    for request in requests:
-        requests_html += f"""
-<p>{request["user_id"]} - {request["method"]} - {request["url"]} - {request["status_code"]} - {request["request_time"]}</p>
-        """
-
-    return {
-        "title": "Lynx Request Logs",
-        "pre": "/links",
-        "data": f"""
-{requests_html}
-        """
-    }
-
-
-@ws_action("dev_portal")
-async def dev_portal(ws: WebSocket, data: dict):
-    if Experiments.DevPortal not in ws.state.experiments:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms}
-
-    user_connections = await app.state.db.fetch("SELECT client_id, expires_on FROM user_connections WHERE user_id = $1", int(ws.state.user["id"]))
-
-    return {
-        "connections": user_connections
-    }
-    
 
 @ws_action("survey_list")
 async def survey(ws: WebSocket, _):
@@ -2240,261 +1735,10 @@ async def submit_survey(ws: WebSocket, data: dict):
 
 print(ws_action_dict)
 
-async def do_task_and_send(f, ws, data):
-    start_time = time.time()
-
-    ret = await f(ws, data)
-
-    if not ret:
-        return
-
-    if not ret.get("resp"):
-        ret["resp"] = data.get("request", "")
-    
-    if ws.state.plat == "WEB":
-        await js_log("Tawnypelt", f"Time taken for server handler: {(time.time() - start_time)*1000} ms", ws=ws)
-
-    await manager.send_personal_message(ret, ws)
-
-async def out_of_date(ws):
-    await manager.connect(ws)
-    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.out_of_date}, ws)
-    await asyncio.sleep(0.3)
-    await ws.close(4008)
-
-async def unsupported(ws):
-    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.unsupported}, ws)
-    await asyncio.sleep(0.3)
-    await ws.close(4008)
-
-async def js_log(*log, ws):
-    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.telemetry, "data": log}, ws)
-
 def replace_if_web(msg, ws):
     if ws.state.plat == "WEB":
         return msg.replace("<", "&lt").replace(">", "&gt")
-    return msg    
-
-# Cli = client, plat = platform (WEB or SQUIRREL)
-@app.websocket("/_ws")
-async def ws(ws: WebSocket, cli: str, plat: str):
-    if ws.headers.get("Origin") != "https://lynx.fateslist.xyz" and plat != "DOCREADER":
-        print(f"Ignoring malicious websocket request with origin {ws.headers.get('Origin')}")
-        return
-    
-    if plat not in ("WEB", "SQUIRREL", "DOCREADER"):
-        print("Client out of date, invalid platform")
-
-        ws.state.debug = False
-        return await out_of_date(ws)
-    
-    if plat in ("SQUIRREL", "DOCREADER"):
-        ws.state.debug = True # Squirrel and docreader doesnt support no-debug mode *yet*
-    else:
-        ws.state.debug = False
-    
-    ws.state.cli = cli
-    ws.state.plat = plat
-
-    try:
-        cli, _time = cli.split("@")
-    except:
-        print("Client out of date, invalid cli")
-
-        ws.state.debug = False
-        return await out_of_date(ws)
-
-    # Check nonce to ensure client is up to date
-    if (ws.state.plat == "WEB" and cli != "Comfrey0s7"  # TODO, obfuscate/hide nonce in core.js and app.py
-        or (ws.state.plat == "SQUIRREL" and cli != "BurdockRoot")
-        or (ws.state.plat == "DOCREADER" and cli != "Quailfeather")
-    ):
-        print("Client out of date, nonce incorrect")
-
-        ws.state.debug = False
-        return await out_of_date(ws)
-    
-    if ws.state.plat in ("WEB", "DOCREADER"):
-        if not _time.isdigit():
-            print("Client out of date, nonce incorrect")
-
-            ws.state.debug = False
-            return await out_of_date(ws)
-        elif time.time() - int(_time) > 20:
-            print("Network connection too slow!")
-
-            ws.state.debug = False
-            return await out_of_date(ws)
-
-
-    ws.state.user = None
-    ws.state.member = StaffMember(name="Unknown", id=0, perm=-1, staff_id=0)
-    ws.state.token = "Unknown"
-
-    await manager.connect(ws)
-
-    if ws.cookies.get("sunbeam-session:warriorcats") and ws.state.plat != "DOCREADER":
-        print(f"WS Cookies: {ws.cookies}")
-        try:
-            sunbeam_user = orjson.loads(b64decode(ws.cookies.get("sunbeam-session:warriorcats")))
-            data = await app.state.db.fetchrow(
-                "SELECT api_token, staff_verify_code FROM users WHERE user_id = $1 AND api_token = $2",
-                int(sunbeam_user["user"]["id"]),
-                sunbeam_user["token"]
-            )
-            if not data:
-                await ws.close(4008)
-                return
-
-            ws.state.token = data["api_token"]
-            if not ws.state.token:
-                await ws.close(4008)
-                return
-
-            ws.state.user = await fetch_user(int(sunbeam_user["user"]["id"]))
-
-            _, _, ws.state.member = await is_staff(int(sunbeam_user["user"]["id"]), 2)
-            ws.state.verified = True
-
-            if not code_check(data["staff_verify_code"], int(sunbeam_user["user"]["id"])) and ws.state.member.perm >= 2:
-                await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.verify_needed}, ws)  # Request staff verify
-                ws.state.verified = False
-
-        except Exception as exc:
-            # Let them stay unauthenticated
-            print(exc)
-            pass
-
-    if ws.state.user:
-        experiments = await app.state.db.fetchval("SELECT experiments FROM users WHERE user_id = $1", int(ws.state.user["id"]))   
-    else:
-        experiments = []
-
-    default_exp = await app.state.db.fetchval("SELECT default_user_experiments FROM lynx_data")
-    if not default_exp:
-        default_exp = []
-    
-    for el in default_exp:
-        if el not in experiments:
-            experiments.append(el)
-
-    print(f"Experiments: {experiments}")
-
-    ws.state.experiments = experiments
-
-    print(ws.state.experiments)
-
-    if ws.state.plat in ("WEB", "DOCREADER"):
-        docs = []
-
-        for path in pathlib.Path("api-docs").rglob("*.md"):
-            proper_path = str(path).replace("api-docs/", "")
-            
-            docs.append(proper_path.split("/"))
-
-        await manager.send_personal_message({
-            "resp": "cfg", 
-            "assets": {
-                "bot-actions": "75",
-                "user-actions": "76",
-                "surveys": "73",
-                "apply": "81",
-                "admin-nav": "m8",
-                "admin-iframe": "m3823",
-                "admin-console": "m37",
-                "exp-rollout": "m3298",
-            },
-            "sidebar": [["login", "fa-arrow-right-to-bracket", "loginUser()"], ["status", "fa-gear"], ["privacy", "fa-shield"], ["surveys", "fa-shield"], ["staff-guide", "fa-rectangle-list"], ["apply-for-staff", "fa-rectangle-list"], ["links", "fa-link"]],
-            "responses": ['docs', 'links', 'staff_guide', 'index', "request_logs", "reset_page", "staff_apps", "loa", "user_actions", "bot_actions", "staff_verify", "survey_list", "admin"],
-            "actions": ['user_action', 'bot_action', 'eternatus', 'survey', 'data_deletion', 'apply_staff', 'send_loa', 'exp_rollout_add', 'exp_rollout_del', 'exp_rollout_all', 'exp_rollout_undo', 'exp_rollout_controlled'],
-            "tree": docs,
-            "experiments": ws.state.experiments
-        }, ws)
-
-        if ws.state.plat == "WEB":
-            await manager.send_personal_message({"resp": "perms", "data": ws.state.member.dict()}, ws)
-            await manager.send_personal_message({"resp": "user_info", "user": ws.state.user}, ws)
-
-    try:
-        if ws.state.plat == "WEB":
-            # Start notifs
-            asyncio.create_task(notifs(ws))
-
-        while True:
-            try:
-                if ws.state.debug:
-                    data = await ws.receive_json()
-                else:
-                    data = msgpack.unpackb(zlib.decompress(await ws.receive_bytes()))
-
-                # Recompute user experiment list
-                old_feature_list = ws.state.experiments
-                if ws.state.user:
-                    ws.state.experiments = await app.state.db.fetchval("SELECT experiments FROM users WHERE user_id = $1", int(ws.state.user["id"]))   
-                else:
-                    ws.state.experiments = []
-
-                default_exp = await app.state.db.fetchval("SELECT default_user_experiments FROM lynx_data")
-                if not default_exp:
-                    default_exp = []
-                
-                for el in default_exp:
-                    if el not in ws.state.experiments:
-                        ws.state.experiments.append(el)
-
-                if ws.state.experiments != old_feature_list:
-                    await manager.send_personal_message({"resp": "experiments", "experiments": ws.state.experiments}, ws)
-
-            except Exception as exc:
-                if isinstance(exc, RuntimeError):
-                    return
-                print(f"{type(exc)}: {exc}")
-                continue
-        
-            if ws.state.debug or data.get("request") not in ("notifs",):
-                print(data)
-
-            if ws.state.user is not None:
-                # Check perms as this user is logged in
-                check = await app.state.db.fetchrow(
-                    "SELECT user_id, staff_verify_code FROM users WHERE user_id = $1 AND api_token = $2",
-                    int(ws.state.user["id"]),
-                    ws.state.token
-                )
-                if not check:
-                    print("Invalid token")
-                    await ws.close(code=1008)
-                    return
-
-                _, _, member = await is_staff(int(ws.state.user["id"]), 2)
-
-                if ws.state.member.perm != member.perm:
-                    ws.state.member = member
-                    await manager.send_personal_message({"resp": "perms", "data": ws.state.member.dict()}, ws)
-
-                if ws.state.verified and not code_check(check["staff_verify_code"], int(sunbeam_user["user"]["id"])):
-                    ws.state.verified = False
-            
-            try:
-                if ws.state.plat == "SQUIRREL" and data.get("request") not in ("bot_action", "user_action"):
-                    print("[LYNX] Error: Unsupported squirrel action")
-                    return await unsupported(ws)
-                elif ws.state.plat == "DOCREADER" and data.get("request") not in ("docs",):
-                    print("[LYNX] Error: Unsupported docreader action")
-                    return await unsupported(ws)
-
-                f = ws_action_dict.get(data.get("request"))
-                if not f:
-                    print(f"could not find {data}")
-                    await manager.send_personal_message({"resp": "spld", "e": SPLDEvent.not_found}, ws)
-                else:
-                    asyncio.create_task(do_task_and_send(f, ws, data))
-            except Exception as exc:
-                print(exc)
-
-    except WebSocketDisconnect:
-        manager.disconnect(ws)
-
+    return msg   
 
 class UserActionWithReason(BaseModel):
     user_id: str
@@ -2551,11 +1795,6 @@ def user_action(
 
             if not err:
                 spl = res.get("spl", True)
-
-                if spl:
-                    # Tell client that a refresh is needed as a user action has taken place
-                    await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/user-actions"})
-
 
             return res
 
@@ -2639,7 +1878,6 @@ async def remove_staff_member(data: UserActionWithReason):
 async def ack_staff_app(data: UserActionWithReason):
     await app.state.db.execute("DELETE FROM lynx_apps WHERE user_id = $1", data.user_id)
     # Special broadcast for Acking
-    await manager.broadcast({"resp": "spld", "e": SPLDEvent.refresh_needed, "loc": "/staff-apps"})
     return {"detail": "Acked", "spl": False}
 
 
@@ -2682,7 +1920,6 @@ print(app.state.bot_actions)
 
 @app.on_event("startup")
 async def startup():
-    signal.signal(signal.SIGINT, handle_kill)
     engine = engine_finder()
     app.state.engine = engine
     app.state.redis = aioredis.from_url("redis://localhost:1001", db=1)
@@ -2698,23 +1935,51 @@ async def startup():
         if not owner:
             print(f"DB ERROR: {bot}")
 
-
-def handle_kill(*args, **kwargs):
-    async def _close():
-        await asyncio.sleep(0)
-        await manager.broadcast({"resp": "spld", "e": SPLDEvent.maint})
-        await asyncio.sleep(0)
-        await app.state.engine.close_connection_pool()
-
-    def _gohome(_):
-        task.cancel()
-        sys.exit(0)
-
-    print("Broadcasting maintenance")
-    task = asyncio.create_task(_close())
-    task.add_done_callback(_gohome)
-
 # Quailfeather API
+@app.post("/_quailfeather/staff-verify")
+async def staff_verify(request: Request, user_id: int, code: str):
+    if auth := await _auth(request, user_id):
+        return auth
+    
+    if request.state.is_verified:
+        return ORJSONResponse({
+            "reason": "You are already verified"
+        }, status_code=400)
+
+    if not code_check(code, user_id):
+        return {"reason": "Invalid code"}
+    else:
+        username = (await fetch_user(user_id))["username"]
+        password = get_token(96)
+
+        try:
+            await app.state.db.execute("DELETE FROM piccolo_user WHERE username = $1", username)
+            await BaseUser.create_user(
+                username=username,
+                password=password,
+                email=username + "@fateslist.xyz",
+                active=True,
+                admin=True
+            )
+        except:
+            return {"reason": "Failed to create user on lynx. Please contact Rootspring#6701"}
+
+        await app.state.db.execute(
+            "UPDATE users SET staff_verify_code = $1 WHERE user_id = $2",
+            code,
+            user_id,
+        )
+
+        await add_role(staff_server, user_id, access_granted_role, "Access granted to server")
+        await add_role(staff_server, user_id, request.state.member.staff_id, "Gets corresponding staff role")
+
+        return {"reason": "Successfully verified staff member", "pass": password}
+
+
+@app.get("/_quailfeather/requests", tags=["Internal"], deprecated=True)
+async def request_log():
+    return await app.state.db.fetch("SELECT user_id, method, url, status_code, request_time from lynx_logs")
+
 @app.get("/_quailfeather/doctree", tags=["Internal"], deprecated=True)
 def doctree():
     docs = []
@@ -2790,22 +2055,19 @@ async def _auth(request: Request, user_id: int | str) -> ORJSONResponse:
     )
     if not check:
         return ORJSONResponse({"reason": "Unauthorized"}, status_code=401)
-    
-async def _code_check(user_id: int):
-    _, _, member = await is_staff(user_id, 2)
 
-    if member.perm >= 2:
-        staff_verify_code = await app.state.db.fetchval(
-            "SELECT staff_verify_code FROM users WHERE user_id = $1",
-            user_id
-        )
+    staff_verify_code = await app.state.db.fetchval(
+        "SELECT staff_verify_code FROM users WHERE user_id = $1",
+        user_id
+    )
 
-        if not staff_verify_code or not code_check(staff_verify_code, user_id):
-            return ORJSONResponse({"reason": "Staff verification is required before performing this action"}, status_code=401)
-    else:
-        return ORJSONResponse({"reason": "You are not staff"}, status_code=401)
+    request.state.is_verified = True
+
+    if not staff_verify_code or not code_check(staff_verify_code, user_id):
+        request.state.is_verified = False
     
-    return member
+    _, _, request.state.member = await is_staff(user_id, 2)
+
 
 class DataAction(enums.Enum):
     request = "request"
@@ -2817,7 +2079,9 @@ async def data_request_delete(request: Request, requested_id: int, origin_user_i
         return auth
 
     if origin_user_id != requested_id:
-        member = await _code_check(origin_user_id)
+        if request.state.is_verified:
+            return {"detail": "You are not verified"}
+        member = request.state.member
 
         if isinstance(member, ORJSONResponse):
             return member
@@ -3010,10 +2274,8 @@ async def do_action(request: Request, data: BotData):
     
     user_id = int(data.user_id)
 
-    member = await _code_check(user_id)
-
-    if isinstance(member, ORJSONResponse):
-        return member
+    if not request.state.is_verified:
+        return {"reason": "You are not verified!"}
 
     try:
         action = app.state.bot_actions[data.action]
@@ -3023,7 +2285,7 @@ async def do_action(request: Request, data: BotData):
         action_data = ActionWithReason(bot_id=bot_id, reason=data.reason)
     except Exception as exc:
         return ORJSONResponse({"reason": f"{type(exc)}: {str(exc)}"}, status_code=400)
-    res = await action(FakeWsKitty(str(user_id), member), action_data)
+    res = await action(FakeWsKitty(str(user_id), request.state.member), action_data)
 
     try:
         res["reason"] = res["detail"]

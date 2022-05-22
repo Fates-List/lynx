@@ -37,7 +37,7 @@ window.dataRequest = async () => {
         }
     }
     let taskJson = await task.json()
-    downloadTextFile(taskJson, `data-request-${requestId}.json`)
+    downloadTextFile(JSON.stringify(taskJson), `data-request-${requestId}.json`)
 }
 
 window.dataDelete = async () => {
@@ -60,4 +60,5 @@ window.dataDelete = async () => {
         alert(reason)
         return
     }
+    alert("Successfully deleted user data")
 }
