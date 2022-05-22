@@ -2809,8 +2809,13 @@ def docs(page: str):
     except FileNotFoundError as exc:
         return ORJSONResponse({"detail": f"api-docs/{page}.md not found -> {exc}"}, status_code=404)
     
-    # Workaround svelte bug and force our stuff to load
-    return md_data
+    try:
+        with open(f"api-docs/{page}.js", "r") as f:
+            js = f.read()
+    except FileNotFoundError as exc:
+        js = ""
+    
+    return {"data": md_data, "js": js}
 
 class BotData(BaseModel):
     id: str
@@ -2992,7 +2997,7 @@ async def post_feedback(request: Request, data: Feedback):
         username = "Anonymous"
 
 
-    if len(data.feedback) < 5:
+    if len(data.feedback.replace(" ", "")) < 5:
         return ORJSONResponse({"reason": "Feedback must be greater than 10 characters long!"}, status_code=400)
 
     if not data.page.startswith("/"):
@@ -3006,7 +3011,7 @@ async def post_feedback(request: Request, data: Feedback):
         user_id
     )
 
-    return ORJSONResponse({"reason": "Successfully rated"}, status_code=400)
+    return {"reason": "Successfully rated"}
 
 @app.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
 async def do_action(request: Request, data: BotData):
