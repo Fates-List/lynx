@@ -837,7 +837,9 @@ async def reset_all_votes(request: Request, data: ActionWithReason):
 
 @action("set-flag", [], min_perm=3)
 async def set_flag(request: Request, data: ActionWithReason):
-    if not isinstance(data.context, int):
+    try:
+        data.context = int(data.context)
+    except ValueError:
         return {"detail": "Flag must be an integer", "err": True}
     try:
         flag = enums.BotFlag(data.context)
@@ -2196,7 +2198,7 @@ async def do_action(request: Request, data: BotData):
     except:
         return ORJSONResponse({"reason": "Action does not exist!"}, status_code=401)
     try:
-        action_data = ActionWithReason(bot_id=bot_id, reason=data.reason, context=str(data.context))
+        action_data = ActionWithReason(bot_id=bot_id, reason=data.reason, context=data.context)
     except Exception as exc:
         return ORJSONResponse({"reason": f"{type(exc)}: {str(exc)}"}, status_code=400)
     res = await action(FakeWsKitty(str(user_id), request.state.member), action_data)
