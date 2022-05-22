@@ -344,7 +344,7 @@ This section was made to handle GDPR requirements such as data requests and dele
         type="number"
         placeholder="User ID. See note above"
     />
-    <button id="request-btn" onclick="dataDelete()">Delete</button>
+    <button id="delete-btn" onclick="dataDelete()">Delete</button>
 </div>
 
 :::

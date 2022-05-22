@@ -2175,72 +2175,7 @@ async def dev_portal(ws: WebSocket, data: dict):
     return {
         "connections": user_connections
     }
-
-@ws_action("data_deletion")
-async def data_deletion(ws: WebSocket, data: dict):
-    user_id = data.get("user", None)
-
-    if not ws.state.user:
-        return {
-            "detail": "You must be logged in first!"
-        }
-
-    if ws.state.member.perm < 7 and ws.state.user["id"] != user_id:
-        return {
-            "detail": "You must either have permission level 7 or greater or the user id requested must be the same as your logged in user id."
-        }
-
-    try:
-        user_id = int(user_id)
-    except:
-        return {
-            "detail": "Invalid User ID"
-        }
     
-    # Some sanity checks before allowing a DDR
-    votes_check = await app.state.db.fetchrow("SELECT expires_on FROM user_vote_table WHERE user_id = $1", user_id)
-    if votes_check and votes_check["expires_on"] > datetime.datetime.now():
-        return {
-            "detail": "You cannot delete data for a user who has a vote for a bot that has not expired yet. Please wait until all bot votes have expired before making a request"
-        }
-
-    votes_check = await app.state.db.fetchrow("SELECT expires_on FROM user_server_vote_table WHERE user_id = $1", user_id)
-    if votes_check and votes_check["expires_on"] > datetime.datetime.now():
-        return {
-            "detail": "You cannot delete data for a user who has a vote for a server that has not expired yet. Please wait until all server votes have expired before making a request"
-        }
-
-    print("[LYNX] Wiping user info in db")
-    await app.state.db.execute("DELETE FROM users WHERE user_id = $1", user_id)
-
-    bots = await app.state.db.fetch(
-        """SELECT DISTINCT bots.bot_id FROM bots 
-        INNER JOIN bot_owner ON bot_owner.bot_id = bots.bot_id 
-        WHERE bot_owner.owner = $1 AND bot_owner.main = true""",
-        user_id,
-    )
-    for bot in bots:
-        await app.state.db.execute("DELETE FROM bots WHERE bot_id = $1", bot["bot_id"])
-        await app.state.db.execute("DELETE FROM vanity WHERE redirect = $1", bot["bot_id"])
-
-    votes = await app.state.db.fetch(
-        "SELECT bot_id from bot_voters WHERE user_id = $1", user_id)
-    for vote in votes:
-        await app.state.db.execute(
-            "UPDATE bots SET votes = votes - 1 WHERE bot_id = $1",
-            vote["bot_id"])
-
-    await app.state.db.execute("DELETE FROM bot_voters WHERE user_id = $1", user_id)
-
-    print("[LYNX] Clearing redis info on user...")
-    await app.state.redis.hdel(str(user_id), "cache")
-    await app.state.redis.hdel(str(user_id), "ws")
-
-    await app.state.redis.close()
-
-    return {
-        "detail": "All found user data deleted"
-    }
 
 @ws_action("survey_list")
 async def survey(ws: WebSocket, _):
@@ -2845,7 +2780,7 @@ async def _auth(request: Request, user_id: int | str) -> ORJSONResponse:
     try:
         user_id = int(user_id)
     except:
-        return ORJSONResponse({"detail": "user_id invalid"}, status_code=401)
+        return ORJSONResponse({"reason": "user_id invalid"}, status_code=401)
 
     # If moved to official api-v3, ensure a check for starts_with Frostpaw. is made to block custom clients
     check = await app.state.db.fetchval(
@@ -2854,7 +2789,7 @@ async def _auth(request: Request, user_id: int | str) -> ORJSONResponse:
         request.headers.get("Authorization", "INVALID_AUTH")
     )
     if not check:
-        return ORJSONResponse({"detail": "Unauthorized"}, status_code=401)
+        return ORJSONResponse({"reason": "Unauthorized"}, status_code=401)
     
 async def _code_check(user_id: int):
     _, _, member = await is_staff(user_id, 2)
@@ -2866,14 +2801,18 @@ async def _code_check(user_id: int):
         )
 
         if not staff_verify_code or not code_check(staff_verify_code, user_id):
-            return ORJSONResponse({"detail": "Staff verification is required before performing this action"}, status_code=401)
+            return ORJSONResponse({"reason": "Staff verification is required before performing this action"}, status_code=401)
     else:
-        return ORJSONResponse({"detail": "You are not staff"}, status_code=401)
+        return ORJSONResponse({"reason": "You are not staff"}, status_code=401)
     
     return member
 
+class DataAction(enums.Enum):
+    request = "request"
+    delete = "delete"
+
 @app.get("/_quailfeather/data", tags=["Internal"], deprecated=True)
-async def data_request_delete(request: Request, requested_id: int, origin_user_id: int):
+async def data_request_delete(request: Request, requested_id: int, origin_user_id: int, act: DataAction):
     if auth := await _auth(request, origin_user_id):
         return auth
 
@@ -2895,18 +2834,64 @@ async def data_request_delete(request: Request, requested_id: int, origin_user_i
             "reason": "Invalid User ID"
         }, status_code=400)
 
-    id = str(uuid.uuid4())
+    if act == DataAction.request:
+        id = str(uuid.uuid4())
 
-    long_running_tasks[id] = {"detail": "still_running"}
+        long_running_tasks[id] = {"detail": "still_running"}
 
-    async def _task_run():
-        long_running_tasks[id] = await request_data_task(user_id)
-    
-    asyncio.create_task(_task_run())
+        async def _task_run():
+            long_running_tasks[id] = await request_data_task(user_id)
+        
+        asyncio.create_task(_task_run())
 
-    return {
-        "task_id": id,
-    }
+        return {
+            "task_id": id,
+        }
+    else:
+        # Some sanity checks before allowing a DDR
+        votes_check = await app.state.db.fetchrow("SELECT expires_on FROM user_vote_table WHERE user_id = $1", user_id)
+        if votes_check and votes_check["expires_on"] > datetime.datetime.now():
+            return {
+                "detail": "You cannot delete data for a user who has a vote for a bot that has not expired yet. Please wait until all bot votes have expired before making a request"
+            }
+
+        votes_check = await app.state.db.fetchrow("SELECT expires_on FROM user_server_vote_table WHERE user_id = $1", user_id)
+        if votes_check and votes_check["expires_on"] > datetime.datetime.now():
+            return {
+                "detail": "You cannot delete data for a user who has a vote for a server that has not expired yet. Please wait until all server votes have expired before making a request"
+            }
+
+        print("[LYNX] Wiping user info in db")
+        await app.state.db.execute("DELETE FROM users WHERE user_id = $1", user_id)
+
+        bots = await app.state.db.fetch(
+            """SELECT DISTINCT bots.bot_id FROM bots 
+            INNER JOIN bot_owner ON bot_owner.bot_id = bots.bot_id 
+            WHERE bot_owner.owner = $1 AND bot_owner.main = true""",
+            user_id,
+        )
+        for bot in bots:
+            await app.state.db.execute("DELETE FROM bots WHERE bot_id = $1", bot["bot_id"])
+            await app.state.db.execute("DELETE FROM vanity WHERE redirect = $1", bot["bot_id"])
+
+        votes = await app.state.db.fetch(
+            "SELECT bot_id from bot_voters WHERE user_id = $1", user_id)
+        for vote in votes:
+            await app.state.db.execute(
+                "UPDATE bots SET votes = votes - 1 WHERE bot_id = $1",
+                vote["bot_id"])
+
+        await app.state.db.execute("DELETE FROM bot_voters WHERE user_id = $1", user_id)
+
+        print("[LYNX] Clearing redis info on user...")
+        await app.state.redis.hdel(str(user_id), "cache")
+        await app.state.redis.hdel(str(user_id), "ws")
+
+        await app.state.redis.close()
+
+        return {
+            "detail": "All found user data deleted"
+        }
 
 long_running_tasks = {}
 
@@ -3018,7 +3003,7 @@ async def do_action(request: Request, data: BotData):
     try:
         bot_id = int(data.id)
     except:
-        return ORJSONResponse({"detail": "bot_id invalid"}, status_code=401)
+        return ORJSONResponse({"reason": "bot_id invalid"}, status_code=401)
 
     if auth := await _auth(request, data.user_id):
         return auth
@@ -3033,7 +3018,7 @@ async def do_action(request: Request, data: BotData):
     try:
         action = app.state.bot_actions[data.action]
     except:
-        return ORJSONResponse({"detail": "Action does not exist!"}, status_code=401)
+        return ORJSONResponse({"reason": "Action does not exist!"}, status_code=401)
     try:
         action_data = ActionWithReason(bot_id=bot_id, reason=data.reason)
     except Exception as exc:
