@@ -1834,9 +1834,9 @@ async def send_loa(request: Request, user_id: int, loa: Loa):
     try:
         date = parser.parse(loa.duration)
     except:
-        return {"detail": "You did not fill out the form correctly"}
+        return {"reason": "You did not fill out the form correctly"}
     if date.year - datetime.datetime.now().year not in (0, 1):
-        return {"detail": "Duration must be in within this year"}
+        return {"reason": "Duration must be in within this year"}
 
     await app.state.db.execute(
         "INSERT INTO leave_of_absence (user_id, reason, estimated_time, start_date) VALUES ($1, $2, $3, $4)",
@@ -1846,7 +1846,7 @@ async def send_loa(request: Request, user_id: int, loa: Loa):
         datetime.datetime.now(),
     )
 
-    return {"detail": "Submitted LOA successfully"}
+    return {"reason": "Submitted LOA successfully"}
 
 
 @app.post("/_quailfeather/staff-verify", tags=["Internal"])
@@ -1935,6 +1935,7 @@ class BotData(BaseModel):
     user_id: str
     action: str
     reason: str
+    context: Any
 
 class Feedback(BaseModel):
     feedback: str
@@ -2195,7 +2196,7 @@ async def do_action(request: Request, data: BotData):
     except:
         return ORJSONResponse({"reason": "Action does not exist!"}, status_code=401)
     try:
-        action_data = ActionWithReason(bot_id=bot_id, reason=data.reason)
+        action_data = ActionWithReason(bot_id=bot_id, reason=data.reason, context=str(data.context))
     except Exception as exc:
         return ORJSONResponse({"reason": f"{type(exc)}: {str(exc)}"}, status_code=400)
     res = await action(FakeWsKitty(str(user_id), request.state.member), action_data)
