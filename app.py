@@ -521,7 +521,7 @@ def action(
 
         if not await state_check(data.bot_id):
             return {
-                "detail": replace_if_web(f"Bot state check error: {states=}", ws)
+                "detail": f"Bot state check error: {states=}"
             }
 
         data.owners = await app.state.db.fetch("SELECT owner, main FROM bot_owner WHERE bot_id = $1", data.bot_id)
@@ -791,7 +791,6 @@ async def reset_votes(request: Request, data: ActionWithReason):
     await send_message({"content": f"<@{data.main_owner}>", "embed": embed, "channel_id": bot_logs})
 
     return {"detail": "Successfully reset bot votes", "ok": True}
-
 
 @action("reset-all-votes", [], min_perm=5)
 async def reset_all_votes(request: Request, data: ActionWithReason):
@@ -1204,72 +1203,6 @@ async def get_sa_questions(ws: WebSocket, _):
     """Get staff app questions"""
     return {"questions": jsonable_encoder(staffapps.questions)}
 
-@ws_action("staff_apps")
-async def staff_apps(ws: WebSocket, data: dict):
-    # Get staff application list
-    if ws.state.member.perm < 2:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms}
-    elif not ws.state.verified:
-        return {"resp": "spld", "e": SPLDEvent.verify_needed}
-
-    staff_apps = await app.state.db.fetch(
-        "SELECT user_id, app_id, questions, answers, created_at FROM lynx_apps ORDER BY created_at DESC")
-    app_html = ""
-
-    for staff_app in staff_apps:
-        if str(staff_app["app_id"]) == data.get("open", ""):
-            open_attr = "open"
-        else:
-            open_attr = ""
-        user = await fetch_user(staff_app['user_id'])
-        user["username"] = bleach.clean(user["username"])
-
-        questions = orjson.loads(staff_app["questions"])
-        answers = orjson.loads(staff_app["answers"])
-
-        questions_html = ""
-
-        for pane in questions:
-            questions_html += f"<h3>{pane['title']}</h3><strong>Prelude</strong>: {pane['description']}<br/>"
-            for question in pane["questions"]:
-                questions_html += f"""
-                    <h4>{question['title']}</h4>
-                    <pre class="pre">
-                        <strong>ID:</strong> {question['id']}
-                        <strong>Minimum Length:</strong> {question['min_length']}
-                        <strong>Maximum Length:</strong> {question['max_length']}
-                        <strong>Question:</strong> {question['question']}
-                        <strong>Answer:</strong> {bleach.clean(answers[question['id']])}
-                    </pre>
-                """
-
-        app_html += f"""
-        <details {open_attr}>
-            <summary>{staff_app['app_id']}</summary>
-            <a href='/user-actions?add_staff_id={user['id']}'"><button>Accept</button></a>
-            <button onclick="deleteAppByUser('{user['id']}')">Delete</button>
-            <h2>User Info</h2>
-            <p><strong><em>Created At:</em></strong> {staff_app['created_at']}</p>
-            <p><strong><em>User:</em></strong> {bleach.clean(user['username'])} ({user['id']})</p>
-            <h2>Application:</h2> 
-            {questions_html}
-            <br/>
-            <a href='/user-actions?add_staff_id={user['id']}'"><button>Accept</button></a>
-            <button onclick="deleteAppByUser('{user['id']}')">Delete</button>
-        </details>
-        """
-
-    return {
-        "title": "Staff Application List",
-        "pre": "/links",
-        "data": f"""
-<p>Please verify applications fairly</p>
-{app_html}
-<br/>
-        """,
-        "ext_script": "user-actions",
-    }
-
 @ws_action("user_actions")
 async def user_actions(ws: WebSocket, data: dict):
     data = data.get("data", {})
@@ -1391,124 +1324,6 @@ placeholder="Enter reason for state change here!"
         "ext_script": "user-actions",
     }
 
-@ws_action("bot_actions")
-async def bot_actions(ws: WebSocket, _):
-    if ws.state.member.perm < 2:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms}
-    elif not ws.state.verified:
-        return {"resp": "spld", "e": SPLDEvent.verify_needed}
-
-    queue = await app.state.db.fetch(
-        "SELECT bot_id, username_cached, description, prefix, created_at FROM bots WHERE state = $1 ORDER BY created_at ASC",
-        enums.BotState.pending)
-
-    queue_select = bot_select("queue", queue)
-
-    under_review = await app.state.db.fetch("SELECT bot_id, username_cached FROM bots WHERE state = $1",
-                                            enums.BotState.under_review)
-
-    under_review_select_approved = bot_select("under_review_approved", under_review, reason=True)
-    under_review_select_denied = bot_select("under_review_denied", under_review, reason=True)
-    under_review_select_claim = bot_select("under_review_claim", under_review, reason=True)
-
-    approved = await app.state.db.fetch(
-        "SELECT bot_id, username_cached FROM bots WHERE state = $1 ORDER BY created_at DESC",
-        enums.BotState.approved)
-
-    ban_select = bot_select("ban", approved, reason=True)
-    certify_select = bot_select("certify", approved, reason=True)
-    unban_select = bot_select("unban",
-                                await app.state.db.fetch("SELECT bot_id, username_cached FROM bots WHERE state = $1",
-                                                        enums.BotState.banned), reason=True)
-    unverify_select = bot_select("unverify", await app.state.db.fetch(
-        "SELECT bot_id, username_cached FROM bots WHERE state = $1", enums.BotState.approved), reason=True)
-    requeue_select = bot_select("requeue", await app.state.db.fetch(
-        "SELECT bot_id, username_cached FROM bots WHERE state = $1 OR state = $2", enums.BotState.denied,
-        enums.BotState.banned), reason=True)
-
-    uncertify_select = bot_select("uncertify", await app.state.db.fetch(
-        "SELECT bot_id, username_cached FROM bots WHERE state = $1", enums.BotState.certified), reason=True)
-
-    reset_bot_votes_select = bot_select("reset-votes", await app.state.db.fetch(
-        "SELECT bot_id, username_cached FROM bots WHERE state = $1 OR state = $2", enums.BotState.approved,
-        enums.BotState.certified), reason=True)
-
-    flag_list = list(enums.BotFlag)
-    flags_select = "<label>Select Flag</label><select id='flag' name='flag'>"
-    for flag in flag_list:
-        flags_select += f"<option value={flag.value}>{flag.name} ({flag.value})</option>"
-    flags_select += "</select>"
-
-    flags_bot_select = bot_select("set-flag", await app.state.db.fetch("SELECT bot_id, username_cached FROM bots"),
-                                    reason=True)
-
-    queue_md = ""
-
-    for bot in queue:
-        owners = await app.state.db.fetch("SELECT owner, main FROM bot_owner WHERE bot_id = $1", bot["bot_id"])
-
-        owners_md = ""
-
-        for owner in owners:
-            user = await fetch_user(owner["owner"])
-            owners_md += f"""\n     - {user['username']}  ({owner['owner']}) |  main -> {owner["main"]}"""
-"""
-::: action-reset-votes
-
-### Reset Bot Votes
-
-- Moderator+ only
-- Definition: votes => 0
-
-{reset_bot_votes_select}
-<button onclick="resetVotes()">Reset</button>
-
-:::
-
-::: action-reset-all-votes
-
-### Reset All Votes
-
-- Head Admin+ only
-- Definition: votes => 0 %all%
-
-<div class="form-group">
-<textarea
-class = "form-control"
-id="reset-all-votes-reason"
-placeholder="Reason for resetting all votes. Defaults to 'Monthly Votes Reset'"
-></textarea>
-</div>
-
-<button onclick="resetAllVotes()">Reset All</button>
-
-:::
-
-::: action-setflag
-
-### Set/Unset Bot Flag
-
-- Moderator+ only
-- Definition: flag => flags.intersection(flag)
-
-{flags_bot_select}
-
-{flags_select}
-
-<div class="form-check">
-<input class="form-check-input" type="checkbox" id="unset" name="unset" />
-<label class="form-check-label" for="unset">Unset Flag (unchecked = Set)</label>
-</div>
-
-<button onclick="setFlag()">Update</button>
-
-:::
-"""
-
-@ws_action("perms")
-async def perms(ws: WebSocket, _):
-    return {"data": ws.state.member.dict()}
-
 @ws_action("user_action")
 async def user_action(ws: WebSocket, data: dict):
     try:
@@ -1584,11 +1399,6 @@ async def submit_survey(ws: WebSocket, data: dict):
 
 print(ws_action_dict)
 
-def replace_if_web(msg, ws):
-    if ws.state.plat == "WEB":
-        return msg.replace("<", "&lt").replace(">", "&gt")
-    return msg   
-
 class UserActionWithReason(BaseModel):
     user_id: str
     initiator: int | None = None
@@ -1625,7 +1435,7 @@ def user_action(
 
         if not await state_check(data.user_id):
             return {
-                "detail": replace_if_web(f"User state check error: {states=}", ws)
+                "detail": f"User state check error: {states=}"
             }
 
     def decorator(function):
@@ -1789,6 +1599,32 @@ class Loa(BaseModel):
     reason: str
     duration: str
 
+@app.get("/_quailfeather/staff-apps", tags=["Internal"])
+async def get_staff_apps(request: Request, user_id: int):
+    if auth := await _auth(request, user_id):
+        return auth
+
+    if request.state.member.perm < 2:
+        return ORJSONResponse({"reason": "You are not staff"}, status_code=400)
+
+    apps = []
+
+    staff_apps = await app.state.db.fetch(
+        "SELECT user_id, app_id, questions, answers, created_at FROM lynx_apps ORDER BY created_at DESC")
+
+    for staff_app in staff_apps:
+        user = await fetch_user(staff_app['user_id'])
+
+        questions = orjson.loads(staff_app["questions"])
+        answers = orjson.loads(staff_app["answers"])
+    
+        apps.append({
+            "user": user,
+            "questions": questions,
+            "answers": answers,
+        })
+
+
 @app.post("/_quailfeather/reset", tags=["Internal"])
 async def reset_creds(request: Request, user_id: int):
     if auth := await _auth(request, user_id):
@@ -1811,7 +1647,7 @@ async def send_loa(request: Request, user_id: int, loa: Loa):
         return auth
 
     if request.state.member.perm < 2:
-        return {"resp": "spld", "e": SPLDEvent.missing_perms}
+        return ORJSONResponse({"reason": "You are not staff"}, status_code=400)
     try:
         date = parser.parse(loa.duration)
     except:
