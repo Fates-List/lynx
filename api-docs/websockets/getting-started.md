@@ -306,4 +306,10 @@ The preview API only supports the following request-response type:
 | Task Name | Description |
 | :--- | :--- |
 text | String,
-long_description_type | [LongDescriptionType](../enums),
+long_description_type | [LongDescriptionType](../endpoints/enums.md),
+
+**Response**
+
+This will respond with a JSON containing a single key: ``preview`` with the preview to be rendered.
+
+For speed purposes, the official client does not wait before applying a ``preview``. This means some ``preview`` responses are ignored by the client.
