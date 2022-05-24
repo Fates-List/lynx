@@ -692,7 +692,7 @@ def random_bot():
 
 
 - **flags** => (Array) 
-- **created_at** => string [ex "2022-05-23T10:55:57.544032418Z"]
+- **created_at** => string [ex "2022-05-24T13:32:50.199899143Z"]
 
 
 
@@ -714,7 +714,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-23T10:55:57.544032418Z"
+    "created_at": "2022-05-24T13:32:50.199899143Z"
 }
 ```
 

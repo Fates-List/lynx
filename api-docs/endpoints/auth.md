@@ -258,35 +258,3 @@ by the site to login.
 **Authorization Needed** | None
 
 
-## Delete OAuth2 Login
-### DELETE `https://api.fateslist.xyz`/oauth2
-
-'Deletes' (logs out) a oauth2 login. Always call this when logging out 
-even if you do not use cookies as it may perform other logout tasks in future
-
-This API is essentially a logout
-
-
-
-**Response Body**
-
-- **done** => bool [ex true]
-- **reason** => None (unknown value type)
-- **context** => None (unknown value type)
-
-
-
-**Response Body Example**
-
-```json
-{
-    "done": true,
-    "reason": null,
-    "context": null
-}
-```
-
-
-**Authorization Needed** | None
-
-

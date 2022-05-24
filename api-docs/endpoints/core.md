@@ -74,7 +74,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-23T10:55:57.543605400Z"]
+	- **created_at** => string [ex "2022-05-24T13:32:50.199449593Z"]
 
 
 
@@ -95,7 +95,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-23T10:55:57.543605400Z"]
+	- **created_at** => string [ex "2022-05-24T13:32:50.199449593Z"]
 
 
 
@@ -116,7 +116,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-23T10:55:57.543605400Z"]
+	- **created_at** => string [ex "2022-05-24T13:32:50.199449593Z"]
 
 
 
@@ -159,7 +159,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-23T10:55:57.543605400Z"
+            "created_at": "2022-05-24T13:32:50.199449593Z"
         }
     ],
     "top_voted": [
@@ -178,7 +178,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-23T10:55:57.543605400Z"
+            "created_at": "2022-05-24T13:32:50.199449593Z"
         }
     ],
     "certified": [
@@ -197,7 +197,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-23T10:55:57.543605400Z"
+            "created_at": "2022-05-24T13:32:50.199449593Z"
         }
     ],
     "tags": [
@@ -349,46 +349,6 @@ Get current partnership list
 **Authorization Needed** | None
 
 
-## Preview Description
-### WS `https://api.fateslist.xyz`/ws/_preview
-Given the preview and long description, parse it and give the sanitized output. You must first connect over websocket!
-
-
-**Request Body**
-
-- **text** => string [ex ""]
-- **long_description_type** => i32 [ex 1]
-
-
-
-**Request Body Example**
-
-```json
-{
-    "text": "",
-    "long_description_type": 1
-}
-```
-
-
-**Response Body**
-
-- **preview** => string [ex ""]
-
-
-
-**Response Body Example**
-
-```json
-{
-    "preview": ""
-}
-```
-
-
-**Authorization Needed** | None
-
-
 ## Search List
 ### GET `https://api.fateslist.xyz`/search?q={query}
 
@@ -425,7 +385,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-23T10:55:57.543757137Z"]
+	- **created_at** => string [ex "2022-05-24T13:32:50.199580010Z"]
 
 
 
@@ -446,7 +406,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-23T10:55:57.543757442Z"]
+	- **created_at** => string [ex "2022-05-24T13:32:50.199580324Z"]
 
 
 
@@ -544,7 +504,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-23T10:55:57.543757137Z"
+            "created_at": "2022-05-24T13:32:50.199580010Z"
         }
     ],
     "servers": [
@@ -563,7 +523,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-23T10:55:57.543757442Z"
+            "created_at": "2022-05-24T13:32:50.199580324Z"
         }
     ],
     "profiles": [
@@ -667,7 +627,7 @@ Searches the list based on a tag named ``q``.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-23T10:55:57.543804842Z"]
+	- **created_at** => string [ex "2022-05-24T13:32:50.199654914Z"]
 
 
 
@@ -688,7 +648,7 @@ Searches the list based on a tag named ``q``.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-23T10:55:57.543805038Z"]
+	- **created_at** => string [ex "2022-05-24T13:32:50.199655228Z"]
 
 
 
@@ -786,7 +746,7 @@ Searches the list based on a tag named ``q``.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-23T10:55:57.543804842Z"
+            "created_at": "2022-05-24T13:32:50.199654914Z"
         }
     ],
     "servers": [
@@ -805,7 +765,7 @@ Searches the list based on a tag named ``q``.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-23T10:55:57.543805038Z"
+            "created_at": "2022-05-24T13:32:50.199655228Z"
         }
     ],
     "profiles": [

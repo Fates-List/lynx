@@ -292,3 +292,18 @@ async def main():
 
 asyncio.run(main())
 ```
+
+### A quick note on /_ws/preview
+
+``/ws/_preview`` is the websocket route used to preview descriptions.
+
+You connect to it normally as you would any websocket route. You still follow [Pings](#pings).
+
+The preview API only supports the following request-response type:
+
+**Request**
+
+| Task Name | Description |
+| :--- | :--- |
+text | String,
+long_description_type | [LongDescriptionType](../enums),
