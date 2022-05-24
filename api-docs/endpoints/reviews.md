@@ -210,3 +210,230 @@ This may change in the future and is given by ``per_page`` key.
 **Authorization Needed** | None
 
 
+## Add Review
+### POST `https://api.fateslist.xyz`/reviews/{id}
+
+Creates a review.
+
+``id`` and ``page`` should be set to null or omitted though are ignored by this endpoint
+so there should not be an error even if provided.
+
+A reviewable entity is currently only a bot or a server. Profile reviews are a possibility
+in the future.
+
+The ``parent_id`` is optional and is used to create a reply to a review.
+
+``target_type`` is a [TargetType](../enums-ref#targettype)
+
+``review`` is a [Review](../enums-ref#review)
+
+``user_id`` is *required* for this endpoint and must be the user making the review. It must
+also match the user token sent in the ``Authorization`` header
+**Query Parameters**
+
+- **target_type** => i32 [ex 0]
+- **page** => None (unknown value type)
+- **user_id** => (Optional) i64 [ex 0]
+
+
+
+
+**Path Parameters**
+
+- **id** => i64 [ex 0]
+
+
+
+
+**Request Body**
+
+- **id** => None (unknown value type)
+- **star_rating** => string [ex "0"]
+- **review_text** => string [ex ""]
+- **votes** => Struct ParsedReviewVotes 
+	- **upvotes** => (Array) 
+	- **downvotes** => (Array) 
+
+
+
+- **flagged** => bool [ex false]
+- **user** => Struct User 
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
+
+
+
+- **epoch** => (Array) 
+- **replies** => (Array) 
+- **parent_id** => (Optional) string [ex "ef468f4d-140e-47e8-892a-3d6c55e7daa7"]
+
+
+
+**Request Body Example**
+
+```json
+{
+    "id": null,
+    "star_rating": "0",
+    "review_text": "",
+    "votes": {
+        "upvotes": [],
+        "downvotes": []
+    },
+    "flagged": false,
+    "user": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "epoch": [],
+    "replies": [],
+    "parent_id": "ef468f4d-140e-47e8-892a-3d6c55e7daa7"
+}
+```
+
+
+**Response Body**
+
+- **done** => bool [ex true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
+
+
+## Edit Review
+### PATCH `https://api.fateslist.xyz`/reviews/{id}
+
+Edits a review.
+
+``page`` should be set to null or omitted though are ignored by this endpoint
+so there should not be an error even if provided.
+
+A reviewable entity is currently only a bot or a server. Profile reviews are a possibility
+in the future.
+
+``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/enums-ref#targettype)
+
+This reviewable entities id which is a ``i64`` is the id that is specifed in the
+path.
+
+The id of the review must be specified as ``id`` in the request body which accepts a ``Review``
+object. The ``user_id`` specified must *own*/have created the review being editted. Staff should
+edit reviews using Lynx when required.
+
+``user_id`` is *required* for this endpoint and must be the user making the review. It must
+also match the user token sent in the ``Authorization`` header
+**Query Parameters**
+
+- **target_type** => i32 [ex 0]
+- **page** => None (unknown value type)
+- **user_id** => (Optional) i64 [ex 0]
+
+
+
+
+**Path Parameters**
+
+- **id** => i64 [ex 0]
+
+
+
+
+**Request Body**
+
+- **id** => (Optional) string [ex "96c9efc2-11ba-4881-bbe5-ee4ff30028b5"]
+- **star_rating** => string [ex "0"]
+- **review_text** => string [ex ""]
+- **votes** => Struct ParsedReviewVotes 
+	- **upvotes** => (Array) 
+	- **downvotes** => (Array) 
+
+
+
+- **flagged** => bool [ex false]
+- **user** => Struct User 
+	- **id** => string [ex ""]
+	- **username** => string [ex ""]
+	- **disc** => string [ex ""]
+	- **avatar** => string [ex ""]
+	- **bot** => bool [ex false]
+	- **status** => string [ex "Unknown"]
+
+
+
+- **epoch** => (Array) 
+- **replies** => (Array) 
+- **parent_id** => None (unknown value type)
+
+
+
+**Request Body Example**
+
+```json
+{
+    "id": "96c9efc2-11ba-4881-bbe5-ee4ff30028b5",
+    "star_rating": "0",
+    "review_text": "",
+    "votes": {
+        "upvotes": [],
+        "downvotes": []
+    },
+    "flagged": false,
+    "user": {
+        "id": "",
+        "username": "",
+        "disc": "",
+        "avatar": "",
+        "bot": false,
+        "status": "Unknown"
+    },
+    "epoch": [],
+    "replies": [],
+    "parent_id": null
+}
+```
+
+
+**Response Body**
+
+- **done** => bool [ex true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
+
+
