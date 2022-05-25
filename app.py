@@ -1,13 +1,11 @@
 import pathlib
 import sys
-from base64 import b64decode
 import io
 import os
 import textwrap
 import asyncio
 import datetime
 import hashlib
-import signal
 import time
 from http import HTTPStatus
 from typing import Any, Union
@@ -18,7 +16,6 @@ import math
 import uuid
 
 import asyncpg
-import bleach
 import discord
 import orjson
 import requests
@@ -28,13 +25,11 @@ import enums
 
 import aiohttp
 import aioredis
-import msgpack
 import orjson
 from discord import Embed
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request, Response
+from fastapi import FastAPI, WebSocket, HTTPException, Request, Response, APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import StreamingResponse, ORJSONResponse, PlainTextResponse
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exceptions import HTTPException
 from piccolo.apps.user.tables import BaseUser
 from piccolo.engine import engine_finder
@@ -48,7 +43,6 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from colour import Color
 from PIL import Image, ImageDraw, ImageFont
 import staffapps
-import zlib
 from experiments import Experiments, exp_props
 
 import inspect
@@ -257,8 +251,14 @@ admin = create_admin(
 )
 
 async def auth_user_cookies(request: Request):
-    if request.cookies.get("sunbeam-session:warriorcats"):
-        request.scope["sunbeam_user"] = orjson.loads(b64decode(request.cookies.get("sunbeam-session:warriorcats")))
+    if request.cookies.get("lynx-session"):
+        session = await app.state.redis.get(request.cookies['lynx-session'])
+        request.scope["sunbeam_user"] = orjson.loads(session)
+
+        request.scope["sunbeam_user"]["user"] = {
+            "id": request.scope["sunbeam_user"]["id"],
+        }
+
         check = await app.state.db.fetchval(
             "SELECT user_id FROM users WHERE user_id = $1 AND api_token = $2",
             int(request.scope["sunbeam_user"]["user"]["id"]),
@@ -296,7 +296,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
             if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
                 return PlainTextResponse("", headers={
                     "Access-Control-Allow-Origin": request.headers.get("Origin"),
-                    "Access-Control-Allow-Headers": "Authorization, Content-Type",
+                    "Access-Control-Allow-Headers": "Authorization, Content-Type, Frostpaw-ID",
                     "Access-Control-Allow-Credentials": "true",
                     "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
                 })
@@ -444,6 +444,10 @@ app = FastAPI(routes=[
     },
     default_response_class=ORJSONResponse,
 )
+
+private = APIRouter(include_in_schema=False)
+
+public = APIRouter(include_in_schema=True)
 
 def bot_select(id: str, bot_list: list[str], reason: bool = False):
     select = f"""
@@ -1599,7 +1603,36 @@ class Loa(BaseModel):
     reason: str
     duration: str
 
-@app.get("/_quailfeather/staff-apps", tags=["Internal"])
+@private.get("/_quailfeather/ap-login", tags=["Internal"])
+async def ap_login(nonce: str):
+    nonce_info = await app.state.redis.get(nonce)
+    if not nonce_info:
+        return PlainTextResponse("Invalid nonce")
+    return HTMLResponse("""
+<meta http-equiv = "refresh" content = "2; url = /_admin" />
+<a href = "/_admin">Redirecting to admin panel...</a>
+    """, headers={
+        "Set-Cookie": f"lynx-session={nonce}; SameSite=Strict; Secure; HttpOnly; Path=/",
+    })
+
+@private.get("/_quailfeather/nonce", tags=["Internal"])
+async def get_otp(request: Request):
+    if auth := await _auth(request, request.headers.get("Frostpaw-ID", "")):
+        return auth
+
+    if request.state.member.perm < 2:
+        return ORJSONResponse({"reason": "You are not staff"}, status_code=400)
+    
+    nonce = get_token(512)
+
+    await app.state.redis.set(nonce, orjson.dumps({
+        "token": request.headers["Authorization"],
+        "id": int(request.headers["Frostpaw-ID"]),
+    }), ex=60*15)
+
+    return {"nonce": nonce}
+
+@private.get("/_quailfeather/staff-apps", tags=["Internal"])
 async def get_staff_apps(request: Request, user_id: int):
     if auth := await _auth(request, user_id):
         return auth
@@ -1625,7 +1658,7 @@ async def get_staff_apps(request: Request, user_id: int):
         })
 
 
-@app.post("/_quailfeather/reset", tags=["Internal"])
+@private.post("/_quailfeather/reset", tags=["Internal"])
 async def reset_creds(request: Request, user_id: int):
     if auth := await _auth(request, user_id):
         return auth
@@ -1641,7 +1674,7 @@ async def reset_creds(request: Request, user_id: int):
     )
     return {}
 
-@app.post("/_quailfeather/loa", tags=["Internal"])
+@private.post("/_quailfeather/loa", tags=["Internal"])
 async def send_loa(request: Request, user_id: int, loa: Loa):
     if auth := await _auth(request, user_id):
         return auth
@@ -1666,7 +1699,7 @@ async def send_loa(request: Request, user_id: int, loa: Loa):
     return {"reason": "Submitted LOA successfully"}
 
 
-@app.post("/_quailfeather/staff-verify", tags=["Internal"])
+@private.post("/_quailfeather/staff-verify", tags=["Internal"])
 async def staff_verify(request: Request, user_id: int, code: str):
     if auth := await _auth(request, user_id):
         return auth
@@ -1706,11 +1739,11 @@ async def staff_verify(request: Request, user_id: int, code: str):
         return {"reason": "Successfully verified staff member", "pass": password}
 
 
-@app.get("/_quailfeather/requests", tags=["Internal"], deprecated=True)
+@private.get("/_quailfeather/requests", tags=["Internal"])
 async def request_log():
     return await app.state.db.fetch("SELECT user_id, method, url, status_code, request_time from lynx_logs")
 
-@app.get("/_quailfeather/doctree", tags=["Internal"], deprecated=True)
+@private.get("/_quailfeather/doctree", tags=["Internal"], deprecated=True)
 def doctree():
     docs = []
 
@@ -1722,7 +1755,7 @@ def doctree():
     # We are forced to inject a script to the end to force hljs render
     return docs
 
-@app.get("/_quailfeather/docs/{page:path}", tags=["Internal"], deprecated=True)
+@private.get("/_quailfeather/docs/{page:path}", tags=["Internal"], deprecated=True)
 def docs(page: str):
     if page.endswith(".md"):
         page = f"/docs/{page[:-3]}"
@@ -1804,7 +1837,7 @@ class DataAction(enums.Enum):
     request = "request"
     delete = "delete"
 
-@app.get("/_quailfeather/data", tags=["Internal"], deprecated=True)
+@private.get("/_quailfeather/data", tags=["Internal"], deprecated=True)
 async def data_request_delete(request: Request, requested_id: int, origin_user_id: int, act: DataAction):
     if auth := await _auth(request, origin_user_id):
         return auth
@@ -1890,7 +1923,7 @@ async def data_request_delete(request: Request, requested_id: int, origin_user_i
 
 long_running_tasks = {}
 
-@app.get("/_quailfeather/long-running/{tid}", tags=["Internal"], deprecated=True)
+@private.get("/_quailfeather/long-running/{tid}", tags=["Internal"], deprecated=True)
 async def long_running(tid: uuid.UUID):
     tid = str(tid)
     print(f"Long running task {long_running_tasks.keys()}")
@@ -1964,7 +1997,7 @@ WHERE c.contype = 'f'""")
 
     return ddr_parse(jsonable_encoder(data))
 
-@app.post("/_quailfeather/eternatus", tags=["Internal"], deprecated=True)
+@private.post("/_quailfeather/eternatus", tags=["Internal"], deprecated=True)
 async def post_feedback(request: Request, data: Feedback):
     if data.user_id:
         if auth := await _auth(request, data.user_id):
@@ -1993,7 +2026,7 @@ async def post_feedback(request: Request, data: Feedback):
 
     return {}
 
-@app.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
+@private.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
 async def do_action(request: Request, data: BotData):
     try:
         bot_id = int(data.id)
@@ -2088,7 +2121,7 @@ env = Environment(
     enable_async=True,
 ).get_template("widgets.html", globals={"human_format": human_format})
 
-@app.get("/widgets/{target_id}", operation_id="get_widget", tags=["Widgets"])
+@public.get("/widgets/{target_id}", operation_id="get_widget", tags=["Widgets"])
 async def get_widget(
     request: Request, 
     response: Response,
@@ -2348,7 +2381,7 @@ class FakeWs():
         self.state.member = StaffMember(name="Reviewer (Metro)", id="0", perm=2, staff_id="0")
 
 # We use widgets here because its already proxied to the client
-@app.post("/widgets/_admin/metro", tags={"Internal"}, deprecated=True)
+@private.post("/widgets/_admin/metro", tags={"Internal"}, deprecated=True)
 async def metro_api(request: Request, action: str, data: Metro):
     if request.headers.get("Authorization") != metro_key:
         return {"detail": "Invalid key"}
@@ -2423,3 +2456,6 @@ async def metro_api(request: Request, action: str, data: Metro):
 
 
 app.add_middleware(CustomHeaderMiddleware)
+
+app.include_router(public)
+app.include_router(private)
