@@ -253,7 +253,13 @@ admin = create_admin(
 async def auth_user_cookies(request: Request):
     if request.cookies.get("lynx-session"):
         session = await app.state.redis.get(request.cookies['lynx-session'])
-        request.scope["sunbeam_user"] = orjson.loads(session)
+        if session:
+            request.scope["sunbeam_user"] = orjson.loads(session)
+        else:
+            request.scope["sunbeam_user"] = {
+                "id": "0",
+                "token": "0",
+            }
 
         request.scope["sunbeam_user"]["user"] = {
             "id": request.scope["sunbeam_user"]["id"],
@@ -312,16 +318,16 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
         await auth_user_cookies(request)
 
         if not request.scope.get("sunbeam_user"):
-            return RedirectResponse(f"https://fateslist.xyz/frostpaw/herb?redirect={request.url}")
+            return ORJSONResponse({"detail": "Invalid nonce"}, status_code=400)
 
         member: StaffMember = request.state.member
         perm = member.perm
 
         # Before erroring, ensure they are perm of at least 2 and have no staff_verify_code set
         if member.perm < 2: 
-            return RedirectResponse("/missing-perms?perm=2")
+            return ORJSONResponse({"detail": "Not staff"}, status_code=400)
         elif not request.state.is_verified:
-            return RedirectResponse("/staff-verify")
+            return ORJSONResponse({"detail": "Not staff verified"}, status_code=400)
 
         # Perm check
 
@@ -1176,37 +1182,6 @@ async def exp_rollout_all(ws: WebSocket, data: dict):
 
     return {"detail": f"Pushed controlled roll out to {data['limit']} users"}
 
-
-@ws_action("apply_staff")
-async def apply_staff(ws: WebSocket, data: dict):
-    if ws.state.member.perm == -1:
-        return {"detail": "You must be logged in to create staff applications!"}
-
-    for pane in staffapps.questions:
-        for question in pane.questions:
-            answer = data["answers"].get(question.id)
-            if not answer:
-                return {"detail": f"Missing answer for question {question.id}"}
-            elif len(answer) < question.min_length:
-                return {"detail": f"Answer for question {question.id} is too short"}
-            elif len(answer) > question.max_length:
-                return {"detail": f"Answer for question {question.id} is too long"}
-    
-    await app.state.db.execute(
-        "INSERT INTO lynx_apps (user_id, questions, answers, app_version) VALUES ($1, $2, $3, $4)",
-        int(ws.state.user["id"]),
-        orjson.dumps(jsonable_encoder(staffapps.questions)).decode(),
-        orjson.dumps(data["answers"]).decode(),
-        3
-    )
-
-    return {"detail": "Successfully applied for staff!"}
-
-@ws_action("get_sa_questions")
-async def get_sa_questions(ws: WebSocket, _):
-    """Get staff app questions"""
-    return {"questions": jsonable_encoder(staffapps.questions)}
-
 @ws_action("user_actions")
 async def user_actions(ws: WebSocket, data: dict):
     data = data.get("data", {})
@@ -1622,6 +1597,11 @@ async def get_otp(request: Request):
 
     if request.state.member.perm < 2:
         return ORJSONResponse({"reason": "You are not staff"}, status_code=400)
+
+    if not request.state.is_verified:
+        return ORJSONResponse({
+            "staff_verify": True
+        }, status_code=400)
     
     nonce = get_token(512)
 
@@ -1632,18 +1612,52 @@ async def get_otp(request: Request):
 
     return {"nonce": nonce}
 
+@private.post("/_quailfeather/staff-apps", tags=["Internal"])
+async def staff_apps(request: Request, user_id: int):
+    if auth := await _auth(request, user_id):
+        return auth
+    
+    data = await request.json()
+
+    for pane in staffapps.questions:
+        for question in pane.questions:
+            answer = data["answers"].get(question.id)
+            if not answer:
+                return {"detail": f"Missing answer for question {question.id}"}
+            elif len(answer) < question.min_length:
+                return {"detail": f"Answer for question {question.id} is too short"}
+            elif len(answer) > question.max_length:
+                return {"detail": f"Answer for question {question.id} is too long"}
+    
+    await app.state.db.execute(
+        "INSERT INTO lynx_apps (user_id, questions, answers, app_version) VALUES ($1, $2, $3, $4)",
+        user_id,
+        orjson.dumps(jsonable_encoder(staffapps.questions)).decode(),
+        orjson.dumps(data["answers"]).decode(),
+        3
+    )
+
+    return {"detail": "Successfully applied for staff!"}
+
+
+@private.get("/_quailfeather/staff-apps/questions", tags=["Internal"])
+def get_staff_apps():
+    return {"questions": jsonable_encoder(staffapps.questions), "can_apply": staffapps.can_apply}
+
 @private.get("/_quailfeather/staff-apps", tags=["Internal"])
 async def get_staff_apps(request: Request, user_id: int):
     if auth := await _auth(request, user_id):
         return auth
 
     if request.state.member.perm < 2:
-        return ORJSONResponse({"reason": "You are not staff"}, status_code=400)
+        # Get only users apps
+        staff_apps = await app.state.db.fetch(
+            "SELECT user_id, app_id, questions, answers, created_at FROM lynx_apps ORDER BY created_at DESC WHERE user_id = $1", user_id)
+    else:
+        staff_apps = await app.state.db.fetch(
+            "SELECT user_id, app_id, questions, answers, created_at FROM lynx_apps ORDER BY created_at DESC")
 
     apps = []
-
-    staff_apps = await app.state.db.fetch(
-        "SELECT user_id, app_id, questions, answers, created_at FROM lynx_apps ORDER BY created_at DESC")
 
     for staff_app in staff_apps:
         user = await fetch_user(staff_app['user_id'])
@@ -1656,6 +1670,8 @@ async def get_staff_apps(request: Request, user_id: int):
             "questions": questions,
             "answers": answers,
         })
+    
+    return apps
 
 
 @private.post("/_quailfeather/reset", tags=["Internal"])

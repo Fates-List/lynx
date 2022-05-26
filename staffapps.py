@@ -1,5 +1,7 @@
 from pydantic import BaseModel 
 
+can_apply = True
+
 class StaffApp(BaseModel):
     id: str 
     title: str
