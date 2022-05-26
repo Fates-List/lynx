@@ -74,7 +74,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-24T14:41:50.725457817Z"]
+	- **created_at** => string [ex "2022-05-26T05:07:05.019859223Z"]
 
 
 
@@ -95,7 +95,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-24T14:41:50.725457817Z"]
+	- **created_at** => string [ex "2022-05-26T05:07:05.019859223Z"]
 
 
 
@@ -116,7 +116,7 @@ Returns the index for bots and servers
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-24T14:41:50.725457817Z"]
+	- **created_at** => string [ex "2022-05-26T05:07:05.019859223Z"]
 
 
 
@@ -159,7 +159,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-24T14:41:50.725457817Z"
+            "created_at": "2022-05-26T05:07:05.019859223Z"
         }
     ],
     "top_voted": [
@@ -178,7 +178,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-24T14:41:50.725457817Z"
+            "created_at": "2022-05-26T05:07:05.019859223Z"
         }
     ],
     "certified": [
@@ -197,7 +197,7 @@ Returns the index for bots and servers
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-24T14:41:50.725457817Z"
+            "created_at": "2022-05-26T05:07:05.019859223Z"
         }
     ],
     "tags": [
@@ -385,7 +385,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-24T14:41:50.727953029Z"]
+	- **created_at** => string [ex "2022-05-26T05:07:05.020027114Z"]
 
 
 
@@ -406,7 +406,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-24T14:41:50.727954209Z"]
+	- **created_at** => string [ex "2022-05-26T05:07:05.020027432Z"]
 
 
 
@@ -504,7 +504,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-24T14:41:50.727953029Z"
+            "created_at": "2022-05-26T05:07:05.020027114Z"
         }
     ],
     "servers": [
@@ -523,7 +523,7 @@ Using -1 for ``gc_to`` will disable ``gc_to`` field
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-24T14:41:50.727954209Z"
+            "created_at": "2022-05-26T05:07:05.020027432Z"
         }
     ],
     "profiles": [
@@ -627,7 +627,7 @@ Searches the list based on a tag named ``q``.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-24T14:41:50.728019794Z"]
+	- **created_at** => string [ex "2022-05-26T05:07:05.020094038Z"]
 
 
 
@@ -648,7 +648,7 @@ Searches the list based on a tag named ``q``.
 
 
 	- **flags** => (Array) 
-	- **created_at** => string [ex "2022-05-24T14:41:50.728020089Z"]
+	- **created_at** => string [ex "2022-05-26T05:07:05.020094342Z"]
 
 
 
@@ -746,7 +746,7 @@ Searches the list based on a tag named ``q``.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-24T14:41:50.728019794Z"
+            "created_at": "2022-05-26T05:07:05.020094038Z"
         }
     ],
     "servers": [
@@ -765,7 +765,7 @@ Searches the list based on a tag named ``q``.
                 "status": "Unknown"
             },
             "flags": [],
-            "created_at": "2022-05-24T14:41:50.728020089Z"
+            "created_at": "2022-05-26T05:07:05.020094342Z"
         }
     ],
     "profiles": [

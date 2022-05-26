@@ -251,6 +251,15 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
 
 
 
+- **events** => (Array) Struct BotEvent 
+	- **id** => string [ex "Some UUID here"]
+	- **event_type** => i32 [ex 0]
+	- **ts** => string [ex "2022-05-26T05:07:05.020236562Z"]
+	- **reason** => string [ex "Some reason here"]
+	- **css** => string [ex "Some CSS here"]
+
+
+
 - **webhook** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
 - **webhook_secret** => (Optional) string [ex "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
 - **webhook_type** => None (unknown value type)
@@ -354,6 +363,15 @@ This is to allow reuse of the Bot struct in Get Bot Settings which *does* contai
             "doc_link": null,
             "id": null,
             "nsfw": false
+        }
+    ],
+    "events": [
+        {
+            "id": "Some UUID here",
+            "event_type": 0,
+            "ts": "2022-05-26T05:07:05.020236562Z",
+            "reason": "Some reason here",
+            "css": "Some CSS here"
         }
     ],
     "webhook": "This will be redacted for Get Bot endpoint",
@@ -494,6 +512,15 @@ Staff members *must* instead use Lynx.
 
 
 
+	- **events** => (Array) Struct BotEvent 
+		- **id** => string [ex "Some UUID here"]
+		- **event_type** => i32 [ex 0]
+		- **ts** => string [ex "2022-05-26T05:07:05.020339124Z"]
+		- **reason** => string [ex "Some reason here"]
+		- **css** => string [ex "Some CSS here"]
+
+
+
 	- **webhook** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
 	- **webhook_secret** => (Optional) string [ex "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
 	- **webhook_type** => None (unknown value type)
@@ -623,6 +650,15 @@ Staff members *must* instead use Lynx.
                 "nsfw": false
             }
         ],
+        "events": [
+            {
+                "id": "Some UUID here",
+                "event_type": 0,
+                "ts": "2022-05-26T05:07:05.020339124Z",
+                "reason": "Some reason here",
+                "css": "Some CSS here"
+            }
+        ],
         "webhook": "This will be redacted for Get Bot endpoint",
         "webhook_secret": "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint",
         "webhook_type": null,
@@ -692,7 +728,7 @@ def random_bot():
 
 
 - **flags** => (Array) 
-- **created_at** => string [ex "2022-05-24T14:41:50.728650082Z"]
+- **created_at** => string [ex "2022-05-26T05:07:05.020433881Z"]
 
 
 
@@ -714,7 +750,7 @@ def random_bot():
         "status": "Unknown"
     },
     "flags": [],
-    "created_at": "2022-05-24T14:41:50.728650082Z"
+    "created_at": "2022-05-26T05:07:05.020433881Z"
 }
 ```
 
@@ -846,6 +882,15 @@ to false.
 
 
 
+- **events** => (Array) Struct BotEvent 
+	- **id** => string [ex "Some UUID here"]
+	- **event_type** => i32 [ex 0]
+	- **ts** => string [ex "2022-05-26T05:07:05.020452220Z"]
+	- **reason** => string [ex "Some reason here"]
+	- **css** => string [ex "Some CSS here"]
+
+
+
 - **webhook** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
 - **webhook_secret** => (Optional) string [ex "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
 - **webhook_type** => None (unknown value type)
@@ -949,6 +994,15 @@ to false.
             "doc_link": null,
             "id": null,
             "nsfw": false
+        }
+    ],
+    "events": [
+        {
+            "id": "Some UUID here",
+            "event_type": 0,
+            "ts": "2022-05-26T05:07:05.020452220Z",
+            "reason": "Some reason here",
+            "css": "Some CSS here"
         }
     ],
     "webhook": "This will be redacted for Get Bot endpoint",
@@ -1106,6 +1160,15 @@ to false.
 
 
 
+- **events** => (Array) Struct BotEvent 
+	- **id** => string [ex "Some UUID here"]
+	- **event_type** => i32 [ex 0]
+	- **ts** => string [ex "2022-05-26T05:07:05.020511236Z"]
+	- **reason** => string [ex "Some reason here"]
+	- **css** => string [ex "Some CSS here"]
+
+
+
 - **webhook** => (Optional) string [ex "This will be redacted for Get Bot endpoint"]
 - **webhook_secret** => (Optional) string [ex "This (along with ``webhook_type``, ``api_token`` and ``webhook_hmac_only``) will be redacted for Get Bot endpoint"]
 - **webhook_type** => None (unknown value type)
@@ -1209,6 +1272,15 @@ to false.
             "doc_link": null,
             "id": null,
             "nsfw": false
+        }
+    ],
+    "events": [
+        {
+            "id": "Some UUID here",
+            "event_type": 0,
+            "ts": "2022-05-26T05:07:05.020511236Z",
+            "reason": "Some reason here",
+            "css": "Some CSS here"
         }
     ],
     "webhook": "This will be redacted for Get Bot endpoint",

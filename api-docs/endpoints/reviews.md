@@ -51,7 +51,7 @@ Gets reviews for a reviewable entity.
 A reviewable entity is currently only a bot or a server. Profile reviews are a possibility
 in the future.
 
-``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/enums-ref#targettype)
+``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/endpoints/enums#targettype)
 
 This reviewable entities id which is a ``i64`` is the id that is specifed in the
 path.
@@ -223,9 +223,9 @@ in the future.
 
 The ``parent_id`` is optional and is used to create a reply to a review.
 
-``target_type`` is a [TargetType](../enums-ref#targettype)
+``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/endpoints/enums#targettype)
 
-``review`` is a [Review](../enums-ref#review)
+``review`` is a [Review](https://lynx.fateslist.xyz/docs/endpoints/enums#review)
 
 ``user_id`` is *required* for this endpoint and must be the user making the review. It must
 also match the user token sent in the ``Authorization`` header
@@ -269,7 +269,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [ex "ef468f4d-140e-47e8-892a-3d6c55e7daa7"]
+- **parent_id** => (Optional) string [ex "eee5a433-d4e0-46da-8a65-f31490f51a27"]
 
 
 
@@ -295,7 +295,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "ef468f4d-140e-47e8-892a-3d6c55e7daa7"
+    "parent_id": "eee5a433-d4e0-46da-8a65-f31490f51a27"
 }
 ```
 
@@ -333,7 +333,7 @@ so there should not be an error even if provided.
 A reviewable entity is currently only a bot or a server. Profile reviews are a possibility
 in the future.
 
-``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/enums-ref#targettype)
+``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/endpoints/enums#targettype)
 
 This reviewable entities id which is a ``i64`` is the id that is specifed in the
 path.
@@ -362,7 +362,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body**
 
-- **id** => (Optional) string [ex "96c9efc2-11ba-4881-bbe5-ee4ff30028b5"]
+- **id** => (Optional) string [ex "5ee9dbf0-59c6-4eb0-9096-d538d97887a6"]
 - **star_rating** => string [ex "0"]
 - **review_text** => string [ex ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -392,7 +392,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "96c9efc2-11ba-4881-bbe5-ee4ff30028b5",
+    "id": "5ee9dbf0-59c6-4eb0-9096-d538d97887a6",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -413,6 +413,62 @@ also match the user token sent in the ``Authorization`` header
     "parent_id": null
 }
 ```
+
+
+**Response Body**
+
+- **done** => bool [ex true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
+
+
+## Delete Review
+### DELETE `https://api.fateslist.xyz`/reviews/{rid}
+
+Deletes a review
+
+``rid`` must be a valid uuid.
+
+``user_id`` is *required* for this endpoint and must be the user making the review. It must
+also match the user token sent in the ``Authorization`` header. ``page`` is currently ignored
+
+A reviewable entity is currently only a bot or a server. Profile reviews are a possibility
+in the future.
+
+``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/endpoints/enums#targettype)
+
+``target_type`` is not currently checked but it is a good idea to set it anyways. You must
+set this anyways so you might as well set it correctly.
+**Query Parameters**
+
+- **target_type** => i32 [ex 0]
+- **page** => None (unknown value type)
+- **user_id** => (Optional) i64 [ex 0]
+
+
+
+
+**Path Parameters**
+
+- **rid** => string [ex "b91eed68-325a-4c6e-a4df-efd3f00eb284"]
+
+
+
 
 
 **Response Body**
