@@ -22,6 +22,8 @@ from piccolo.table import Table
 from decimal import Decimal
 import secrets
 
+import enums
+
 # Should have feature parity, be sure to always update whenever used
 # api_token, webhook_secret intentionally omitted
 
@@ -33,6 +35,11 @@ class Bots(Table, tablename="bots"):
         unique=True,
         index=True,
         secret=False,
+    )
+    extra_links = JSONB(
+        nullable=False,
+        default={},
+        help_text="Extra links to be displayed in the bot's page",
     )
     votes = BigInt(
         default=0,
@@ -90,20 +97,6 @@ class Bots(Table, tablename="bots"):
         unique=False,
         secret=False,
     )
-    website = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    discord = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
     banner_card = Text(
         default="",
         null=True,
@@ -121,13 +114,6 @@ class Bots(Table, tablename="bots"):
     invite = Text(
         default="",
         null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    github = Text(
-        default="",
-        null=True,
         primary_key=False,
         unique=False,
         secret=False,
@@ -167,29 +153,8 @@ class Bots(Table, tablename="bots"):
         unique=False,
         secret=False,
     )
-    donate = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
     username_cached = Text(
         default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    privacy_policy = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    nsfw = Boolean(
-        default=False,
         null=True,
         primary_key=False,
         unique=False,
@@ -544,9 +509,14 @@ class Users(Table, tablename="users"):
         base_column=Integer(),
         secret=False,
     )
+    extra_links = JSONB(
+        nullable=False,
+        default={},
+        help_text="Extra links to be displayed in the bot's page",
+    )
 
 
-class Events(Table, tablename="events"):
+class WsEvents(Table, tablename="ws_events"):
     id = BigInt(
         default=0,
         null=False,
@@ -576,6 +546,51 @@ class Events(Table, tablename="events"):
         secret=False,
     )
 
+class BotEvents(Table, tablename="bot_events"):
+    id = UUID(
+        default=UUID4,
+        primary_key=True,
+    )
+    bot_id = ForeignKey(
+        references=Bots,
+        on_delete=OnDelete.cascade,
+        on_update=OnUpdate.cascade,
+        null=True,
+        primary_key=False,
+        unique=False,
+        secret=False,
+    )
+    event_type = Integer(
+        choices=enums.EventType,
+        null=False,
+        primary_key=False,
+        unique=False,
+        secret=False,
+    )
+
+    ts = Timestamptz(
+        default=TimestamptzNow(),
+        null=False,
+        primary_key=False,
+        unique=False,
+        secret=False,
+    )
+
+    reason = Text(
+        default="",
+        null=False,
+        primary_key=False,
+        unique=False,
+        secret=False,
+    )
+
+    css = Text(
+        default="",
+        null=False,
+        primary_key=False,
+        unique=False,
+        secret=False,
+    )
 
 class Features(Table, tablename="features"):
     id = Text(
@@ -801,53 +816,6 @@ class PlatformMap(Table, tablename="platform_map"):
         secret=False,
     )
 
-
-class Resources(Table, tablename="resources"):
-    id = UUID(
-        default=UUID4(),
-        null=False,
-        primary_key=True,
-        unique=False,
-        index=True,
-        secret=False,
-    )
-    target_id = BigInt(
-        default=0,
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    resource_title = Text(
-        default="",
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    resource_link = Text(
-        default="",
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    resource_description = Text(
-        default="",
-        null=False,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    target_type = Integer(
-        default=0,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-
-
 class ServerTags(Table, tablename="server_tags"):
     id = Text(
         default="",
@@ -925,7 +893,6 @@ class BotCommands(Table, tablename="bot_commands"):
         references=Bots,
         on_delete=OnDelete.cascade,
         on_update=OnUpdate.cascade,
-        target_column=None,
         null=True,
         primary_key=False,
         unique=False,
@@ -1011,48 +978,6 @@ class BotCommands(Table, tablename="bot_commands"):
     )
 
 
-class BotMaint(Table, tablename="bot_maint"):
-    id = UUID(
-        default=UUID4(),
-        null=False,
-        primary_key=True,
-        unique=False,
-        index=True,
-        secret=False,
-    )
-    bot_id = ForeignKey(
-        references=Bots,
-        on_delete=OnDelete.cascade,
-        on_update=OnUpdate.cascade,
-        target_column=None,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    reason = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    type = Integer(
-        default=0,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    epoch = BigInt(
-        default=0,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-
-
 class BotOwner(Table, tablename="bot_owner"):
     id = Serial(
         null=False,
@@ -1079,55 +1004,6 @@ class BotOwner(Table, tablename="bot_owner"):
     )
     main = Boolean(
         default=False,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-
-
-class BotPromotions(Table, tablename="bot_promotions"):
-    id = UUID(
-        default=UUID4(),
-        null=False,
-        primary_key=True,
-        unique=False,
-        index=True,
-        secret=False,
-    )
-    bot_id = ForeignKey(
-        references=Bots,
-        on_delete=OnDelete.cascade,
-        on_update=OnUpdate.cascade,
-        target_column=None,
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    title = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    info = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    css = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
-    type = Integer(
-        default=3,
         null=True,
         primary_key=False,
         unique=False,
@@ -1395,13 +1271,6 @@ class Servers(Table, tablename="servers"):
         unique=False,
         secret=False,
     )
-    website = Text(
-        default="",
-        null=True,
-        primary_key=False,
-        unique=False,
-        secret=False,
-    )
     invite_amount = Integer(
         default=0,
         null=True,
@@ -1586,6 +1455,12 @@ class Servers(Table, tablename="servers"):
         primary_key=False,
         unique=False,
         secret=False,
+    )
+
+    extra_links = JSONB(
+        nullable=False,
+        default={},
+        help_text="Extra links to be displayed in the bot's page",
     )
 
 

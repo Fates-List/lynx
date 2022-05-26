@@ -47,6 +47,11 @@ class BotState(IntEnum):
     private_viewable = 8
     private_staff_only = 9
 
+class EventType(IntEnum):
+    promotion = 0
+    maintenance = 1
+    announcement = 2
+
 class Vanity(IntEnum):
     server = 0
     bot = 1
