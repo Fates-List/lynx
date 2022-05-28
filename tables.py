@@ -624,7 +624,6 @@ class Features(Table, tablename="features"):
 
 class FrostpawClient(Table, tablename="frostpaw_clients"):
     id = Text(
-        null=False,
         primary_key=True,
         default=lambda: secrets.token_urlsafe().replace(".", "")
     )

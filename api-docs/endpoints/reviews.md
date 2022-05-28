@@ -269,7 +269,7 @@ also match the user token sent in the ``Authorization`` header
 
 - **epoch** => (Array) 
 - **replies** => (Array) 
-- **parent_id** => (Optional) string [ex "787c5040-1ac1-4ec2-ae0f-1b5bf8840054"]
+- **parent_id** => (Optional) string [ex "d6e28a81-dbf9-43e9-9071-7daf978faffe"]
 
 
 
@@ -295,7 +295,7 @@ also match the user token sent in the ``Authorization`` header
     },
     "epoch": [],
     "replies": [],
-    "parent_id": "787c5040-1ac1-4ec2-ae0f-1b5bf8840054"
+    "parent_id": "d6e28a81-dbf9-43e9-9071-7daf978faffe"
 }
 ```
 
@@ -362,7 +362,7 @@ also match the user token sent in the ``Authorization`` header
 
 **Request Body**
 
-- **id** => (Optional) string [ex "95e479f2-d77a-4e3c-a772-d2700121ee5f"]
+- **id** => (Optional) string [ex "44898553-a34f-4cf6-aab6-ac3e4d3ed4ca"]
 - **star_rating** => string [ex "0"]
 - **review_text** => string [ex ""]
 - **votes** => Struct ParsedReviewVotes 
@@ -392,7 +392,7 @@ also match the user token sent in the ``Authorization`` header
 
 ```json
 {
-    "id": "95e479f2-d77a-4e3c-a772-d2700121ee5f",
+    "id": "44898553-a34f-4cf6-aab6-ac3e4d3ed4ca",
     "star_rating": "0",
     "review_text": "",
     "votes": {
@@ -465,10 +465,76 @@ set this anyways so you might as well set it correctly.
 
 **Path Parameters**
 
-- **rid** => string [ex "2267bd1b-c753-4bf3-a93c-e6ff5bf817f3"]
+- **rid** => string [ex "4052b66d-ace6-4b22-a488-d2dc5abe47a9"]
 
 
 
+
+
+**Response Body**
+
+- **done** => bool [ex true]
+- **reason** => None (unknown value type)
+- **context** => None (unknown value type)
+
+
+
+**Response Body Example**
+
+```json
+{
+    "done": true,
+    "reason": null,
+    "context": null
+}
+```
+
+
+**Authorization Needed** | [User](#authorization)
+
+
+## Vote Review
+### PATCH `https://api.fateslist.xyz`/reviews/{rid}/votes
+
+Creates a vote for a review
+
+``rid`` must be a valid uuid.
+
+``user_id`` is *required* for this endpoint and must be the user making the review. It must
+also match the user token sent in the ``Authorization`` header. 
+
+**Unlike other review APIs, ``user_id`` here is in request body as ReviewVote object**
+
+A reviewable entity is currently only a bot or a server. Profile reviews are a possibility
+in the future.
+
+``target_type`` is a [TargetType](https://lynx.fateslist.xyz/docs/endpoints/enums#targettype)
+
+**This endpoint does not require ``target_type`` at all. You can safely omit it**
+                
+
+**Path Parameters**
+
+- **rid** => string [ex "77ad6e2f-97ff-4ea1-9253-7be33e6542fe"]
+
+
+
+
+**Request Body**
+
+- **user_id** => string [ex "user id here"]
+- **upvote** => bool [ex true]
+
+
+
+**Request Body Example**
+
+```json
+{
+    "user_id": "user id here",
+    "upvote": true
+}
+```
 
 
 **Response Body**

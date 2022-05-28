@@ -172,7 +172,7 @@ but must exist in the object
 
 **Request Body**
 
-- **id** => string [ex "51d80763-432b-43f6-9eca-68a57659c457"]
+- **id** => string [ex "a1211a0b-5775-4d95-95e6-081cbcda5184"]
 - **name** => string [ex ""]
 - **description** => string [ex ""]
 - **icon** => string [ex ""]
@@ -210,7 +210,7 @@ but must exist in the object
 
 ```json
 {
-    "id": "51d80763-432b-43f6-9eca-68a57659c457",
+    "id": "a1211a0b-5775-4d95-95e6-081cbcda5184",
     "name": "",
     "description": "",
     "icon": "",
@@ -274,7 +274,7 @@ Deletes a bot pack.
 **Path Parameters**
 
 - **user_id** => i64 [ex 0]
-- **pack_id** => string [ex "e0fb6a93-7361-40f0-817a-ceabf348824a"]
+- **pack_id** => string [ex "02790397-22ed-4670-b3c5-9f3c2539be25"]
 
 
 

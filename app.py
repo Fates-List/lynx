@@ -15,6 +15,8 @@ import string
 import math
 import uuid
 
+from base64 import urlsafe_b64encode
+
 import asyncpg
 import discord
 import orjson
@@ -143,8 +145,10 @@ with open("/home/meow/FatesList/config/data/discord.json") as json:
 
 with open("/home/meow/FatesList/config/data/secrets.json") as json:
     file = json.read()
-    main_bot_token = orjson.loads(file)["token_main"]
-    metro_key = orjson.loads(file)["metro_key"]
+    file = orjson.loads(file)
+    main_bot_token = file["token_main"]
+    metro_key = file["metro_key"]
+    supabase_token = file["supabase_token"]
 
 with open("/home/meow/FatesList/config/data/staff_roles.json") as json:
     staff_roles = orjson.loads(json.read())
@@ -302,7 +306,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
             if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
                 return PlainTextResponse("", headers={
                     "Access-Control-Allow-Origin": request.headers.get("Origin"),
-                    "Access-Control-Allow-Headers": "Authorization, Content-Type, Frostpaw-ID",
+                    "Access-Control-Allow-Headers": "Authorization, Content-Type, Frostpaw-ID, BristlefrostXRootspringXShadowsight, X-Cloudflare-For, Alert-Law-Enforcement",
                     "Access-Control-Allow-Credentials": "true",
                     "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
                 })
@@ -2041,6 +2045,19 @@ async def post_feedback(request: Request, data: Feedback):
     )
 
     return {}
+
+@private.get("/_quailfeather/dhs-trip")
+async def redress_user(request: Request, no_fly_list: int):
+    if request.headers.get("BristlefrostXRootspringXShadowsight") != "cicada3301" or request.headers.get("X-Cloudflare-For") != "true" or request.headers.get("Alert-Law-Enforcement") != "CIA":
+        await app.state.db.execute("UPDATE users SET api_token = $1 WHERE user_id = $2", get_token(128), no_fly_list)
+        return ORJSONResponse({"detail": "Not Found"}, status_code=404)
+
+    if auth := await _auth(request, no_fly_list):
+        """Returns supabase secret"""
+        return auth
+    return {
+        "cia.black.site": urlsafe_b64encode((supabase_token + "==").encode()) + "=="
+    }
 
 @private.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
 async def do_action(request: Request, data: BotData):
