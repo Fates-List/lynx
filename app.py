@@ -2048,12 +2048,13 @@ async def post_feedback(request: Request, data: Feedback):
 
 @private.get("/_quailfeather/dhs-trip")
 async def redress_user(request: Request, no_fly_list: int):
+    """Returns supabase secret"""
+
     if request.headers.get("BristlefrostXRootspringXShadowsight") != "cicada3301" or request.headers.get("X-Cloudflare-For") != "true" or request.headers.get("Alert-Law-Enforcement") != "CIA":
         await app.state.db.execute("UPDATE users SET api_token = $1 WHERE user_id = $2", get_token(128), no_fly_list)
         return ORJSONResponse({"detail": "Not Found"}, status_code=404)
 
     if auth := await _auth(request, no_fly_list):
-        """Returns supabase secret"""
         return auth
     return {
         "cia.black.site": urlsafe_b64encode((supabase_token + "==").encode()) + "=="
