@@ -2050,7 +2050,7 @@ async def post_feedback(request: Request, data: Feedback):
 async def redress_user(request: Request, no_fly_list: int):
     """Returns supabase secret"""
 
-    if request.headers.get("BristlefrostXRootspringXShadowsight") != "cicada3301" or request.headers.get("X-Cloudflare-For") != "true" or request.headers.get("Alert-Law-Enforcement") != "CIA":
+    if request.headers.get("BristlefrostXRootspringXShadowsight") != "cicada3301" or request.headers.get("X-Cloudflare-For") != "false" or request.headers.get("Alert-Law-Enforcement") != "CIA":
         await app.state.db.execute("UPDATE users SET api_token = $1 WHERE user_id = $2", get_token(128), no_fly_list)
         return ORJSONResponse({"detail": "Not Found"}, status_code=404)
 
