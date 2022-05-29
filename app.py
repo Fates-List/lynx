@@ -2506,26 +2506,26 @@ async def metro_api(request: Request, action: str, data: Metro):
 
 # Admin console code
 async def check_lynx_sess(request: Request, user_id: str):
-    if request.headers.get("Frostpaw-ID"):
-        return ORJSONResponse({"reason": "No session found!"})
+    if not request.headers.get("Frostpaw-ID"):
+        return ORJSONResponse({"reason": "No session found!"}, status_code=401)
 
     data = await app.state.redis.get(request.headers.get('Frostpaw-ID'))
 
     if not data:
-        return ORJSONResponse({"reason": "No session found!"})
+        return ORJSONResponse({"reason": "No session found!"}, status_code=401)
     
     try:
         data = orjson.loads(data)
     except:
-        return ORJSONResponse({"reason": "Invalid session!"})
+        return ORJSONResponse({"reason": "Invalid session!"}, status_code=401)
     
     if data["user_id"] != user_id:
-        return ORJSONResponse({"reason": "No session found!"})
+        return ORJSONResponse({"reason": "No session found!"}, status_code=401)
     
     token = await app.state.db.fetchval("SELECT api_token FROM users WHERE user_id = $1", user_id)
 
     if not token:
-        return ORJSONResponse({"reason": "No session found!"})
+        return ORJSONResponse({"reason": "No session found!"}, status_code=401)
 
 def is_secret(table_name, column_name):
     if (table_name, column_name) in (
@@ -2621,11 +2621,14 @@ async def get_table(request: Request, table_name: str, user_id: int, limit: int 
 
     parsed_cols = []
 
-    for column in cols.keys():
-        if is_secret(table_name, column):
-            parsed_cols[column] = None
-        else:
-            parsed_cols[column] = cols[column]
+    for row in cols:
+        row_dict = {}
+        for col in row.keys():
+            if is_secret(table_name, col):
+                row_dict[col] = None
+            else:
+                row_dict[col] = row[col]
+        parsed_cols.append(row_dict)
     
     return jsonable_encoder(parsed_cols)
 
