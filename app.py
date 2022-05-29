@@ -309,7 +309,7 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
             if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
                 return PlainTextResponse("", headers={
                     "Access-Control-Allow-Origin": request.headers.get("Origin"),
-                    "Access-Control-Allow-Headers": "Authorization, Content-Type, Frostpaw-ID, BristlefrostXRootspringXShadowsight, X-Cloudflare-For, Alert-Law-Enforcement",
+                    "Access-Control-Allow-Headers": "Authorization, Content-Type, Frostpaw-ID, Frostpaw-MFA, BristlefrostXRootspringXShadowsight, X-Cloudflare-For, Alert-Law-Enforcement",
                     "Access-Control-Allow-Credentials": "true",
                     "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
                 })
@@ -1750,9 +1750,12 @@ async def staff_verify(request: Request, user_id: int, code: str):
         except:
             return ORJSONResponse({"reason": "Failed to create user on lynx. Please contact Rootspring#6701"}, status_code=400)
 
+        hashed_pwd = hashlib.blake2b(password.encode()).hexdigest()
+
         await app.state.db.execute(
-            "UPDATE users SET staff_verify_code = $1 WHERE user_id = $2",
+            "UPDATE users SET staff_verify_code = $1, staff_password = $2 WHERE user_id = $3",
             code,
+            hashed_pwd,
             user_id,
         )
 
@@ -2502,6 +2505,20 @@ async def metro_api(request: Request, action: str, data: Metro):
 # End of metro code
 
 # Admin console code
+def is_secret(table_name, column_name):
+    if (table_name, column_name) in (
+        ("bots", "api_token"),
+        ("bots", "webhook_secret"),
+        ("users", "api_token"),
+        ("users", "staff_password"),
+        ("users", "totp_shared_key"),
+        ("users", "supabase_id"),
+        ("servers", "api_token"),
+        ("servers", "webhook_secret"),
+    ):
+        return True
+    return False
+
 async def get_schema(table_name: str = None):
     schemas = await app.state.db.fetch("""
         SELECT *, c.data_type AS data_type, e.data_type AS element_type FROM information_schema.columns c LEFT JOIN information_schema.element_types e
@@ -2515,13 +2532,27 @@ async def get_schema(table_name: str = None):
     for schema in schemas:
         if table_name and schema["table_name"] != table_name:
             continue
+    
+        # Handle default
+        if schema['column_default']:
+            async with app.state.db.acquire() as conn:
+                async with conn.transaction():
+                    try:
+                        default = await conn.fetchval(f"SELECT {schema['column_default']}")
+                    except Exception as exc:
+                        ... 
+        else:
+            default = None
+
         parsed.append({
             "nullable": schema["is_nullable"] == "YES",
             "array": schema["data_type"] == "ARRAY",
             "type": schema["data_type"] if schema["data_type"] != "ARRAY" else schema["element_type"],
             "column_name": schema["column_name"],
             "table_name": schema["table_name"],
-            "default": schema["column_default"]
+            "default_sql": schema["column_default"],
+            "default_val": default,
+            "secret": is_secret(schema["table_name"], schema["column_name"])
         })
 
     return parsed
@@ -2530,8 +2561,17 @@ async def get_schema(table_name: str = None):
 async def schema(table_name: str = None):
     return jsonable_encoder(await get_schema(table_name))
 
+@private.get("/_quailfeather/ap/schema/allowed-tables")
+async def allowed_tables(request: Request, user_id: int):
+    if auth := await _auth(request, user_id):
+        return auth
+
+    if request.state.member.perm < 5:
+        return limited_view
+    return None # No limits
+
 # JWT dummy backend
-@private.post("/_quailfeather/dummy-jwt")
+@private.get("/_quailfeather/dummy-jwt")
 async def dummy_jwt(request: Request, user_id: int):
     # TODO: Supabase auth
     if auth := await _auth(request, user_id):
@@ -2552,17 +2592,46 @@ async def login_user(request: Request, user_id: int):
             "staff_verify": True
         }, status_code=400)
 
-    got_jwt = request.headers.get("Frostpaw-ID")
+    try:
+        got_jwt = request.headers.get("Frostpaw-ID")
+        auth = jwt.decode(got_jwt, supabase_jwt_key, algorithms=["HS256"])
+    except Exception as exc:
+        return ORJSONResponse({
+            "reason": f"Invalid JWT {exc}"
+        }, status_code=400)
 
-    auth = jwt.decode(got_jwt, supabase_jwt_key)
+    password = request.headers.get("BristlefrostXRootspringXShadowsight", "")
 
-    session = get_token(4096)
+    password_blake = await app.state.db.fetchval("SELECT staff_password FROM users WHERE user_id = $1", user_id)
 
-    await app.state.redis.set(session, {
-        "jwt": jwt,
+    if hashlib.blake2b(password.encode()).hexdigest() != password_blake:
+        return ORJSONResponse({
+            "reason": "Invalid password"
+        }, status_code=400)
+
+    mfa_key = request.headers.get("Frostpaw-MFA")
+
+    if not mfa_key:
+        return ORJSONResponse({
+            "reason": "Missing MFA key"
+        }, status_code=400)
+
+    mfa_shared_key = await app.state.db.fetchval("SELECT totp_shared_key FROM users WHERE user_id = $1", user_id)
+    
+    if not pyotp.totp.TOTP(mfa_shared_key).verify(mfa_key):
+        return ORJSONResponse({
+            "reason": "Invalid MFA key"
+        }, status_code=400)
+
+    session = get_token(512)
+
+    await app.state.redis.set(session, orjson.dumps({
+        "jwt": auth,
         "user_id": user_id,
         "token": request.headers["Authorization"]
-    }, ex=60*60)
+    }), ex=60*60)
+
+    await app.state.redis.set("user-session", session) # This is the current *and only* valid session
 
     return session
 
