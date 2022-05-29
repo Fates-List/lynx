@@ -2608,6 +2608,9 @@ async def allowed_tables(request: Request, user_id: int):
 async def get_table(request: Request, table_name: str, user_id: int, limit: int = 50, offset: int = 0):
     if auth := await check_lynx_sess(request, user_id):
         return auth
+    
+    if auth := await _auth(request, user_id):
+        return auth
 
     schema = await get_schema(table_name)
 
