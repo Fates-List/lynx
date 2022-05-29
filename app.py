@@ -2530,6 +2530,7 @@ async def check_lynx_sess(request: Request, user_id: str):
 def is_secret(table_name, column_name):
     if (table_name, column_name) in (
         ("bots", "api_token"),
+        ("bots", "webhook"),
         ("bots", "webhook_secret"),
         ("users", "api_token"),
         ("users", "staff_password"),
@@ -2604,6 +2605,15 @@ async def allowed_tables(request: Request, user_id: int):
         return limited_view
     return None # No limits
 
+@private.get("/_quailfeather/ap/tables/{table_name}/count")
+async def table_count(table_name: str):
+    schema = await get_schema(table_name)
+
+    if not schema:
+        return {"reason": "Table does not exist!"}
+
+    return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name}")
+
 @private.get("/_quailfeather/ap/tables/{table_name}")
 async def get_table(request: Request, table_name: str, user_id: int, limit: int = 50, offset: int = 0):
     if auth := await check_lynx_sess(request, user_id):
@@ -2628,6 +2638,9 @@ async def get_table(request: Request, table_name: str, user_id: int, limit: int 
                 row_dict[col] = None
             else:
                 row_dict[col] = row[col]
+
+                if isinstance(row[col], int) and row[col] > 9007199254740991:
+                    row_dict[col] = str(row[col])
         parsed_cols.append(row_dict)
     
     return jsonable_encoder(parsed_cols)
