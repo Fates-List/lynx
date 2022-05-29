@@ -2604,7 +2604,7 @@ async def allowed_tables(request: Request, user_id: int):
         return limited_view
     return None # No limits
 
-@private.get("/_quailfeatjer/ap/tables/{table_name}")
+@private.get("/_quailfeather/ap/tables/{table_name}")
 async def get_table(request: Request, table_name: str, user_id: int, limit: int = 50, offset: int = 0):
     if auth := await check_lynx_sess(request, user_id):
         return auth
