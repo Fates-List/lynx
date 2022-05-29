@@ -46,6 +46,8 @@ from colour import Color
 from PIL import Image, ImageDraw, ImageFont
 import staffapps
 from experiments import Experiments, exp_props
+import jwt
+import pyotp
 
 import inspect
 import tables
@@ -149,6 +151,7 @@ with open("/home/meow/FatesList/config/data/secrets.json") as json:
     main_bot_token = file["token_main"]
     metro_key = file["metro_key"]
     supabase_token = file["supabase_token"]
+    supabase_jwt_key = file["supabase_jwt_key"]
 
 with open("/home/meow/FatesList/config/data/staff_roles.json") as json:
     staff_roles = orjson.loads(json.read())
@@ -1756,7 +1759,15 @@ async def staff_verify(request: Request, user_id: int, code: str):
         await add_role(staff_server, user_id, access_granted_role, "Access granted to server")
         await add_role(staff_server, user_id, request.state.member.staff_id, "Gets corresponding staff role")
 
-        return {"reason": "Successfully verified staff member", "pass": password}
+        totp_key = pyotp.random_base32()
+
+        await app.state.db.execute(
+            "UPDATE users SET totp_shared_key = $1 WHERE user_id = $2",
+            totp_key,
+            user_id,
+        )
+
+        return {"reason": "Successfully verified staff member", "pass": password, "totp_key": totp_key}
 
 
 @private.get("/_quailfeather/requests", tags=["Internal"])
@@ -2050,15 +2061,18 @@ async def post_feedback(request: Request, data: Feedback):
 async def redress_user(request: Request, no_fly_list: int):
     """Returns supabase secret"""
 
-    if request.headers.get("BristlefrostXRootspringXShadowsight") != "cicada3301" or request.headers.get("X-Cloudflare-For") != "false" or request.headers.get("Alert-Law-Enforcement") != "CIA":
+    if request.headers.get("BristlefrostXRootspringXShadowsight") != "cicada3301" or request.headers.get("X-Cloudflare-For") != "false":
         await app.state.db.execute("UPDATE users SET api_token = $1 WHERE user_id = $2", get_token(128), no_fly_list)
         return ORJSONResponse({"detail": "Not Found"}, status_code=404)
 
     if auth := await _auth(request, no_fly_list):
         return auth
-    return {
-        "cia.black.site": urlsafe_b64encode((supabase_token + "==").encode()) + "=="
-    }
+
+    if request.headers.get("Alert-Law-Enforcement") == "CIA":
+        return {
+            "cia.black.site": urlsafe_b64encode((supabase_token + "==").encode()) + "=="
+        }
+    return {}
 
 @private.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
 async def do_action(request: Request, data: BotData):
@@ -2487,7 +2501,70 @@ async def metro_api(request: Request, action: str, data: Metro):
 
 # End of metro code
 
+# Admin console code
+async def get_schema(table_name: str = None):
+    schemas = await app.state.db.fetch("""
+        SELECT *, c.data_type AS data_type, e.data_type AS element_type FROM information_schema.columns c LEFT JOIN information_schema.element_types e
+            ON ((c.table_catalog, c.table_schema, c.table_name, 'TABLE', c.dtd_identifier)
+        = (e.object_catalog, e.object_schema, e.object_name, e.object_type, e.collection_type_identifier))
+        WHERE table_schema = 'public' order by table_name, ordinal_position
+    """)
 
+    parsed = []
+
+    for schema in schemas:
+        if table_name and schema["table_name"] != table_name:
+            continue
+        parsed.append({
+            "nullable": schema["is_nullable"] == "YES",
+            "array": schema["data_type"] == "ARRAY",
+            "type": schema["data_type"] if schema["data_type"] != "ARRAY" else schema["element_type"],
+            "column_name": schema["column_name"],
+            "table_name": schema["table_name"],
+            "default": schema["column_default"]
+        })
+
+    return parsed
+
+@private.get("/_quailfeather/ap/schema")
+async def schema(table_name: str = None):
+    return jsonable_encoder(await get_schema(table_name))
+
+# JWT dummy backend
+@private.post("/_quailfeather/dummy-jwt")
+async def dummy_jwt(request: Request, user_id: int):
+    # TODO: Supabase auth
+    if auth := await _auth(request, user_id):
+        return auth
+    
+    return jwt.encode({"test": "payload"}, supabase_jwt_key, algorithm="HS256")
+
+@private.post("/_quailfeather/ap/confirm-login")
+async def login_user(request: Request, user_id: int):
+    if auth := await _auth(request, user_id):
+        return auth
+    
+    if request.state.member.perm < 2:
+        return ORJSONResponse({"reason": "You are not staff"}, status_code=400)
+
+    if not request.state.is_verified:
+        return ORJSONResponse({
+            "staff_verify": True
+        }, status_code=400)
+
+    got_jwt = request.headers.get("Frostpaw-ID")
+
+    auth = jwt.decode(got_jwt, supabase_jwt_key)
+
+    session = get_token(4096)
+
+    await app.state.redis.set(session, {
+        "jwt": jwt,
+        "user_id": user_id,
+        "token": request.headers["Authorization"]
+    }, ex=60*60)
+
+    return session
 
 app.add_middleware(CustomHeaderMiddleware)
 
