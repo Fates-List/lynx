@@ -2505,6 +2505,28 @@ async def metro_api(request: Request, action: str, data: Metro):
 # End of metro code
 
 # Admin console code
+async def check_lynx_sess(request: Request, user_id: str):
+    if request.headers.get("Frostpaw-ID"):
+        return ORJSONResponse({"reason": "No session found!"})
+
+    data = await app.state.redis.get(request.headers.get('Frostpaw-ID'))
+
+    if not data:
+        return ORJSONResponse({"reason": "No session found!"})
+    
+    try:
+        data = orjson.loads(data)
+    except:
+        return ORJSONResponse({"reason": "Invalid session!"})
+    
+    if data["user_id"] != user_id:
+        return ORJSONResponse({"reason": "No session found!"})
+    
+    token = await app.state.db.fetchval("SELECT api_token FROM users WHERE user_id = $1", user_id)
+
+    if not token:
+        return ORJSONResponse({"reason": "No session found!"})
+
 def is_secret(table_name, column_name):
     if (table_name, column_name) in (
         ("bots", "api_token"),
@@ -2518,6 +2540,16 @@ def is_secret(table_name, column_name):
     ):
         return True
     return False
+
+async def get_primary(table_name: str):
+    return await app.state.db.fetchval("""
+    SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type
+    FROM   pg_index i
+    JOIN   pg_attribute a ON a.attrelid = i.indrelid
+                        AND a.attnum = ANY(i.indkey)
+    WHERE  i.indrelid = $1::regclass
+    AND    i.indisprimary
+    """, table_name)
 
 async def get_schema(table_name: str = None):
     schemas = await app.state.db.fetch("""
@@ -2550,6 +2582,7 @@ async def get_schema(table_name: str = None):
             "type": schema["data_type"] if schema["data_type"] != "ARRAY" else schema["element_type"],
             "column_name": schema["column_name"],
             "table_name": schema["table_name"],
+            "pkey": await get_primary(schema["table_name"]),
             "default_sql": schema["column_default"],
             "default_val": default,
             "secret": is_secret(schema["table_name"], schema["column_name"])
@@ -2559,6 +2592,7 @@ async def get_schema(table_name: str = None):
 
 @private.get("/_quailfeather/ap/schema")
 async def schema(table_name: str = None):
+    print("Got here")
     return jsonable_encoder(await get_schema(table_name))
 
 @private.get("/_quailfeather/ap/schema/allowed-tables")
@@ -2569,6 +2603,28 @@ async def allowed_tables(request: Request, user_id: int):
     if request.state.member.perm < 5:
         return limited_view
     return None # No limits
+
+@private.get("/_quailfeatjer/ap/tables/{table_name}")
+async def get_table(request: Request, table_name: str, user_id: int, limit: int = 50, offset: int = 0):
+    if auth := await check_lynx_sess(request, user_id):
+        return auth
+
+    schema = await get_schema(table_name)
+
+    if not schema:
+        return {"reason": "Table does not exist!"}
+
+    cols = await app.state.db.fetch(f"SELECT * FROM {table_name} LIMIT $1 OFFSET $2", limit, offset)
+
+    parsed_cols = []
+
+    for column in cols.keys():
+        if is_secret(table_name, column):
+            parsed_cols[column] = None
+        else:
+            parsed_cols[column] = cols[column]
+    
+    return jsonable_encoder(parsed_cols)
 
 # JWT dummy backend
 @private.get("/_quailfeather/dummy-jwt")
