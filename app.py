@@ -33,11 +33,9 @@ from fastapi import FastAPI, WebSocket, HTTPException, Request, Response, APIRou
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import StreamingResponse, ORJSONResponse, PlainTextResponse
 from fastapi.exceptions import HTTPException
-from starlette.concurrency import iterate_in_threadpool
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
-from starlette.routing import Mount
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from colour import Color
 from PIL import Image, ImageDraw, ImageFont
@@ -50,8 +48,6 @@ debug = False
 
 limited_view = ["reviews", "review_votes", "bot_packs", "vanity", "leave_of_absence", "user_vote_table",
                 "lynx_surveys", "lynx_survey_responses"]
-
-limited_view_api = tuple(map(lambda el: f"/_admin/api/tables/{el}", limited_view))
 
 
 class SPLDEvent(enum.Enum):
@@ -1353,40 +1349,6 @@ async def startup():
 class Loa(BaseModel):
     reason: str
     duration: str
-
-@private.get("/_quailfeather/ap-login", tags=["Internal"])
-async def ap_login(nonce: str):
-    nonce_info = await app.state.redis.get(nonce)
-    if not nonce_info:
-        return PlainTextResponse("Invalid nonce")
-    return HTMLResponse("""
-<meta http-equiv = "refresh" content = "2; url = /_admin" />
-<a href = "/_admin">Redirecting to admin panel...</a>
-    """, headers={
-        "Set-Cookie": f"lynx-session={nonce}; SameSite=Strict; Secure; HttpOnly; Path=/",
-    })
-
-@private.get("/_quailfeather/nonce", tags=["Internal"])
-async def get_otp(request: Request):
-    if auth := await _auth(request, request.headers.get("Frostpaw-ID", "")):
-        return auth
-
-    if request.state.member.perm < 2:
-        return ORJSONResponse({"reason": "You are not staff"}, status_code=400)
-
-    if not request.state.is_verified:
-        return ORJSONResponse({
-            "staff_verify": True
-        }, status_code=400)
-    
-    nonce = get_token(512)
-
-    await app.state.redis.set(nonce, orjson.dumps({
-        "token": request.headers["Authorization"],
-        "id": int(request.headers["Frostpaw-ID"]),
-    }), ex=60*15)
-
-    return {"nonce": nonce}
 
 @private.post("/_quailfeather/staff-apps", tags=["Internal"])
 async def staff_apps(request: Request, user_id: int):
