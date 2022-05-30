@@ -33,9 +33,6 @@ from fastapi import FastAPI, WebSocket, HTTPException, Request, Response, APIRou
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import StreamingResponse, ORJSONResponse, PlainTextResponse
 from fastapi.exceptions import HTTPException
-from piccolo.apps.user.tables import BaseUser
-from piccolo.engine import engine_finder
-from piccolo_admin.endpoints import create_admin
 from starlette.concurrency import iterate_in_threadpool
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -48,22 +45,6 @@ import staffapps
 from experiments import Experiments, exp_props
 import jwt
 import pyotp
-
-import inspect
-import tables
-import piccolo
-
-_tables = []
-
-tables_dict = vars(tables)
-
-for obj in tables_dict.values():
-    if obj == tables.Table:
-        continue
-    if inspect.isclass(obj) and isinstance(obj, piccolo.table.TableMetaclass):
-        _tables.append(obj)
-
-print(_tables)
 
 debug = False
 
@@ -250,56 +231,6 @@ async def is_staff(user_id: int, base_perm: int) -> Union[bool, int, StaffMember
 with open("api-docs/staff-guide.md") as f:
     staff_guide_md = f.read()
 
-admin = create_admin(
-   _tables,
-    allowed_hosts=["lynx.fateslist.xyz"],
-    production=True,
-    site_name="Lynx Admin"
-)
-
-async def auth_user_cookies(request: Request):
-    if request.cookies.get("lynx-session"):
-        session = await app.state.redis.get(request.cookies['lynx-session'])
-        if session:
-            request.scope["sunbeam_user"] = orjson.loads(session)
-        else:
-            request.scope["sunbeam_user"] = {
-                "id": "0",
-                "token": "0",
-            }
-
-        request.scope["sunbeam_user"]["user"] = {
-            "id": request.scope["sunbeam_user"]["id"],
-        }
-
-        check = await app.state.db.fetchval(
-            "SELECT user_id FROM users WHERE user_id = $1 AND api_token = $2",
-            int(request.scope["sunbeam_user"]["user"]["id"]),
-            request.scope["sunbeam_user"]["token"]
-        )
-        if not check:
-            print("Undoing login due to relogin requirement")
-            del request.scope["sunbeam_user"]
-            return
-
-        _, _, member = await is_staff(int(request.scope["sunbeam_user"]["user"]["id"]), 2)
-
-        request.state.member = member
-    else:
-        request.state.member = StaffMember(name="Unknown", id=0, perm=1, staff_id=0)
-
-    if request.state.member.perm >= 2:
-        staff_verify_code = await app.state.db.fetchval(
-            "SELECT staff_verify_code FROM users WHERE user_id = $1",
-            int(request.scope["sunbeam_user"]["user"]["id"])
-        )
-
-        request.state.is_verified = True
-
-        if not staff_verify_code or not code_check(staff_verify_code, int(request.scope["sunbeam_user"]["user"]["id"])):
-            request.state.is_verified = False
-
-
 class CustomHeaderMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         if request.url.path in ("/widgets", "/widgets"):
@@ -320,131 +251,13 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
                 response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
             return response
 
-        print("[LYNX] Admin request. Middleware started")
-
-        await auth_user_cookies(request)
-
-        if not request.scope.get("sunbeam_user"):
-            return ORJSONResponse({"detail": "Invalid nonce"}, status_code=400)
-
-        member: StaffMember = request.state.member
-        perm = member.perm
-
-        # Before erroring, ensure they are perm of at least 2 and have no staff_verify_code set
-        if member.perm < 2: 
-            return ORJSONResponse({"detail": "Not staff"}, status_code=400)
-        elif not request.state.is_verified:
-            return ORJSONResponse({"detail": "Not staff verified"}, status_code=400)
-
-        # Perm check
-
-        if request.url.path.startswith("/_admin/api"):
-            if request.url.path == "/_admin/api/tables/" and perm < 5:
-                return ORJSONResponse(limited_view)
-            elif request.url.path == "/_admin/api/tables/users/ids/" and request.method == "GET":
-                pass
-            elif request.url.path in (
-                    "/_admin/api/forms/", "/_admin/api/user/", "/_admin/api/openapi.json") or request.url.path.startswith(
-                "/_admin/api/docs"):
-                pass
-            elif perm < 4:
-                if request.url.path.startswith("/_admin/api/tables/vanity"):
-                    if request.method != "GET":
-                        return ORJSONResponse({"error": "You do not have permission to update vanity"}, status_code=403)
-
-                elif request.url.path.startswith("/_admin/api/tables/bot_packs"):
-                    if request.method != "GET":
-                        return ORJSONResponse({"error": "You do not have permission to update bot packs"},
-                                              status_code=403)
-
-                elif request.url.path.startswith("/_admin/api/tables/leave_of_absence/") and request.method in (
-                        "PATCH", "DELETE"):
-                    ids = request.url.path.split("/")
-                    loa_id = None
-                    for id in ids:
-                        if id.isdigit():
-                            loa_id = int(id)
-                            break
-                    else:
-                        return ORJSONResponse({"error": "Invalid leave of absence ID"}, status_code=403)
-
-                    user_id = await app.state.db.fetchval("SELECT user_id::text FROM leave_of_absence WHERE id = $1",
-                                                          loa_id)
-                    if user_id != request.scope["sunbeam_user"]["user"]["id"]:
-                        return ORJSONResponse({"error": "You do not have permission to update this leave of absence"},
-                                              status_code=403)
-
-                elif not request.url.path.startswith(limited_view_api):
-                    return ORJSONResponse({"error": "You do not have permission to access this page"}, status_code=403)
-
-        key = "rl:%s" % request.scope["sunbeam_user"]["user"]["id"]
-        check = await app.state.redis.get(key)
-        if not check:
-            rl = await app.state.redis.set(key, "0", ex=30)
-        if request.method != "GET":
-            rl = await app.state.redis.incr(key)
-            if int(rl) > 10:
-                expire = await app.state.redis.ttl(key)
-                await app.state.db.execute("UPDATE users SET api_token = $1 WHERE user_id = $2", get_token(128),
-                                           int(request.scope["sunbeam_user"]["user"]["id"]))
-                return ORJSONResponse({"detail": f"[LYNX] RatelimitError: {expire=}; API_TOKEN_RESET"},
-                                      status_code=429)
-
-        if request.url.path.startswith("/meta"):
-            return ORJSONResponse({"piccolo_admin_version": "0.1a1", "site_name": "Lynx Admin"})
-
-        request.state.user_id = int(request.scope["sunbeam_user"]["user"]["id"])
-
-        response = await call_next(request)
-
-        await app.state.db.execute(
-            "INSERT INTO lynx_logs (user_id, method, url, status_code) VALUES ($1, $2, $3, $4)",
-            int(request.scope["sunbeam_user"]["user"]["id"]),
-            request.method,
-            str(request.url),
-            response.status_code
-        )
-
-        if not response.status_code < 400:
-            return response
-
-        try:
-            print(request.user.user.username)
-        except:
-            request.scope["user"] = Unknown()
-
-        if request.url.path.startswith("/_admin/api/tables/leave_of_absence") and request.method == "POST":
-            response_body = [section async for section in response.body_iterator]
-            response.body_iterator = iterate_in_threadpool(iter(response_body))
-            content = response_body[0]
-            content_dict = orjson.loads(content)
-            await app.state.db.execute("UPDATE leave_of_absence SET user_id = $1 WHERE id = $2",
-                                       int(request.scope["sunbeam_user"]["user"]["id"]), content_dict[0]["id"])
-            return ORJSONResponse(content_dict)
-
-        if request.url.path.startswith("/_admin/api/tables/bots") and request.method == "PATCH":
-            print("Got bot edit, sending message")
-            path = request.url.path.rstrip("/")
-            bot_id = int(path.split("/")[-1])
-            print("Got bot id: ", bot_id)
-            owner = await app.state.db.fetchval("SELECT owner FROM bot_owner WHERE bot_id = $1", bot_id)
-            embed = Embed(
-                title="Bot Edited Via Lynx",
-                description=f"Bot <@{bot_id}> has been edited via Lynx by user {request.user.user.username}",
-                color=0x00ff00,
-                url=f"https://fateslist.xyz/bot/{bot_id}"
-            )
-            await send_message({"content": f"<@{owner}>", "embed": embed, "channel_id": bot_logs})
-
-        return response
+        return await call_next(request)
 
 async def server_error(request, exc):
     return HTMLResponse(content="Error", status_code=exc.status_code)
 
 
-app = FastAPI(routes=[
-    Mount("/_admin", admin),
-],
+app = FastAPI(
     title="Lynx Widgets API",
     description="This is the public widgets API for Fates List",
     docs_url=None,
@@ -462,46 +275,6 @@ private = APIRouter(include_in_schema=False)
 
 public = APIRouter(include_in_schema=True)
 
-def bot_select(id: str, bot_list: list[str], reason: bool = False):
-    select = f"""
-<label for='{id}'>Choose a bot</label><br/>
-<select name='{id}' {id=}> 
-<option value="" disabled selected>Select your option</option>
-    """
-
-    for bot in bot_list:
-        select += f"""
-<option value="{bot['bot_id']}">{bot['username_cached'] or 'No cached username'} ({bot['bot_id']})</option>
-        """
-
-    select += "</select><br/>"
-
-    # Add a input for bot id instead of select
-    select += f"""
-<div class="form-group">
-<label for="{id}-alt">Or enter a Bot ID</label><br/>
-<input class="form-control" type="number" id="{id}-alt" name="{id}-alt" placeholder="Bot ID..."/>
-</div>
-<br/>
-    """
-
-    if reason:
-        select += f"""
-<div class="form-group">
-<label for="{id}-reason">Reason</label><br/>
-<textarea 
-    class="form-control"
-    type="text" 
-    id="{id}-reason" 
-    name="{id}-reason"
-    placeholder="Enter reason and feedback for improvement here"
-></textarea>
-</div>
-<br/>
-        """
-
-    return select
-
 class ActionWithReason(BaseModel):
     bot_id: str
     owners: list[dict] | None = None  # This is filled in by action decorator
@@ -511,7 +284,6 @@ class ActionWithReason(BaseModel):
 
 
 app.state.bot_actions = {}
-
 
 def action(
         name: str,
@@ -1565,13 +1337,10 @@ print(app.state.bot_actions)
 
 @app.on_event("startup")
 async def startup():
-    engine = engine_finder()
-    app.state.engine = engine
     app.state.redis = aioredis.from_url("redis://localhost:1001", db=1)
     app.state.db = await asyncpg.create_pool()
     app.state.discord = discord.Client(intents=discord.Intents(guilds=True, members=True))
     asyncio.create_task(app.state.discord.start(main_bot_token))
-    await engine.start_connection_pool()
 
     # Do db sanity check
     bots = await app.state.db.fetch("SELECT bot_id FROM bots")
@@ -1737,18 +1506,6 @@ async def staff_verify(request: Request, user_id: int, code: str):
     else:
         username = (await fetch_user(user_id))["username"]
         password = get_token(96)
-
-        try:
-            await app.state.db.execute("DELETE FROM piccolo_user WHERE username = $1", username)
-            await BaseUser.create_user(
-                username=username,
-                password=password,
-                email=username + "@fateslist.xyz",
-                active=True,
-                admin=True
-            )
-        except:
-            return ORJSONResponse({"reason": "Failed to create user on lynx. Please contact Rootspring#6701"}, status_code=400)
 
         hashed_pwd = hashlib.blake2b(password.encode()).hexdigest()
 
