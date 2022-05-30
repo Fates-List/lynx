@@ -2622,6 +2622,9 @@ async def get_table(request: Request, table_name: str, user_id: int, limit: int 
     if auth := await _auth(request, user_id):
         return auth
 
+    limit = min(limit, 50)
+    offset = max(offset, 0)
+
     schema = await get_schema(table_name)
 
     if not schema:
