@@ -2668,8 +2668,8 @@ async def get_table(
         
         if search_val == "null":
             cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text IS NULL LIMIT $1 OFFSET $2", limit, offset)
-
-        cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text ILIKE $1::text LIMIT $2 OFFSET $3", f"%{search_val}%", limit, offset)
+        else:
+            cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text ILIKE $1::text LIMIT $2 OFFSET $3", f"%{search_val}%", limit, offset)
 
     parsed_cols = []
 
