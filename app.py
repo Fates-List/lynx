@@ -1791,6 +1791,7 @@ async def redress_user(request: Request, no_fly_list: int):
         return {
             "cia.black.site": urlsafe_b64encode((supabase_token + "==").encode()).decode() + "=="
         }
+    raise Exception("No ale")
 
 @private.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
 async def do_action(request: Request, data: BotData):
@@ -2219,6 +2220,8 @@ async def metro_api(request: Request, action: str, data: Metro):
 
 # End of metro code
 
+
+
 # Admin console code
 async def check_lynx_sess(request: Request, user_id: str):
     if not request.headers.get("Frostpaw-ID"):
@@ -2257,16 +2260,6 @@ def is_secret(table_name, column_name):
         return True
     return False
 
-async def get_primary(table_name: str):
-    return await app.state.db.fetchval("""
-    SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type
-    FROM   pg_index i
-    JOIN   pg_attribute a ON a.attrelid = i.indrelid
-                        AND a.attnum = ANY(i.indkey)
-    WHERE  i.indrelid = $1::regclass
-    AND    i.indisprimary
-    """, table_name)
-
 async def get_schema(table_name: str = None):
     schemas = await app.state.db.fetch("""
         SELECT *, c.data_type AS data_type, e.data_type AS element_type FROM information_schema.columns c LEFT JOIN information_schema.element_types e
@@ -2277,10 +2270,7 @@ async def get_schema(table_name: str = None):
 
     parsed = []
 
-    for schema in schemas:
-        if table_name and schema["table_name"] != table_name:
-            continue
-    
+    for schema in schemas:    
         # Handle default
         if schema['column_default']:
             async with app.state.db.acquire() as conn:
@@ -2292,13 +2282,22 @@ async def get_schema(table_name: str = None):
         else:
             default = None
 
+        # Check if table is tagged by panel
+        try:
+            await app.state.db.fetchval(f"SELECT _lynxtag FROM {schema['table_name']}")
+        except asyncpg.UndefinedColumnError:
+            # Since all operations calling get_bot call get_schema, we can just tag every bot now
+            await app.state.db.execute(f"ALTER TABLE {schema['table_name']} ADD COLUMN _lynxtag uuid not null unique default uuid_generate_v4()")
+
+        if table_name and schema["table_name"] != table_name:
+            continue
+
         parsed.append({
             "nullable": schema["is_nullable"] == "YES",
             "array": schema["data_type"] == "ARRAY",
             "type": schema["data_type"] if schema["data_type"] != "ARRAY" else schema["element_type"],
             "column_name": schema["column_name"],
             "table_name": schema["table_name"],
-            "pkey": await get_primary(schema["table_name"]),
             "default_sql": schema["column_default"],
             "default_val": default,
             "secret": is_secret(schema["table_name"], schema["column_name"])
@@ -2369,7 +2368,8 @@ async def get_table(
     limit: int = 50, 
     offset: int = 0,
     search_by: str = None,
-    search_val: str = None
+    search_val: str = None,
+    lynx_tag: str = None, # Internally used by site, should not exposed to clients
 ):
     if auth := await _auth(request, user_id):
         return auth
@@ -2385,7 +2385,9 @@ async def get_table(
     if not schema:
         return ORJSONResponse({"reason": "Table does not exist!"}, status_code=400)
 
-    if not search_by or not search_val:
+    if lynx_tag:
+        cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE _lynxtag = $1", lynx_tag)
+    elif not search_by or not search_val:
         cols = await app.state.db.fetch(f"SELECT * FROM {table_name} LIMIT $1 OFFSET $2", limit, offset)
     else:
         # Check col first
