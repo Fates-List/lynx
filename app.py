@@ -2621,6 +2621,15 @@ async def table_count(table_name: str, search_by: str = None, search_val: str = 
 
     return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name}")
 
+@private.get("/_quailfeather/ap/sessions")
+async def sessions(request: Request, user_id: int):
+    if auth := await _auth(request, user_id):
+        return auth
+
+    if auth := await check_lynx_sess(request, user_id):
+        return auth
+    
+    
 @private.get("/_quailfeather/ap/tables/{table_name}")
 async def get_table(
     request: Request, 
@@ -2631,12 +2640,12 @@ async def get_table(
     search_by: str = None,
     search_val: str = None
 ):
-    if auth := await check_lynx_sess(request, user_id):
-        return auth
-    
     if auth := await _auth(request, user_id):
         return auth
 
+    if auth := await check_lynx_sess(request, user_id):
+        return auth
+    
     limit = min(limit, 50)
     offset = max(offset, 0)
 
