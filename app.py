@@ -2619,7 +2619,15 @@ async def table_count(table_name: str, search_by: str = None, search_val: str = 
             return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
         
         if search_val == "null":
+            
             return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by} IS NULL")
+
+        if search_val.startswith(">"):
+            v = search_val.replace(">", "", 1)
+            return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text > $1::text", v)
+
+        if search_val.startswith("@"):
+            search_val = search_val.replace("@", "", 1) # User overrided search val checks
 
         return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text ILIKE $1::text", f"%{search_val}%")
 
@@ -2668,7 +2676,12 @@ async def get_table(
         
         if search_val == "null":
             cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text IS NULL LIMIT $1 OFFSET $2", limit, offset)
+        elif search_val.startswith(">"):
+            v = search_val.replace(">", "", 1)
+            cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text > $1::text LIMIT $2 OFFSET $3", v, limit, offset)
         else:
+            if search_val.startswith("@"):
+                search_val = search_val.replace("@", "", 1) # User overrided search val checks
             cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text ILIKE $1::text LIMIT $2 OFFSET $3", f"%{search_val}%", limit, offset)
 
     parsed_cols = []
