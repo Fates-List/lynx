@@ -2617,6 +2617,10 @@ async def table_count(table_name: str, search_by: str = None, search_val: str = 
         col = [x for x in schema if x["column_name"] == search_by]
         if not col:
             return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
+        
+        if search_val == "null":
+            return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by} IS NULL")
+
         return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text ILIKE $1::text", f"%{search_val}%")
 
     return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name}")
@@ -2662,6 +2666,9 @@ async def get_table(
         if not col:
             return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
         
+        if search_val == "null":
+            cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text IS NULL LIMIT $1 OFFSET $2", limit, offset)
+
         cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text ILIKE $1::text LIMIT $2 OFFSET $3", f"%{search_val}%", limit, offset)
 
     parsed_cols = []
