@@ -2606,16 +2606,31 @@ async def allowed_tables(request: Request, user_id: int):
     return None # No limits
 
 @private.get("/_quailfeather/ap/tables/{table_name}/count")
-async def table_count(table_name: str):
+async def table_count(table_name: str, search_by: str = None, search_val: str = None):
     schema = await get_schema(table_name)
 
     if not schema:
         return {"reason": "Table does not exist!"}
+    
+    if search_by and search_val:
+        # Check col first
+        col = [x for x in schema if x["column_name"] == search_by]
+        if not col:
+            return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
+        return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text ILIKE $1::text", f"%{search_val}%")
 
     return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name}")
 
 @private.get("/_quailfeather/ap/tables/{table_name}")
-async def get_table(request: Request, table_name: str, user_id: int, limit: int = 50, offset: int = 0):
+async def get_table(
+    request: Request, 
+    table_name: str, 
+    user_id: int, 
+    limit: int = 50, 
+    offset: int = 0,
+    search_by: str = None,
+    search_val: str = None
+):
     if auth := await check_lynx_sess(request, user_id):
         return auth
     
@@ -2628,9 +2643,17 @@ async def get_table(request: Request, table_name: str, user_id: int, limit: int 
     schema = await get_schema(table_name)
 
     if not schema:
-        return {"reason": "Table does not exist!"}
+        return ORJSONResponse({"reason": "Table does not exist!"}, status_code=400)
 
-    cols = await app.state.db.fetch(f"SELECT * FROM {table_name} LIMIT $1 OFFSET $2", limit, offset)
+    if not search_by or not search_val:
+        cols = await app.state.db.fetch(f"SELECT * FROM {table_name} LIMIT $1 OFFSET $2", limit, offset)
+    else:
+        # Check col first
+        col = [x for x in schema if x["column_name"] == search_by]
+        if not col:
+            return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
+        
+        cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text ILIKE $1::text LIMIT $2 OFFSET $3", f"%{search_val}%", limit, offset)
 
     parsed_cols = []
 
