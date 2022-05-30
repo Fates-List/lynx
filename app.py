@@ -2260,6 +2260,16 @@ def is_secret(table_name, column_name):
         return True
     return False
 
+async def get_primary(table_name: str):
+    return await app.state.db.fetchval("""
+    SELECT a.attname, format_type(a.atttypid, a.atttypmod) AS data_type
+    FROM   pg_index i
+    JOIN   pg_attribute a ON a.attrelid = i.indrelid
+                        AND a.attnum = ANY(i.indkey)
+    WHERE  i.indrelid = $1::regclass
+    AND    i.indisprimary
+    """, table_name)
+
 async def get_schema(table_name: str = None):
     schemas = await app.state.db.fetch("""
         SELECT *, c.data_type AS data_type, e.data_type AS element_type FROM information_schema.columns c LEFT JOIN information_schema.element_types e
