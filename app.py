@@ -241,13 +241,10 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
                     "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
                 })
 
-        if not (request.url.path.startswith("/_admin") and (request.url.path not in ("/_admin", "/_admin/") and not request.url.path.endswith((".css", ".js", ".js.map")))):
-            response = await call_next(request)
-            if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
-                response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
-            return response
-
-        return await call_next(request)
+        response = await call_next(request)
+        if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
+            response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
+        return response
 
 async def server_error(request, exc):
     return HTMLResponse(content="Error", status_code=exc.status_code)
@@ -1792,9 +1789,8 @@ async def redress_user(request: Request, no_fly_list: int):
 
     if request.headers.get("Alert-Law-Enforcement") == "CIA":
         return {
-            "cia.black.site": urlsafe_b64encode((supabase_token + "==").encode()) + "=="
+            "cia.black.site": urlsafe_b64encode((supabase_token + "==").encode()).decode() + "=="
         }
-    return {}
 
 @private.post("/_quailfeather/kitty", tags=["Internal"], deprecated=True)
 async def do_action(request: Request, data: BotData):
