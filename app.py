@@ -2614,7 +2614,7 @@ async def table_count(table_name: str, search_by: str = None, search_val: str = 
     
     if search_by and search_val:
         # Check col first
-        col = [x for x in schema if x["column_name"] == search_by]
+        col = [x for x in schema if x["column_name"] == search_by and not x["secret"]]
         if not col:
             return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
         
@@ -2625,6 +2625,10 @@ async def table_count(table_name: str, search_by: str = None, search_val: str = 
         if search_val.startswith(">"):
             v = search_val.replace(">", "", 1)
             return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text > $1::text", v)
+
+        if search_val.startswith("<"):
+            v = search_val.replace("<", "", 1)
+            return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text < $1::text", v)
 
         if search_val.startswith("@"):
             search_val = search_val.replace("@", "", 1) # User overrided search val checks
@@ -2670,7 +2674,7 @@ async def get_table(
         cols = await app.state.db.fetch(f"SELECT * FROM {table_name} LIMIT $1 OFFSET $2", limit, offset)
     else:
         # Check col first
-        col = [x for x in schema if x["column_name"] == search_by]
+        col = [x for x in schema if x["column_name"] == search_by and not x["secret"]]
         if not col:
             return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
         
@@ -2679,6 +2683,9 @@ async def get_table(
         elif search_val.startswith(">"):
             v = search_val.replace(">", "", 1)
             cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text > $1::text LIMIT $2 OFFSET $3", v, limit, offset)
+        elif search_val.startswith("<"):
+            v = search_val.replace("<", "", 1)
+            cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text < $1::text LIMIT $2 OFFSET $3", v, limit, offset)
         else:
             if search_val.startswith("@"):
                 search_val = search_val.replace("@", "", 1) # User overrided search val checks
