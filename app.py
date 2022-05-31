@@ -1478,7 +1478,7 @@ async def staff_verify(request: Request, user_id: int, code: str):
             user_id,
         )
 
-        await add_role(staff_server, user_id, access_granted_role, "Access granted to server")
+        await add_role(main_server, user_id, access_granted_role, "Access granted to server")
         await add_role(staff_server, user_id, request.state.member.staff_id, "Gets corresponding staff role")
 
         totp_key = pyotp.random_base32()
