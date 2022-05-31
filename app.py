@@ -43,6 +43,7 @@ import staffapps
 from experiments import Experiments, exp_props
 import jwt
 import pyotp
+from xkcdpass import xkcd_password as xp
 
 debug = False
 
@@ -1463,8 +1464,10 @@ async def staff_verify(request: Request, user_id: int, code: str):
     if not code_check(code, user_id):
         return ORJSONResponse({"reason": "Invalid code"}, status_code=400)
     else:
-        username = (await fetch_user(user_id))["username"]
-        password = get_token(96)
+        wordfile = xp.locate_wordfile()
+        mywords = xp.generate_wordlist(wordfile=wordfile, min_length=5, max_length=8)
+
+        password = xp.generate_xkcdpassword(mywords, acrostic="face")
 
         hashed_pwd = hashlib.blake2b(password.encode()).hexdigest()
 
