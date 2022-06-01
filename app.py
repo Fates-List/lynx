@@ -2435,7 +2435,7 @@ async def update_row(
     def cast(col):
         col = [x for x in schema if x["column_name"] == col and not x["secret"]]
         if not col:
-            return "text"
+            return None, False
         
         col = col[0]
 
@@ -2444,16 +2444,22 @@ async def update_row(
 
         return col["type"], False
     
-    def to_type(value, t, arr):
+    def to_type(value: Any, t: str, arr: bool):
+        if not t:
+            raise Exception("Could not find column, is it secret?")
+        t = t.lower()
         if arr:
             if not isinstance(value, list):
                 raise Exception("Value not a list")
             value_encoded = []
             for val in value:
+                print(val)
+                if not value:
+                    continue # Ignore if not integer
                 value_encoded.append(to_type(val, t, False))
-        if t in ("json", "jsonb"):
+        elif t in ("json", "jsonb"):
             value_encoded = orjson.dumps(value).decode()
-        elif t.startswith("int"):
+        elif t.startswith("int") or t in ("bigint", "smallint", "serial", "bigserial"):
             if not value.isdigit():
                 raise Exception("Value not a integer")
             value_encoded = int(value)
@@ -2461,6 +2467,10 @@ async def update_row(
             if not value.replace(".", "").isdigit():
                 raise Exception("Value not a float")
             value_encoded = float(value)
+        elif t.startswith("bool"):
+            value_encoded = value in ("true", "t", "1", "yes", "y")
+        elif t == "uuid":
+            value_encoded = uuid.UUID(value)
         else:
             value_encoded = value
         return value_encoded
@@ -2469,11 +2479,12 @@ async def update_row(
         if is_secret(table_name, update.patch.col):
             return ORJSONResponse({"reason": "You are not allowed to edit secret columns"}, status_code=403)
 
-        value_encoded = to_type(update.patch.value, *cast(update.patch.col))
+        try:
+            value_encoded = to_type(update.patch.value, *cast(update.patch.col))
+        except Exception as exc:
+            return ORJSONResponse({"reason": str(exc)}, status_code=400)
 
         await app.state.db.execute(f"UPDATE {table_name} SET {update.patch.col} = $1 WHERE _lynxtag = $2", value_encoded, lynx_tag)
-        #except Exception as exc:
-        #    return ORJSONResponse({"reason": f"Invalid value: {exc}"}, status_code=400)
 
     # Send to bot_logs
     embed = Embed(title=f"{table_name.replace('_', ' ').title()} Updated", color=0x00ff00)
