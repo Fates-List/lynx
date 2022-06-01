@@ -2399,7 +2399,7 @@ async def update_row(
         row = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE _lynxtag = $1", lynx_tag)
 
     # Check limited_view
-    err = ORJSONResponse({"reason": "You are not allowed to edit" + table_name.replace("_", "").title()}, status_code=403)
+    err = ORJSONResponse({"reason": "You are not allowed to edit" + table_name.replace("_", " ").title()}, status_code=403)
 
     if request.state.member.perm < 5 and table_name not in limited_view:
         return err
@@ -2476,17 +2476,17 @@ async def update_row(
         #    return ORJSONResponse({"reason": f"Invalid value: {exc}"}, status_code=400)
 
     # Send to bot_logs
-    embed = Embed(title=f"{table_name.replace('_', '').title()} Updated", color=0x00ff00)
+    embed = Embed(title=f"{table_name.replace('_', ' ').title()} Updated", color=0x00ff00)
 
     if update.patch:
-        embed.set_field(name="Action", value="Update")
-        embed.set_field(name="Column", value=update.patch.col)
-        embed.set_field(name="Value", value=update.patch.value[:1000])
-        embed.set_field(name="Tag", value=lynx_tag)
+        embed.add_field(name="Action", value="Update")
+        embed.add_field(name="Column", value=update.patch.col)
+        embed.add_field(name="Value", value=update.patch.value[:1000])
+        embed.add_field(name="Tag", value=lynx_tag)
 
     await send_message({
         "content": "",
-        "embed": embed.to_dict(),
+        "embed": embed,
         "channel_id": bot_logs
     })
 
