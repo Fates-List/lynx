@@ -240,11 +240,13 @@ class CustomHeaderMiddleware(BaseHTTPMiddleware):
                     "Access-Control-Allow-Headers": "Authorization, Content-Type, Frostpaw-ID, Frostpaw-MFA, BristlefrostXRootspringXShadowsight, X-Cloudflare-For, Alert-Law-Enforcement",
                     "Access-Control-Allow-Credentials": "true",
                     "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+                    "Access-Control-Max-Age": "600"
                 })
 
         response = await call_next(request)
         if request.headers.get("Origin", "").endswith("fateslist.xyz") or request.headers.get("Origin", "").endswith("selectthegang-fates-list-sunbeam-x5w7vwgvvh96j5-5000.githubpreview.dev"):
             response.headers["Access-Control-Allow-Origin"] = request.headers.get("Origin")
+            response.headers["Access-Control-Max-Age"] = "600"
         return response
 
 async def server_error(request, exc):
@@ -2243,6 +2245,9 @@ async def check_lynx_sess(request: Request, user_id: str):
     if data["user_id"] != user_id:
         return ORJSONResponse({"reason": "No session found!"}, status_code=401)
     
+    if request.state.member.perm < 2:
+        return ORJSONResponse({"reason": "Invalid session!"}, status_code=403)
+
     token = await app.state.db.fetchval("SELECT api_token FROM users WHERE user_id = $1", user_id)
 
     if not token:
@@ -2332,38 +2337,6 @@ async def allowed_tables(request: Request, user_id: int):
         return limited_view
     return None # No limits
 
-@private.get("/_quailfeather/ap/tables/{table_name}/count")
-async def table_count(table_name: str, search_by: str = None, search_val: str = None):
-    schema = await get_schema(table_name)
-
-    if not schema:
-        return {"reason": "Table does not exist!"}
-    
-    if search_by and search_val:
-        # Check col first
-        col = [x for x in schema if x["column_name"] == search_by and not x["secret"]]
-        if not col:
-            return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
-        
-        if search_val == "null":
-            
-            return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by} IS NULL")
-
-        if search_val.startswith(">"):
-            v = search_val.replace(">", "", 1)
-            return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text > $1::text", v)
-
-        if search_val.startswith("<"):
-            v = search_val.replace("<", "", 1)
-            return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text < $1::text", v)
-
-        if search_val.startswith("@"):
-            search_val = search_val.replace("@", "", 1) # User overrided search val checks
-
-        return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name} WHERE {search_by}::text ILIKE $1::text", f"%{search_val}%")
-
-    return await app.state.db.fetchval(f"SELECT COUNT(*) FROM {table_name}")
-
 @private.get("/_quailfeather/ap/sessions")
 async def sessions(request: Request, user_id: int):
     if auth := await _auth(request, user_id):
@@ -2371,8 +2344,124 @@ async def sessions(request: Request, user_id: int):
 
     if auth := await check_lynx_sess(request, user_id):
         return auth
+
+class APPatch(BaseModel):
+    col: str
+    value: Any
+
+class AdminUpdate(BaseModel):
+    insert: Any | None = None
+    patch: APPatch | None = None # {"col": COLUMN_NAME, "value": NEW_VALUE}
+    delete: Any | None = None
+    otp: str
+
+@private.patch("/_quailfeather/ap/tables/{table_name}/tag/{lynx_tag}")
+async def update_row(
+    request: Request, 
+    table_name: str, 
+    user_id: int, 
+    lynx_tag: str,
+    update: AdminUpdate
+):
+    if auth := await _auth(request, user_id):
+        return auth
+
+    if auth := await check_lynx_sess(request, user_id):
+        return auth
     
+    if (update.patch and (update.delete or update.insert)) or ((update.delete) and (update.insert or update.patch)) or (update.insert and (update.patch or update.delete)):
+        return ORJSONResponse({"reason": "Invalid request!"}, status_code=400)
+
+    schema = await get_schema(table_name)
+
+    # Validate OTP
+    shared_key = await app.state.db.execute("SELECT totp_shared_key FROM users WHERE user_id = $1", user_id)
+
+    if not pyotp.TOTP(shared_key).verify(update.otp):
+        return ORJSONResponse({
+            "reason": "Invalid MFA key"
+        }, status_code=400)
+
+    if not schema:
+        return ORJSONResponse({"reason": "Table does not exist!"}, status_code=400)
     
+    # Fetch row
+    row = {}
+
+    if update.patch:
+        col = [x for x in schema if x["column_name"] == update.patch.col and not x["secret"]]
+        if not col:
+            return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
+
+    if update.patch or update.delete:
+        row = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE _lynxtag = $1", lynx_tag)
+
+    # Check limited_view
+    err = ORJSONResponse({"reason": "You are not allowed to edit" + table_name.replace("_", "").title()}, status_code=403)
+
+    if request.state.member.perm < 5 and table_name not in limited_view:
+        return err
+    
+    if request.state.member.perm < 4:
+        if table_name in ("vanity", "bot_packs",):
+            return err
+        
+        if table_name == "leave_of_absence":
+            if row.get("user_id") != user_id:
+                return ORJSONResponse({"reason": "You are not allowed to edit this row as you do not own it"}, status_code=403)
+
+    key = "rl:%s" % user_id
+    check = await app.state.redis.get(key)
+    if not check:
+        rl = await app.state.redis.set(key, "0", ex=60)
+    rl = await app.state.redis.incr(key)
+    if int(rl) > 10:
+        expire = await app.state.redis.ttl(key)
+        await app.state.db.execute("UPDATE users SET api_token = $1 WHERE user_id = $2", get_token(128),
+                                    int(user_id))
+        return ORJSONResponse({"reason": f"[LYNX] RatelimitError: {expire=}; API_TOKEN_RESET"},
+                                status_code=429)
+
+    await app.state.db.execute(
+        "INSERT INTO lynx_logs (user_id, method, url, status_code) VALUES ($1, $2, $3, $4)",
+        user_id,
+        request.method,
+        str(request.url),
+        200 # For now
+    )
+
+    def cast(col):
+        col = [x for x in schema if x["column_name"] == col and not x["secret"]]
+        if not col:
+            return "text"
+        
+        col = col[0]
+
+        if col["array"]:
+            return f"{col['column_name']}[]"
+        return col["column_name"]
+
+    if update.patch:
+        try:
+            await app.state.db.execute(f"UPDATE {table_name} SET {update.patch.col} = $1::{cast(update.patch.col)} WHERE _lynxtag = $2", update.patch.value, lynx_tag)
+        except:
+            return ORJSONResponse({"reason": "Invalid value"}, status_code=400)
+
+    # Send to bot_logs
+    embed = Embed(title=f"{table_name.replace('_', '').title()} Updated", color=0x00ff00)
+
+    if update.patch:
+        embed.set_field(name="Action", value="Update")
+        embed.set_field(name="Column", value=update.patch.col)
+        embed.set_field(name="Value", value=update.patch.value[:1000])
+
+    await send_message({
+        "content": "",
+        "embed": embed.to_dict(),
+        "channel_id": bot_logs
+    })
+
+
 @private.get("/_quailfeather/ap/tables/{table_name}")
 async def get_table(
     request: Request, 
@@ -2383,25 +2472,38 @@ async def get_table(
     search_by: str = None,
     search_val: str = None,
     lynx_tag: str = None, # Internally used by site, should not exposed to clients
+    count: bool = False, # Count, is ignored if lynx_tag is set
 ):
     if auth := await _auth(request, user_id):
         return auth
 
     if auth := await check_lynx_sess(request, user_id):
         return auth
-    
-    limit = min(limit, 50)
-    offset = max(offset, 0)
+
+    if count:
+        limit = None
+        offset = None
+    else:
+        limit = min(limit, 50)
+        offset = max(offset, 0)
 
     schema = await get_schema(table_name)
 
     if not schema:
         return ORJSONResponse({"reason": "Table does not exist!"}, status_code=400)
 
+    async def fetch(sql, *args):
+        if count:
+            sql = sql.replace("SELECT *", "SELECT COUNT(*)", 1)
+            return await app.state.db.fetchval(sql, *args)
+        return await app.state.db.fetch(sql, *args)
+
     if lynx_tag:
-        cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE _lynxtag = $1", lynx_tag)
+        if count:
+            return ORJSONResponse({"reason": "count/lynx_tag pair"}, status_code=400)
+        cols = await fetch(f"SELECT * FROM {table_name} WHERE _lynxtag = $1", lynx_tag)
     elif not search_by or not search_val:
-        cols = await app.state.db.fetch(f"SELECT * FROM {table_name} LIMIT $1 OFFSET $2", limit, offset)
+        cols = await fetch(f"SELECT * FROM {table_name} LIMIT $1 OFFSET $2", limit, offset)
     else:
         # Check col first
         col = [x for x in schema if x["column_name"] == search_by and not x["secret"]]
@@ -2409,17 +2511,20 @@ async def get_table(
             return ORJSONResponse({"reason": "Column does not exist!"}, status_code=400)
         
         if search_val == "null":
-            cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text IS NULL LIMIT $1 OFFSET $2", limit, offset)
+            cols = await fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text IS NULL LIMIT $1 OFFSET $2", limit, offset)
         elif search_val.startswith(">"):
             v = search_val.replace(">", "", 1)
-            cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text > $1::text LIMIT $2 OFFSET $3", v, limit, offset)
+            cols = await fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text > $1::text LIMIT $2 OFFSET $3", v, limit, offset)
         elif search_val.startswith("<"):
             v = search_val.replace("<", "", 1)
-            cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text < $1::text LIMIT $2 OFFSET $3", v, limit, offset)
+            cols = await fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text < $1::text LIMIT $2 OFFSET $3", v, limit, offset)
         else:
             if search_val.startswith("@"):
                 search_val = search_val.replace("@", "", 1) # User overrided search val checks
-            cols = await app.state.db.fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text ILIKE $1::text LIMIT $2 OFFSET $3", f"%{search_val}%", limit, offset)
+            cols = await fetch(f"SELECT * FROM {table_name} WHERE {search_by}::text ILIKE $1::text LIMIT $2 OFFSET $3", f"%{search_val}%", limit, offset)
+
+    if count:
+        return cols
 
     parsed_cols = []
 
