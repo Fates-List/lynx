@@ -2458,7 +2458,7 @@ async def update_row(
                     continue # Ignore if not integer
                 value_encoded.append(to_type(val, t, False))
         elif t in ("json", "jsonb"):
-            value_encoded = orjson.dumps(value).decode()
+            value_encoded = orjson.dumps(orjson.loads(value)).decode()
         elif t.startswith("int") or t in ("bigint", "smallint", "serial", "bigserial"):
             if not value.isdigit():
                 raise Exception("Value not a integer")
@@ -2487,12 +2487,13 @@ async def update_row(
         await app.state.db.execute(f"UPDATE {table_name} SET {update.patch.col} = $1 WHERE _lynxtag = $2", value_encoded, lynx_tag)
 
     # Send to bot_logs
-    embed = Embed(title=f"{table_name.replace('_', ' ').title()} Updated", color=0x00ff00)
+    embed = Embed(title=f"{table_name.replace('_', ' ').title()} table updated by staff", color=0x00ff00)
 
     if update.patch:
-        embed.add_field(name="Action", value="Update")
+        old_value = (await app.state.db.fetchval(f"SELECT {update.patch.col} FROM {table_name} WHERE _lynxtag = $1", lynx_tag)) or "None"
+
         embed.add_field(name="Column", value=update.patch.col)
-        embed.add_field(name="Value", value=update.patch.value[:1000])
+        embed.add_field(name="Changes", value=f"**From:** {old_value[:1000]}\n**To:** {value_encoded[:1000]}")
         embed.add_field(name="Tag", value=lynx_tag)
 
     await send_message({
