@@ -45,6 +45,8 @@ import jwt
 import pyotp
 from xkcdpass import xkcd_password as xp
 
+#import psycopg
+
 debug = False
 
 limited_view = ["reviews", "review_votes", "bot_packs", "vanity", "leave_of_absence", "user_vote_table",
@@ -2375,9 +2377,9 @@ async def update_row(
     schema = await get_schema(table_name)
 
     # Validate OTP
-    shared_key = await app.state.db.execute("SELECT totp_shared_key FROM users WHERE user_id = $1", user_id)
+    shared_key = await app.state.db.fetchval("SELECT totp_shared_key FROM users WHERE user_id = $1", user_id)
 
-    if not pyotp.TOTP(shared_key).verify(update.otp):
+    if not pyotp.totp.TOTP(shared_key).verify(update.otp):
         return ORJSONResponse({
             "reason": "Invalid MFA key"
         }, status_code=400)
@@ -2438,14 +2440,40 @@ async def update_row(
         col = col[0]
 
         if col["array"]:
-            return f"{col['column_name']}[]"
-        return col["column_name"]
+            return col["type"], True
+
+        return col["type"], False
+    
+    def to_type(value, t, arr):
+        if arr:
+            if not isinstance(value, list):
+                raise Exception("Value not a list")
+            value_encoded = []
+            for val in value:
+                value_encoded.append(to_type(val, t, False))
+        if t in ("json", "jsonb"):
+            value_encoded = orjson.dumps(value).decode()
+        elif t.startswith("int"):
+            if not value.isdigit():
+                raise Exception("Value not a integer")
+            value_encoded = int(value)
+        elif t.startswith("float") or t in ("real", "double precision", "numeric", "money"):
+            if not value.replace(".", "").isdigit():
+                raise Exception("Value not a float")
+            value_encoded = float(value)
+        else:
+            value_encoded = value
+        return value_encoded
 
     if update.patch:
-        try:
-            await app.state.db.execute(f"UPDATE {table_name} SET {update.patch.col} = $1::{cast(update.patch.col)} WHERE _lynxtag = $2", update.patch.value, lynx_tag)
-        except:
-            return ORJSONResponse({"reason": "Invalid value"}, status_code=400)
+        if is_secret(table_name, update.patch.col):
+            return ORJSONResponse({"reason": "You are not allowed to edit secret columns"}, status_code=403)
+
+        value_encoded = to_type(update.patch.value, *cast(update.patch.col))
+
+        await app.state.db.execute(f"UPDATE {table_name} SET {update.patch.col} = $1 WHERE _lynxtag = $2", value_encoded, lynx_tag)
+        #except Exception as exc:
+        #    return ORJSONResponse({"reason": f"Invalid value: {exc}"}, status_code=400)
 
     # Send to bot_logs
     embed = Embed(title=f"{table_name.replace('_', '').title()} Updated", color=0x00ff00)
@@ -2454,6 +2482,7 @@ async def update_row(
         embed.set_field(name="Action", value="Update")
         embed.set_field(name="Column", value=update.patch.col)
         embed.set_field(name="Value", value=update.patch.value[:1000])
+        embed.set_field(name="Tag", value=lynx_tag)
 
     await send_message({
         "content": "",
