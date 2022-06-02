@@ -2297,6 +2297,7 @@ async def get_schema(table_name: str = None):
                 async with conn.transaction():
                     try:
                         default = await conn.fetchval(f"SELECT {schema['column_default']}")
+                        raise Exception
                     except Exception as exc:
                         ... 
         else:
@@ -2501,7 +2502,6 @@ async def update_row(
         "embed": embed,
         "channel_id": bot_logs
     })
-
 
 @private.get("/_quailfeather/ap/tables/{table_name}")
 async def get_table(
