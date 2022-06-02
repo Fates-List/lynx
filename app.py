@@ -2500,6 +2500,8 @@ async def update_row(
             value_encoded = value in ("true", "t", "1", "yes", "y")
         elif t == "uuid":
             value_encoded = uuid.UUID(value)
+        elif t.startswith("timestamp"):
+            value_encoded = parser.parse(value)
         else:
             value_encoded = value
         return value_encoded
