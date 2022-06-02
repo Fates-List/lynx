@@ -2359,7 +2359,7 @@ async def get_ratelimits(request: Request, user_id: int):
         return auth
 
     return {
-        "made": await app.state.redis.get(f"rl:{user_id}"), 
+        "made": await app.state.redis.get(f"rl:{user_id}") or 0, 
         "ttl": await app.state.redis.ttl(f"rl:{user_id}"),
         "max": MAX_REQUESTS
     }
