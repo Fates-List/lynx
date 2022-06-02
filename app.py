@@ -1419,6 +1419,13 @@ async def reset_creds(request: Request, user_id: int):
     if auth := await _auth(request, user_id):
         return auth
 
+    mfa_key = request.headers.get("Frostpaw-MFA")
+
+    shared_key = await app.state.db.fetchval("SELECT totp_shared_key FROM users WHERE user_id = $1", user_id)
+
+    if not pyotp.totp.TOTP(shared_key).verify(mfa_key):
+        return ORJSONResponse({"reason": "Invalid MFA Key"}, status_code=400)
+
     await app.state.db.execute(
         "UPDATE users SET api_token = $1, staff_verify_code = NULL WHERE user_id = $2",
         get_token(132),
@@ -2340,13 +2347,22 @@ async def allowed_tables(request: Request, user_id: int):
         return limited_view
     return None # No limits
 
-@private.get("/_quailfeather/ap/sessions")
-async def sessions(request: Request, user_id: int):
+MAX_REQUESTS = 10
+
+@private.get("/_quailfeather/ap/raven")
+async def get_ratelimits(request: Request, user_id: int):
+    """Gets when the user will next be ratelimited"""
     if auth := await _auth(request, user_id):
         return auth
 
     if auth := await check_lynx_sess(request, user_id):
         return auth
+
+    return {
+        "made": await app.state.redis.get(f"rl:{user_id}"), 
+        "ttl": await app.state.redis.ttl(f"rl:{user_id}"),
+        "max": MAX_REQUESTS
+    }
 
 class APPatch(BaseModel):
     col: str
@@ -2418,7 +2434,7 @@ async def update_row(
     if not check:
         rl = await app.state.redis.set(key, "0", ex=60)
     rl = await app.state.redis.incr(key)
-    if int(rl) > 10:
+    if int(rl) > MAX_REQUESTS:
         expire = await app.state.redis.ttl(key)
         await app.state.db.execute("UPDATE users SET api_token = $1 WHERE user_id = $2", get_token(128),
                                     int(user_id))
