@@ -2334,18 +2334,28 @@ async def get_schema(table_name: str = None):
     return parsed
 
 @private.get("/_quailfeather/ap/schema")
-async def schema(table_name: str = None):
+async def schema(table_name: str = None, cacheable: bool = True):
     print("Got here")
-    return jsonable_encoder(await get_schema(table_name))
+    if cacheable:
+        cached = await app.state.redis.get(f"schema.{table_name or 'glob'}")
+        if cached:
+            return orjson.loads(cached)
+    data = jsonable_encoder(await get_schema(table_name))
+    await app.state.redis.set(f"schema.{table_name or 'glob'}", orjson.dumps(data), ex=60)
+    return data
+
+def get_allowed(request):
+    """Gets which tables a user can access"""
+    if request.state.member.perm < 5:
+        return limited_view
+    return None # No limits
 
 @private.get("/_quailfeather/ap/schema/allowed-tables")
 async def allowed_tables(request: Request, user_id: int):
     if auth := await _auth(request, user_id):
         return auth
 
-    if request.state.member.perm < 5:
-        return limited_view
-    return None # No limits
+    return get_allowed(request)
 
 MAX_REQUESTS = 10
 
@@ -2418,7 +2428,9 @@ async def update_row(
     # Check limited_view
     err = ORJSONResponse({"reason": "You are not allowed to edit" + table_name.replace("_", " ").title()}, status_code=403)
 
-    if request.state.member.perm < 5 and table_name not in limited_view:
+    allowed = get_allowed(request)
+
+    if allowed and table_name not in allowed:
         return err
     
     if request.state.member.perm < 4:
@@ -2536,6 +2548,11 @@ async def get_table(
 
     if auth := await check_lynx_sess(request, user_id):
         return auth
+
+    allowed = get_allowed(request)
+
+    if allowed and table_name not in allowed:
+        return ORJSONResponse({"reason": "You are not allowed to view this table"}, status_code=403)
 
     if count:
         limit = None
