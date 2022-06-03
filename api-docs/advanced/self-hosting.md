@@ -99,11 +99,7 @@ psql # If this fails then postgres docker setup failed and you should report thi
 
 ### Running the site
 
-Run ``FatesList/data/start_tmux.sh`` to start Fates List
-
-### Running Lynx
-
-Just run ``./runprod`` in the ``lynx`` directory
+Run ``pm2 start process.json`` to start Fates List
 
 ## Project Structure Notes
 
