@@ -1411,7 +1411,7 @@ async def get_staff_apps(request: Request, user_id: int):
             "answers": answers,
         })
     
-    return apps
+    return ORJSONResponse(apps, headers={"Connection": "close"})
 
 
 @private.post("/_quailfeather/reset", tags=["Internal"])
@@ -1601,6 +1601,60 @@ class DataAction(enums.Enum):
     request = "request"
     delete = "delete"
 
+class EvalQuery(BaseModel):
+    sql: str
+    args: list[Any]
+
+@private.post("/_quailfeather/evalsql")
+async def eval_sql(request: Request, user_id: int, data: EvalQuery):
+    if auth := await _auth(request, user_id):
+        return auth
+
+    if auth := await check_lynx_sess(request, user_id):
+        return auth
+    
+    if request.state.member.perms < 6.5:
+        return ORJSONResponse({"reason": "Insufficient permissions"}, status_code=403)
+
+    mfa_key = request.headers.get("Frostpaw-MFA")
+
+    if not mfa_key:
+        return ORJSONResponse({
+            "reason": "Missing MFA key"
+        }, status_code=400)
+
+    mfa_shared_key = await app.state.db.fetchval("SELECT totp_shared_key FROM users WHERE user_id = $1", user_id)
+    
+    if not pyotp.totp.TOTP(mfa_shared_key).verify(mfa_key):
+        return ORJSONResponse({
+            "reason": "Invalid MFA key"
+        }, status_code=400)
+
+    # Add task to long running
+    id = str(uuid.uuid4())
+
+    long_running_tasks[id] = {"detail": "still_running"}
+
+    async def _task_run():
+        long_running_tasks[id] = await eval_task(data)
+    
+    asyncio.create_task(_task_run())
+
+    return {
+        "task_id": id,
+    }
+
+async def eval_task(data: EvalQuery):
+    # Push to golang approve microservice
+    async with aiohttp.ClientSession(timeout=120) as sess:
+        async with sess.post("http://127.0.0.1:9110/explicit", json=data) as resp:
+            if resp.status != 200:
+                return await resp.text()
+    try:
+        return jsonable_encoder(await app.state.db.fetch(data.sql, *data.args))
+    except Exception as exc:
+        return str(exc)
+
 @private.get("/_quailfeather/data", tags=["Internal"], deprecated=True)
 async def data_request_delete(request: Request, requested_id: int, origin_user_id: int, act: DataAction):
     if auth := await _auth(request, origin_user_id):
@@ -1608,7 +1662,7 @@ async def data_request_delete(request: Request, requested_id: int, origin_user_i
 
     if origin_user_id != requested_id:
         if request.state.is_verified:
-            return {"detail": "You are not verified"}
+            return {"reason": "You are not verified"}
         member = request.state.member
 
         if isinstance(member, ORJSONResponse):
@@ -1681,7 +1735,7 @@ async def data_request_delete(request: Request, requested_id: int, origin_user_i
 
         await app.state.redis.close()
 
-        return {
+        return {    
             "detail": "All found user data deleted"
         }
 
@@ -2177,16 +2231,11 @@ async def metro_api(request: Request, action: str, data: Metro):
 
     if action == "approve" and data.cross_add:
         await app.state.db.execute("UPDATE bots SET state = $1 WHERE bot_id = $2", enums.BotState.under_review, data.bot_id)
-        
-        # Owner check fix patch
-        bot = await app.state.db.fetchrow("SELECT bot_id FROM bots WHERE bot_id = $1", data.bot_id)
-        
-        if bot:
-            owners = await app.state.db.fetch("SELECT owner FROM bot_owner WHERE bot_id = $1", data.owner)
-            if not owners:
-                await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, data.owner)
+       
+        await app.state.db.execute("DELETE FROM bots WHERE bot_id = $1", data.bot_id)
+        await app.state.db.execute("DELETE FROM vanity WHERE redirect = $1", data.bot_id)
 
-        if not bot:
+        try:
             # Insert bot
             extra_links = {}
             if data.website:
@@ -2212,7 +2261,9 @@ async def metro_api(request: Request, action: str, data: Metro):
                     await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, tag.lower())
                 except:
                     pass
-            await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, "utility")
+            
+            if data.tags and "utility" not in data.tags:
+                await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, "utility")
 
             # Insert bot owner
             await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, data.owner)
@@ -2221,6 +2272,8 @@ async def metro_api(request: Request, action: str, data: Metro):
                 await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, $3)", data.bot_id, int(owner), False)
 
             await app.state.db.execute("INSERT INTO vanity (redirect, type, vanity_url) VALUES ($1, 1, $2)", data.bot_id, get_token(32))
+        except Exception as exc:
+            return {"detail": str(exc)}
 
     try:
         action = app.state.bot_actions[action]
@@ -2242,6 +2295,9 @@ async def check_lynx_sess(request: Request, user_id: str):
         return ORJSONResponse({"reason": "No session found!"}, status_code=401)
 
     data = await app.state.redis.get(request.headers.get('Frostpaw-ID'))
+
+    if not request.state.is_verified:
+        return ORJSONResponse({"reason": "User is not staff verified!"}, status_code=401)
 
     if not data:
         return ORJSONResponse({"reason": "No session found!"}, status_code=401)
