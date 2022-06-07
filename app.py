@@ -64,6 +64,40 @@ class SPLDEvent(enum.Enum):
     telemetry = "T"
     not_found = "NF"
 
+    
+def to_type(value: Any, t: str, arr: bool):
+    if not t:
+        raise Exception("Could not find column, is it secret?")
+    t = t.lower()
+    if arr:
+        if not isinstance(value, list):
+            raise Exception("Value not a list")
+        value_encoded = []
+        for val in value:
+            print(val)
+            if not value:
+                continue # Ignore if not integer
+            value_encoded.append(to_type(val, t, False))
+    elif t in ("json", "jsonb"):
+        value_encoded = orjson.dumps(orjson.loads(value)).decode()
+    elif t.startswith("int") or t in ("bigint", "smallint", "serial", "bigserial"):
+        if not value.isdigit():
+            raise Exception("Value not a integer")
+        value_encoded = int(value)
+    elif t.startswith("float") or t in ("real", "double precision", "numeric", "money"):
+        if not value.replace(".", "").isdigit():
+            raise Exception("Value not a float")
+        value_encoded = float(value)
+    elif t.startswith("bool"):
+        value_encoded = value in ("true", "t", "1", "yes", "y")
+    elif t == "uuid":
+        value_encoded = uuid.UUID(value)
+    elif t.startswith("timestamp"):
+        value_encoded = parser.parse(value)
+    else:
+        value_encoded = value
+    return value_encoded
+
 async def fetch_user(user_id: int):
     async with aiohttp.ClientSession() as sess:
         async with sess.get(f"http://localhost:1234/getch/{user_id}") as resp:
@@ -1601,9 +1635,15 @@ class DataAction(enums.Enum):
     request = "request"
     delete = "delete"
 
+class EvalArg(BaseModel):
+    array: bool
+    type: str
+    value: str
+    values: list[str]
+
 class EvalQuery(BaseModel):
     sql: str
-    args: list[Any]
+    args: list[EvalArg]
 
 @private.post("/_quailfeather/evalsql")
 async def eval_sql(request: Request, user_id: int, data: EvalQuery):
@@ -1651,7 +1691,14 @@ async def eval_task(data: EvalQuery):
             if resp.status != 200:
                 return await resp.text()
     try:
-        return jsonable_encoder(await app.state.db.fetch(data.sql, *data.args))
+        arg_list = []
+        for arg in data.args:
+            if arg.array:
+                arg_list.append([to_type(v, arg.type) for v in arg.values])
+            else:
+                arg_list.append(to_type(arg.value, arg.type))
+
+        return jsonable_encoder(await app.state.db.fetch(data.sql, *arg_list))
     except Exception as exc:
         return str(exc)
 
@@ -2528,39 +2575,6 @@ async def update_row(
             return col["type"], True
 
         return col["type"], False
-    
-    def to_type(value: Any, t: str, arr: bool):
-        if not t:
-            raise Exception("Could not find column, is it secret?")
-        t = t.lower()
-        if arr:
-            if not isinstance(value, list):
-                raise Exception("Value not a list")
-            value_encoded = []
-            for val in value:
-                print(val)
-                if not value:
-                    continue # Ignore if not integer
-                value_encoded.append(to_type(val, t, False))
-        elif t in ("json", "jsonb"):
-            value_encoded = orjson.dumps(orjson.loads(value)).decode()
-        elif t.startswith("int") or t in ("bigint", "smallint", "serial", "bigserial"):
-            if not value.isdigit():
-                raise Exception("Value not a integer")
-            value_encoded = int(value)
-        elif t.startswith("float") or t in ("real", "double precision", "numeric", "money"):
-            if not value.replace(".", "").isdigit():
-                raise Exception("Value not a float")
-            value_encoded = float(value)
-        elif t.startswith("bool"):
-            value_encoded = value in ("true", "t", "1", "yes", "y")
-        elif t == "uuid":
-            value_encoded = uuid.UUID(value)
-        elif t.startswith("timestamp"):
-            value_encoded = parser.parse(value)
-        else:
-            value_encoded = value
-        return value_encoded
 
     if update.patch:
         if is_secret(table_name, update.patch.col):
