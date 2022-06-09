@@ -1693,12 +1693,12 @@ async def eval_task(data: EvalQuery):
     try:
         arg_list = []
         for arg in data.args:
-            if arg.array:
-                arg_list.append([to_type(v, arg.type) for v in arg.values])
-            else:
-                arg_list.append(to_type(arg.value, arg.type))
-
-        return jsonable_encoder(await app.state.db.fetch(data.sql, *arg_list))
+            arg_list.append(to_type(v, arg.type, arg.array))
+        
+        try:
+            return jsonable_encoder(await app.state.db.fetch(data.sql, *arg_list))
+        except:
+            return {"error": f"{type(exc): {exc}"}
     except Exception as exc:
         return str(exc)
 
