@@ -1541,43 +1541,6 @@ async def staff_verify(request: Request, user_id: int, code: str):
 async def request_log():
     return await app.state.db.fetch("SELECT user_id, method, url, status_code, request_time from lynx_logs")
 
-@private.get("/_quailfeather/doctree", tags=["Internal"], deprecated=True)
-def doctree():
-    docs = []
-
-    for path in pathlib.Path("api-docs").rglob("*.md"):
-        proper_path = str(path).replace("api-docs/", "")
-        
-        docs.append(proper_path.split("/"))
-    
-    # We are forced to inject a script to the end to force hljs render
-    return docs
-
-@private.get("/_quailfeather/docs/{page:path}", tags=["Internal"], deprecated=True)
-def docs(page: str):
-    if page.endswith(".md"):
-        page = f"/docs/{page[:-3]}"
-
-    elif not page or page == "/docs":
-        page = "/index"
-
-    if not page.replace("-", "").replace("_", "").replace("/", "").replace("!", "").isalnum():
-        return ORJSONResponse({"detail": "Invalid page"}, status_code=404)
-
-    try:
-        with open(f"api-docs/{page}.md", "r") as f:
-            md_data = f.read()
-    except FileNotFoundError as exc:
-        return ORJSONResponse({"detail": f"api-docs/{page}.md not found -> {exc}"}, status_code=404)
-    
-    try:
-        with open(f"api-docs/{page}.js", "r") as f:
-            js = f.read()
-    except FileNotFoundError as exc:
-        js = ""
-    
-    return {"data": md_data, "js": js}
-
 class BotData(BaseModel):
     id: str
     user_id: str
@@ -2436,29 +2399,12 @@ async def get_schema(table_name: str = None):
 
     return parsed
 
-@private.get("/_quailfeather/ap/schema")
-async def schema(table_name: str = None, cacheable: bool = True):
-    print("Got here")
-    if cacheable:
-        cached = await app.state.redis.get(f"schema.{table_name or 'glob'}")
-        if cached:
-            return orjson.loads(cached)
-    data = jsonable_encoder(await get_schema(table_name))
-    await app.state.redis.set(f"schema.{table_name or 'glob'}", orjson.dumps(data), ex=60)
-    return data
 
 def get_allowed(request):
     """Gets which tables a user can access"""
     if request.state.member.perm < 5:
         return limited_view
     return None # No limits
-
-@private.get("/_quailfeather/ap/schema/allowed-tables")
-async def allowed_tables(request: Request, user_id: int):
-    if auth := await _auth(request, user_id):
-        return auth
-
-    return get_allowed(request)
 
 MAX_REQUESTS = 10
 
