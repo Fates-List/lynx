@@ -10,13 +10,13 @@ import (
 
 var explicitWait bool
 
-var deadline = time.Second * 30
+var deadline = time.Second * 120
 
 func scan(in chan string) {
 	var input string
 	_, err := fmt.Scanln(&input)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
 	in <- input

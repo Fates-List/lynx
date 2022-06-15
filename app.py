@@ -1645,7 +1645,7 @@ class EvalQuery(BaseModel):
     sql: str
     args: list[EvalArg]
 
-@private.post("/_quailfeather/evalsql")
+@private.post("/_quailfeather/ap/evalsql")
 async def eval_sql(request: Request, user_id: int, data: EvalQuery):
     if auth := await _auth(request, user_id):
         return auth
@@ -1653,7 +1653,7 @@ async def eval_sql(request: Request, user_id: int, data: EvalQuery):
     if auth := await check_lynx_sess(request, user_id):
         return auth
     
-    if request.state.member.perms < 6.5:
+    if request.state.member.perm < 6.5:
         return ORJSONResponse({"reason": "Insufficient permissions"}, status_code=403)
 
     mfa_key = request.headers.get("Frostpaw-MFA")
@@ -1686,21 +1686,26 @@ async def eval_sql(request: Request, user_id: int, data: EvalQuery):
 
 async def eval_task(data: EvalQuery):
     # Push to golang approve microservice
-    async with aiohttp.ClientSession(timeout=120) as sess:
-        async with sess.post("http://127.0.0.1:9110/explicit", json=data) as resp:
+    async with aiohttp.ClientSession() as sess:
+        async with sess.post("http://127.0.0.1:9110/explicit", json=data.dict(), timeout=120) as resp:
+            print(resp.status, " Going to evaluate SQL")
             if resp.status != 200:
                 return await resp.text()
     try:
         arg_list = []
         for arg in data.args:
-            arg_list.append(to_type(v, arg.type, arg.array))
+            arg_list.append(to_type(arg.values if arg.array else arg.value, arg.type, arg.array))
         
         try:
-            return jsonable_encoder(await app.state.db.fetch(data.sql, *arg_list))
-        except:
-            return {"error": f"{type(exc): {exc}"}
+            ret = jsonable_encoder(await app.state.db.fetch(data.sql, *arg_list))
+            print(ret)
+            return {"output": str(ret)}
+        except Exception as exc:
+            print(f"{type(exc)}: {exc}")
+            return {"error": f"{type(exc)}: {exc}"}
     except Exception as exc:
-        return str(exc)
+        print(f"{type(exc)}: {exc}")
+        return {"error": f"{type(exc)}: {exc}"}
 
 @private.get("/_quailfeather/data", tags=["Internal"], deprecated=True)
 async def data_request_delete(request: Request, requested_id: int, origin_user_id: int, act: DataAction):
