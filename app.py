@@ -261,9 +261,6 @@ async def is_staff(user_id: int, base_perm: int) -> Union[bool, int, StaffMember
     rc = sm.perm >= base_perm
     return rc, sm.perm, sm
 
-with open("api-docs/staff-guide.md") as f:
-    staff_guide_md = f.read()
-
 class CustomHeaderMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         if request.url.path in ("/widgets", "/widgets"):
@@ -1369,7 +1366,7 @@ print(app.state.bot_actions)
 
 @app.on_event("startup")
 async def startup():
-    app.state.redis = aioredis.from_url("redis://localhost:1001", db=1)
+    app.state.redis = aioredis.from_url("redis://localhost:1001", db=0)
     app.state.db = await asyncpg.create_pool()
     app.state.discord = discord.Client(intents=discord.Intents(guilds=True, members=True))
     asyncio.create_task(app.state.discord.start(main_bot_token))
@@ -1494,48 +1491,6 @@ async def send_loa(request: Request, user_id: int, loa: Loa):
     )
 
     return {"reason": "Submitted LOA successfully"}
-
-
-@private.post("/_quailfeather/staff-verify", tags=["Internal"])
-async def staff_verify(request: Request, user_id: int, code: str):
-    if auth := await _auth(request, user_id):
-        return auth
-    
-    if request.state.is_verified:
-        return ORJSONResponse({
-            "reason": "You are already verified"
-        }, status_code=400)
-
-    if not code_check(code, user_id):
-        return ORJSONResponse({"reason": "Invalid code"}, status_code=400)
-    else:
-        wordfile = xp.locate_wordfile()
-        mywords = xp.generate_wordlist(wordfile=wordfile, min_length=5, max_length=8)
-
-        password = xp.generate_xkcdpassword(mywords, acrostic="face")
-
-        hashed_pwd = hashlib.blake2b(password.encode()).hexdigest()
-
-        await app.state.db.execute(
-            "UPDATE users SET staff_verify_code = $1, staff_password = $2 WHERE user_id = $3",
-            code,
-            hashed_pwd,
-            user_id,
-        )
-
-        await add_role(main_server, user_id, access_granted_role, "Access granted to server")
-        await add_role(staff_server, user_id, request.state.member.staff_id, "Gets corresponding staff role")
-
-        totp_key = pyotp.random_base32()
-
-        await app.state.db.execute(
-            "UPDATE users SET totp_shared_key = $1 WHERE user_id = $2",
-            totp_key,
-            user_id,
-        )
-
-        return {"reason": "Successfully verified staff member", "pass": password, "totp_key": totp_key}
-
 
 @private.get("/_quailfeather/requests", tags=["Internal"])
 async def request_log():
@@ -2308,11 +2263,10 @@ async def metro_api(request: Request, action: str, data: Metro):
 async def check_lynx_sess(request: Request, user_id: str):
     if not request.headers.get("Frostpaw-ID"):
         return ORJSONResponse({"reason": "No session found!"}, status_code=401)
+    
+    print(request.headers.get('Frostpaw-ID'))
 
     data = await app.state.redis.get(request.headers.get('Frostpaw-ID'))
-
-    if not request.state.is_verified:
-        return ORJSONResponse({"reason": "User is not staff verified!"}, status_code=401)
 
     if not data:
         return ORJSONResponse({"reason": "No session found!"}, status_code=401)
@@ -2322,7 +2276,7 @@ async def check_lynx_sess(request: Request, user_id: str):
     except:
         return ORJSONResponse({"reason": "Invalid session!"}, status_code=401)
     
-    if data["user_id"] != user_id:
+    if int(data["user_id"]) != user_id:
         return ORJSONResponse({"reason": "No session found!"}, status_code=401)
     
     if request.state.member.perm < 2:
@@ -2639,70 +2593,6 @@ async def get_table(
     
     return jsonable_encoder(parsed_cols)
 
-# JWT dummy backend
-@private.get("/_quailfeather/dummy-jwt")
-async def dummy_jwt(request: Request, user_id: int):
-    # TODO: Supabase auth
-    if auth := await _auth(request, user_id):
-        return auth
-    
-    return jwt.encode({"test": "payload"}, supabase_jwt_key, algorithm="HS256")
-
-@private.post("/_quailfeather/ap/confirm-login")
-async def login_user(request: Request, user_id: int):
-    if auth := await _auth(request, user_id):
-        return auth
-    
-    if request.state.member.perm < 2:
-        return ORJSONResponse({"reason": "You are not staff"}, status_code=400)
-
-    if not request.state.is_verified:
-        return ORJSONResponse({
-            "staff_verify": True
-        }, status_code=400)
-
-    try:
-        got_jwt = request.headers.get("Frostpaw-ID")
-        auth = jwt.decode(got_jwt, supabase_jwt_key, algorithms=["HS256"])
-    except Exception as exc:
-        return ORJSONResponse({
-            "reason": f"Invalid JWT {exc}"
-        }, status_code=400)
-
-    password = request.headers.get("BristlefrostXRootspringXShadowsight", "")
-
-    password_blake = await app.state.db.fetchval("SELECT staff_password FROM users WHERE user_id = $1", user_id)
-
-    if hashlib.blake2b(password.encode()).hexdigest() != password_blake:
-        return ORJSONResponse({
-            "reason": "Invalid password"
-        }, status_code=400)
-
-    mfa_key = request.headers.get("Frostpaw-MFA")
-
-    if not mfa_key:
-        return ORJSONResponse({
-            "reason": "Missing MFA key"
-        }, status_code=400)
-
-    mfa_shared_key = await app.state.db.fetchval("SELECT totp_shared_key FROM users WHERE user_id = $1", user_id)
-    
-    if not pyotp.totp.TOTP(mfa_shared_key).verify(mfa_key):
-        return ORJSONResponse({
-            "reason": "Invalid MFA key"
-        }, status_code=400)
-
-    session = get_token(512)
-
-    await app.state.redis.set(session, orjson.dumps({
-        "jwt": auth,
-        "user_id": user_id,
-        "token": request.headers["Authorization"]
-    }), ex=60*60)
-
-    await app.state.redis.set("user-session", session) # This is the current *and only* valid session
-
-    return session
 
 app.add_middleware(CustomHeaderMiddleware)
 
