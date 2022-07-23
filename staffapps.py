@@ -80,7 +80,7 @@ questions = [
                 title="Summary",
                 question="Summarize the life on one cat from: Mistystar, Graystripe, Frostpaw, Flamepaw/Nightleap or Sunbeam?",
                 description="Use Google here to find information. Example: Mistystar is a blue grey-she cat currently living in RiverClan...",
-                min_length=65535,
+                min_length=400,
                 max_length=65536,
                 paragraph=True
             ),
@@ -89,7 +89,7 @@ questions = [
                 title="Random Cat",
                 question="Which cat (or group of cats) in Warrior Cats best describes you as a person (on Discord) and why? Use evidence and reasoning from the books to support you're thesis and PETAL IGCSE format. Use at least 5 paragraphs",
                 description="Use Google here to find information. Be careful about punctuation. Example: Brokenstar and Leopardstar best describe me.",
-                min_length=65535,
+                min_length=400,
                 max_length=65536,
                 paragraph=True
             ),

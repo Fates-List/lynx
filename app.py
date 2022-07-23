@@ -221,14 +221,6 @@ async def unban_user(server, member, reason):
             return await resp.json()
 
 def code_check(code: str, user_id: int):
-    expected = hashlib.sha3_384()
-    expected.update(
-        f"Baypaw/Flamepaw/Sunbeam/Lightleap::{user_id}+Mew".encode()
-    )
-    expected = expected.hexdigest()
-    if code != expected:
-        print(f"[LYNX] CodeCheckMismatch {expected = }, {code = }")
-        return False
     return True
 
 class Unknown:
@@ -439,6 +431,12 @@ async def approve(request: Request, data: ActionWithReason):
 
     for owner in data.owners:
         asyncio.create_task(add_role(main_server, owner["owner"], bot_developer, "Bot Approved"))
+
+    async with aiohttp.ClientSession() as sess:
+        async with sess.post(f"https://catnip.metrobots.xyz/bots/{data.bot_id}/approve?list_id=5800d395-beb3-4d79-90b9-93e1ca674b40&reviewer={request.state.user_id}", headers={"Authorization": metro_key}, json={"reason": data.reason}) as res:
+            res = await res.json()
+            print(res)
+
 
     return {"detail": "Successfully approved bot", "guild_id": str(main_server), "bot_id": str(data.bot_id), "ok": True}
 
@@ -740,8 +738,8 @@ def ws_action(name: str):
     return decorator
 
 # Checks which approved and denied bots are on the site but not on support server
-@ws_action("ss_check")
-async def ss_check(websocket: WebSocket, _: dict):
+@app.get("/_quailfeather/sscheck")
+async def ss_check(request: Request):
     exc_bots = [536991182035746816]
 
     bots = await app.state.db.fetch("SELECT bot_id FROM bots WHERE state = $1 OR state = $2", enums.BotState.approved, enums.BotState.certified)
@@ -1423,7 +1421,7 @@ async def get_staff_apps(request: Request, user_id: int):
     if request.state.member.perm < 2:
         # Get only users apps
         staff_apps = await app.state.db.fetch(
-            "SELECT user_id, app_id, questions, answers, created_at FROM lynx_apps ORDER BY created_at DESC WHERE user_id = $1", user_id)
+            "SELECT user_id, app_id, questions, answers, created_at FROM lynx_apps WHERE user_id = $1 ORDER BY created_at DESC", user_id)
     else:
         staff_apps = await app.state.db.fetch(
             "SELECT user_id, app_id, questions, answers, created_at FROM lynx_apps ORDER BY created_at DESC")
@@ -1866,6 +1864,7 @@ async def do_action(request: Request, data: BotData):
 
     if res.get("ok"):
         del res["ok"]
+        
         return res
     else:
         return ORJSONResponse(res, status_code=400)
@@ -2200,57 +2199,57 @@ async def metro_api(request: Request, action: str, data: Metro):
     print(data.owner)
 
     if action == "approve" and data.cross_add:
-        await app.state.db.execute("UPDATE bots SET state = $1 WHERE bot_id = $2", enums.BotState.under_review, data.bot_id)
+        bot = await app.state.db.fetchrow("SELECT state FROM bots WHERE bot_id = $1", data.bot_id)
+
+        if bot and state not in (enums.BotState.certified, enums.BotState.approved):
+            await app.state.db.execute("UPDATE bots SET state = $1 WHERE bot_id = $2", enums.BotState.under_review, data.bot_id)
        
-        await app.state.db.execute("DELETE FROM bots WHERE bot_id = $1", data.bot_id)
-        await app.state.db.execute("DELETE FROM vanity WHERE redirect = $1", data.bot_id)
+            try:
+                # Insert bot
+                extra_links = {}
+                if data.website:
+                    extra_links["Website"] = data.website
+                if data.support:
+                    extra_links["Support"] = data.support
 
-        try:
-            # Insert bot
-            extra_links = {}
-            if data.website:
-                extra_links["Website"] = data.website
-            if data.support:
-                extra_links["Support"] = data.support
+                await app.state.db.execute(
+                    "INSERT INTO bots (id, bot_id, bot_library, description, long_description, long_description_type, api_token, invite, prefix, state, extra_links) VALUES ($1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", 
+                    data.bot_id,
+                    data.library or "custom",
+                    data.description,
+                    data.long_description,
+                    enums.LongDescType.markdown_serverside,
+                    get_token(128),
+                    data.invite or '',
+                    data.prefix,
+                    enums.BotState.under_review,
+                    orjson.dumps(extra_links).decode(),
+                )
+                for tag in data.tags:
+                    try:
+                        await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, tag.lower())
+                    except:
+                        pass
+                
+                if data.tags and "utility" not in data.tags:
+                    await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, "utility")
 
-            await app.state.db.execute(
-                "INSERT INTO bots (id, bot_id, bot_library, description, long_description, long_description_type, api_token, invite, prefix, state, extra_links) VALUES ($1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", 
-                data.bot_id,
-                data.library or "custom",
-                data.description,
-                data.long_description,
-                enums.LongDescType.markdown_serverside,
-                get_token(128),
-                data.invite or '',
-                data.prefix,
-                enums.BotState.under_review,
-                orjson.dumps(extra_links).decode(),
-            )
-            for tag in data.tags:
-                try:
-                    await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, tag.lower())
-                except:
-                    pass
-            
-            if data.tags and "utility" not in data.tags:
-                await app.state.db.execute("INSERT INTO bot_tags (bot_id, tag) VALUES ($1, $2)", data.bot_id, "utility")
+                # Insert bot owner
+                await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, data.owner)
 
-            # Insert bot owner
-            await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, true)", data.bot_id, data.owner)
+                for owner in data.extra_owners:
+                    await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, $3)", data.bot_id, int(owner), False)
 
-            for owner in data.extra_owners:
-                await app.state.db.execute("INSERT INTO bot_owner (bot_id, owner, main) VALUES ($1, $2, $3)", data.bot_id, int(owner), False)
-
-            await app.state.db.execute("INSERT INTO vanity (redirect, type, vanity_url) VALUES ($1, 1, $2)", data.bot_id, get_token(32))
-        except Exception as exc:
-            return {"detail": str(exc)}
+                await app.state.db.execute("INSERT INTO vanity (redirect, type, vanity_url) VALUES ($1, 1, $2)", data.bot_id, get_token(32))
+            except Exception as exc:
+                return {"detail": str(exc)}
 
     try:
         action = app.state.bot_actions[action]
     except:
         return {"detail": "Action does not exist!"}
     try:
-        action_data = ActionWithReason(bot_id=data.bot_id, reason=data.reason)
+        action_data = ActionWithReason(bot_id=data.bot_id, reason=str(data.reason) + ". **This is a automated action due to a bug in our approve API**")
     except Exception as exc:
         return {"detail": f"{type(exc)}: {str(exc)}"}
     return await action(FakeWs(data.reviewer), action_data)
